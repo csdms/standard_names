@@ -2,7 +2,6 @@
 ---
 model name: topoflow
 exchange items:
-  output:
   - air__density
   - air__emissivity
   - air__relative_humidity
@@ -183,7 +182,7 @@ exchange items:
 ---
 model name: child
 exchange items:
-  intput:
+  input:
   - surface__elevation
   - sea_floor__elevation
   - sea_floor_bedrock_surface__elevation
@@ -255,7 +254,7 @@ exchange items:
   - model_grain_class__count
 
 avulsion:
-  intput:
+  input:
   - avulsion_model__random_walk_variance_constant
   - avulsion_model__sediment_bed_load_exponent
   - avulsion_model__water_discharge_exponent
