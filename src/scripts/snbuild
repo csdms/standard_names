@@ -23,15 +23,19 @@ def find_unique_names (models):
     names = set ()
     for model in models:
         try:
-            for name in model['exchange items']['input']:
-                names.add (StandardName (name))
-        except KeyError:
-            pass
-        try:
-            for name in model['exchange items']['output']:
-                names.add (StandardName (name))
-        except KeyError:
-            pass
+            intent = model['exchange items'].keys ()
+            new_names = []
+            for key in model['exchange items']:
+                try:
+                    assert (key in ['input', 'output'])
+                except AssertionError:
+                    raise KeyError (key)
+                new_names.extend (model['exchange items'][key])
+        except AttributeError:
+            new_names = model['exchange items']
+
+        for name in new_names:
+            names.add (StandardName (name))
 
     return names
 
