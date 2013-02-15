@@ -3,6 +3,9 @@
 from standard_names import StandardName
 
 def yaml_list (name, values):
+    """
+    Convert a list of values to a YAML string.
+    """
     yaml_list = ['---', '%s:' % name]
 
     ordered_values = list (values)
@@ -13,6 +16,9 @@ def yaml_list (name, values):
     return os.linesep.join (yaml_list)
 
 def find_unique_names (models):
+    """
+    Find unique names in a iterable of StandardNames.
+    """
     names = set ()
     for model in models:
         try:
@@ -29,16 +35,25 @@ def find_unique_names (models):
     return names
 
 def unique_objects (names):
+    """
+    Find unique object names in a iterable of StandardNames.
+    """
     objects = set ()
     for name in names:
         objects.add (name.object ())
     return objects
 def unique_quantities (names):
+    """
+    Find unique quantity names in a iterable of StandardNames.
+    """
     quantities = set ()
     for name in names:
         quantities.add (name.quantity ())
     return quantities
 def unique_operators (names):
+    """
+    Find unique operation names in a iterable of StandardNames.
+    """
     ops = set ()
     for name in names:
         try:
@@ -51,7 +66,8 @@ def main ():
     import yaml
     import argparse
 
-    parser = argparse.ArgumentParser ()
+    parser = argparse.ArgumentParser (
+        'Scan a model description file for CSDMS standard names')
     parser.add_argument ('file', type=argparse.FileType ('r'),
                          help='YAML file describing model exchange items')
     args = parser.parse_args ()
