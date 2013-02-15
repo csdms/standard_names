@@ -107,6 +107,7 @@ names:
   - river_mouth_bed_load_sediment__mass_flow_rate
   - river_mouth_event__duration
   - sea_floor__elevation
+  - sea_floor_bedrock_surface__elevation
   - sea_floor_sediment__bulk_density
   - sea_floor_sediment__mean_duration_since_deposition
   - sea_floor_sediment__permeability
@@ -272,6 +273,7 @@ objects:
   - river_mouth_bed_load_sediment
   - river_mouth_event
   - sea_floor
+  - sea_floor_bedrock_surface
   - sea_floor_sediment
   - sea_floor_sediment_clay
   - sea_floor_sediment_grain
