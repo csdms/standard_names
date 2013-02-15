@@ -1,11 +1,44 @@
 %YAML 1.2
 ---
 names:
+  - air__density
+  - air__emissivity
   - air__mean_over_domain_of_temperature
+  - air__relative_humidity
+  - air__temperature
+  - air__thermal_capacity
+  - air_water_vapor__partial_pressure
+  - air_water_vapor__saturated_partial_pressure
+  - atmosphere__optical_path_length_ratio
+  - atmosphere__richardson_number
+  - atmosphere__thermal_bulk_exchange_coefficient
+  - atmosphere_column_water__liquid_equivalent_depth
+  - atmosphere_dust__transmittance_reduction
+  - atmosphere_turbulent_boundary_layer__roughness_length
+  - atmosphere_water__area_time_integral_of_liquid_equivalent_precipitation_rate
+  - atmosphere_water__liquid_equivalent_precipitation_rate
+  - atmosphere_water__mass_bulk_exchange_coefficient
+  - atmosphere_water__max_over_grid_and_time_of_liquid_equivalent_precipitation_rate
   - atmosphere_water__mean_over_domain_of_liquid_equivalent_precipitation_rate
+  - atmosphere_water__neutral_bulk_exchange_coefficient
   - bed_load_sediment__mass_flow_rate
   - bedrock_surface__elevation
   - bedrock_surface__elevation_increment
+  - channel_bed__manning_coefficient
+  - channel_bed__max_over_grid_of_manning_coefficient
+  - channel_bed__max_over_grid_of_roughness_length
+  - channel_bed__min_over_grid_of_manning_coefficient
+  - channel_bed__min_over_grid_of_roughness_length
+  - channel_bed__roughness_length
+  - channel_bed_surface__slope
+  - channel_centerline__straight_sinuosity
+  - channel_centerline__valley_sinuosity
+  - channel_cross_section__hydraulic_radius
+  - channel_cross_section_trapezoid__bank_angle
+  - channel_cross_section_trapezoid__bottom_width
+  - channel_cross_section_water__depth
+  - channel_cross_section_water__initial_depth
+  - channel_cross_section_water__speed
   - channel_outflow_end__bankfull_width
   - channel_outflow_end__width
   - channel_outflow_end_bed_load_sediment__mass_flow_rate
@@ -15,8 +48,60 @@ names:
   - channel_outflow_end_water__depth
   - channel_outflow_end_water__discharge
   - channel_outflow_end_water__speed
+  - channel_water__depth
   - channel_water__discharge
+  - channel_water__friction_factor
+  - channel_water__froude_number
+  - channel_water__volume
+  - channel_water__volume_inflow_rate
+  - channel_water__volume_outflow_rate
+  - channel_water_surface__slope
+  - earth__standard_gravity_constant
+  - glacier__area_time_integral_of_melt_rate
+  - glacier__melt_rate
+  - glacier__thickness
+  - glacier_surface__elevation
+  - land_snow__melt_rate
+  - land_subsurface_to_surface_water__area_time_integral_of_baseflow_seepage_rate
+  - land_subsurface_to_surface_water__baseflow_seepage_rate
+  - land_surface__albedo
+  - land_surface__aspect_angle
+  - land_surface__brutsaert_emissivity_canopy_factor
+  - land_surface__brutsaert_emissivity_cloud_factor
+  - land_surface__elevation
+  - land_surface__emissivity
+  - land_surface__latitude
+  - land_surface__longitude
+  - land_surface__longwave_radiation_flux
+  - land_surface__net_irradiation_flux
+  - land_surface__net_latent_heat_flux
+  - land_surface__net_longwave_irradiation_flux
+  - land_surface__net_shortwave_irradiation_flux
+  - land_surface__slope
+  - land_surface__slope_angle
+  - land_surface__temperature
+  - land_surface_air__latent_heat_flux
+  - land_surface_air__pressure
+  - land_surface_air__sensible_heat_flux
+  - land_surface_air__temperature
+  - land_surface_air_water_vapor__dew_point_temperature
+  - land_surface_air_water_vapor__partial_pressure
+  - land_surface_air_water_vapor__saturated_partial_pressure
+  - land_water__area_time_integral_of_evaporation_rate
+  - land_water__area_time_integral_of_infiltration_rate
+  - land_water__baseflow_emergence_rate
+  - land_water__cumulative_infiltrated_depth
+  - land_water__evaporation_rate
+  - land_water__infiltration_rate
+  - land_water__runoff_rate
+  - land_water__time_integral_of_infiltration_rate
+  - model__time_step
   - model_grain_class__count
+  - model_grid_cell__area
+  - model_grid_cell__x_length
+  - model_grid_cell__y_length
+  - physics__stefan_boltzmann_constant
+  - physics__von_karman_constant
   - river_mouth__location_model_x_component
   - river_mouth__location_model_y_component
   - river_mouth_bed_load_sediment__mass_flow_rate
@@ -52,6 +137,60 @@ names:
   - sediment__porosity
   - sediment__thickness_increment
   - sediment_grain__mean_diameter
+  - snow__area_time_integral_of_melt_rate
+  - snow__degree_day_coefficient
+  - snow__degree_day_threshold_temperature
+  - snow__density
+  - snow__depth
+  - snow__initial_depth
+  - snow__initial_liquid_equivalent_depth
+  - snow__liquid_equivalent_depth
+  - snow__melt_rate
+  - snow__thermal_capacity
+  - soil__brooks_corey_eta_parameter
+  - soil__brooks_corey_lambda_parameter
+  - soil__brooks_corey_smith_c_parameter
+  - soil__brooks_corey_smith_pressure_head_offset_parameter
+  - soil__porosity
+  - soil__reference_depth_temperature
+  - soil__temperature_reference_depth
+  - soil__thermal_conductivity
+  - soil_capillary__length_scale
+  - soil_model_layer_0__porosity
+  - soil_model_layer_0__thickness
+  - soil_model_layer_0__wetted_thickness
+  - soil_model_layer_1__porosity
+  - soil_model_layer_1__thickness
+  - soil_model_layer_1__wetted_thickness
+  - soil_model_layer_2__porosity
+  - soil_model_layer_2__thickness
+  - soil_model_layer_2__wetted_thickness
+  - soil_model_layer__porosity
+  - soil_model_layer__thickness
+  - soil_model_layer__wetted_thickness
+  - soil_model_top_layer__porosity
+  - soil_model_top_layer__thickness
+  - soil_model_top_layer__wetted_thickness
+  - soil_surface__conduction_energy_flux
+  - soil_surface__temperature
+  - soil_water__bubbling_pressure_head
+  - soil_water__downward_volume_flux
+  - soil_water__hydraulic_conductivity
+  - soil_water__hygroscopic_volume_fraction
+  - soil_water__initial_hydraulic_conductivity
+  - soil_water__initial_volume_fraction
+  - soil_water__normalized_volume_fraction
+  - soil_water__pressure_head
+  - soil_water__relative_hydraulic_conductivity
+  - soil_water__residual_volume_fraction
+  - soil_water__saturated_hydraulic_conductivity
+  - soil_water__saturated_volume_fraction
+  - soil_water__smith_parlange_gamma_parameter
+  - soil_water__volume_fraction
+  - soil_water__wetting_front_depth
+  - soil_water_table__area_time_integral_of_recharge_rate
+  - soil_water_table__recharge_rate
+  - soil_water_table_surface__elevation
   - surface__elevation
   - surface__elevation_increment
   - surface__x_gradient_component
@@ -67,12 +206,47 @@ names:
   - surface_sediment_mud__volume_fraction
   - surface_sediment_sand__volume_fraction
   - surface_sediment_silt__volume_fraction
+  - water__density
+  - water__fusion_specific_latent_heat
+  - water__liquid_equivalent_precipitation_rate
+  - water__vaporization_specific_latent_heat
+  - watershed_outlet_water__depth
+  - watershed_outlet_water__discharge
+  - watershed_outlet_water__friction_factor
+  - watershed_outlet_water__max_over_time_of_depth
+  - watershed_outlet_water__max_over_time_of_discharge
+  - watershed_outlet_water__max_over_time_of_speed
+  - watershed_outlet_water__speed
+  - watershed_outlet_water__time_integral_of_discharge
+  - watershed_outlet_water__time_of_max_of_depth
+  - watershed_outlet_water__time_of_max_of_discharge
+  - watershed_outlet_water__time_of_max_of_speed
+  - watershed_water__area_time_integral_of_runoff_rate
+  - watershed_water__max_over_grid_of_depth
+  - watershed_water__max_over_grid_of_discharge
+  - watershed_water__max_over_grid_of_speed
+  - watershed_water__min_over_grid_of_depth
+  - watershed_water__min_over_grid_of_discharge
+  - watershed_water__min_over_grid_of_speed
+  - wind__reference_height_speed
+  - wind__speed_reference_height
 ---
 objects:
   - air
+  - air_water_vapor
+  - atmosphere
+  - atmosphere_column_water
+  - atmosphere_dust
+  - atmosphere_turbulent_boundary_layer
   - atmosphere_water
   - bed_load_sediment
   - bedrock_surface
+  - channel_bed
+  - channel_bed_surface
+  - channel_centerline
+  - channel_cross_section
+  - channel_cross_section_trapezoid
+  - channel_cross_section_water
   - channel_outflow_end
   - channel_outflow_end_bed_load_sediment
   - channel_outflow_end_suspended_load
@@ -80,7 +254,20 @@ objects:
   - channel_outflow_end_suspended_sediment
   - channel_outflow_end_water
   - channel_water
+  - channel_water_surface
+  - earth
+  - glacier
+  - glacier_surface
+  - land_snow
+  - land_subsurface_to_surface_water
+  - land_surface
+  - land_surface_air
+  - land_surface_air_water_vapor
+  - land_water
+  - model
   - model_grain_class
+  - model_grid_cell
+  - physics
   - river_mouth
   - river_mouth_bed_load_sediment
   - river_mouth_event
@@ -98,6 +285,18 @@ objects:
   - sea_water_to_sediment
   - sediment
   - sediment_grain
+  - snow
+  - soil
+  - soil_capillary
+  - soil_model_layer
+  - soil_model_layer_0
+  - soil_model_layer_1
+  - soil_model_layer_2
+  - soil_model_top_layer
+  - soil_surface
+  - soil_water
+  - soil_water_table
+  - soil_water_table_surface
   - surface
   - surface_bed_load_sediment
   - surface_sediment
@@ -107,42 +306,145 @@ objects:
   - surface_sediment_mud
   - surface_sediment_sand
   - surface_sediment_silt
+  - water
+  - watershed_outlet_water
+  - watershed_water
+  - wind
 ---
 quantities:
+  - albedo
+  - area
+  - aspect_angle
+  - bank_angle
   - bankfull_width
+  - baseflow_emergence_rate
+  - baseflow_seepage_rate
+  - bottom_width
+  - brooks_corey_eta_parameter
+  - brooks_corey_lambda_parameter
+  - brooks_corey_smith_c_parameter
+  - brooks_corey_smith_pressure_head_offset_parameter
+  - brutsaert_emissivity_canopy_factor
+  - brutsaert_emissivity_cloud_factor
+  - bubbling_pressure_head
   - bulk_density
+  - conduction_energy_flux
   - count
+  - cumulative_infiltrated_depth
+  - degree_day_coefficient
+  - degree_day_threshold_temperature
+  - density
   - depth
   - depth_ratio
+  - dew_point_temperature
   - discharge
+  - downward_volume_flux
   - duration
   - elevation
   - elevation_increment
+  - emissivity
   - erosion_rate
+  - evaporation_rate
+  - friction_factor
   - from_direction
+  - froude_number
+  - fusion_specific_latent_heat
   - height
+  - hydraulic_conductivity
+  - hydraulic_radius
+  - hygroscopic_volume_fraction
+  - infiltration_rate
+  - initial_depth
+  - initial_hydraulic_conductivity
+  - initial_liquid_equivalent_depth
+  - initial_volume_fraction
+  - latent_heat_flux
+  - latitude
+  - length_scale
+  - liquid_equivalent_depth
   - liquid_equivalent_precipitation_rate
   - location_model_x_component
   - location_model_y_component
+  - longitude
+  - longwave_radiation_flux
+  - manning_coefficient
+  - mass_bulk_exchange_coefficient
   - mass_flow_rate
   - mean_diameter
   - mean_duration_since_deposition
+  - melt_rate
   - model_from_direction_asymmetry_constant
   - model_from_direction_highness_constant
+  - net_irradiation_flux
+  - net_latent_heat_flux
+  - net_longwave_irradiation_flux
+  - net_shortwave_irradiation_flux
+  - neutral_bulk_exchange_coefficient
+  - normalized_volume_fraction
+  - optical_path_length_ratio
+  - partial_pressure
   - period
   - permeability
   - porosity
+  - pressure
+  - pressure_head
+  - recharge_rate
+  - reference_depth_temperature
+  - reference_height_speed
+  - relative_humidity
+  - relative_hydraulic_conductivity
+  - residual_volume_fraction
+  - richardson_number
+  - roughness_length
+  - runoff_rate
+  - saturated_hydraulic_conductivity
+  - saturated_partial_pressure
+  - saturated_volume_fraction
+  - sensible_heat_flux
+  - slope
+  - slope_angle
+  - smith_parlange_gamma_parameter
   - speed
+  - speed_reference_height
+  - standard_gravity_constant
+  - stefan_boltzmann_constant
+  - straight_sinuosity
   - temperature
+  - temperature_reference_depth
+  - thermal_bulk_exchange_coefficient
+  - thermal_capacity
+  - thermal_conductivity
+  - thickness
   - thickness_increment
+  - time_of_max_of_depth
+  - time_of_max_of_discharge
+  - time_of_max_of_speed
+  - time_step
+  - transmittance_reduction
+  - valley_sinuosity
+  - vaporization_specific_latent_heat
+  - volume
   - volume_concentration
   - volume_fraction
+  - volume_inflow_rate
+  - volume_outflow_rate
+  - von_karman_constant
+  - wetted_thickness
+  - wetting_front_depth
   - width
   - x_gradient_component
+  - x_length
   - y_gradient_component
+  - y_length
 ---
 operators:
+  - area_time_integral
+  - max_over_grid
+  - max_over_grid_and_time
   - max_over_increment
+  - max_over_time
   - mean_over_domain
   - mean_over_increment
+  - min_over_grid
   - min_over_increment
+  - time_integral
