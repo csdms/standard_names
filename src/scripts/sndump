@@ -5,6 +5,7 @@ import argparse
 
 from standard_names import StandardName
 from standard_names import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
+from standard_names import FORMATTERS
 
 names = dict (names=NAMES,
               objects=OBJECTS,
@@ -20,39 +21,9 @@ class CustomAction (argparse.Action):
         previous.append (self.dest)
         setattr (namespace, 'ordered_args', previous)
 
-def wiki (f):
-    def _wrapped (lines, **kwds):
-        heading = kwds.pop ('heading', None)
-        heading_level = kwds.pop ('level', 1)
-        text = f(lines, **kwds)
-        lines = text.split (os.linesep)
-
-        wiki_lines = []
-        for line in lines:
-            wiki_lines.append (line + '<br/>')
-        wiki_lines.insert (0, '<tt>')
-        wiki_lines.append ('</tt>')
-
-        if heading:
-            pre = '=' * heading_level
-            wiki_lines.insert (0, '%s %s %s' % (pre, heading.title (), pre))
-
-        return os.linesep.join (wiki_lines)
-    return _wrapped
-
-@wiki
-def list_to_string (lines, **kwds):
-    sorted = kwds.pop ('sorted', False)
-
-    if sorted:
-        sorted_lines = list (lines)
-        sorted_lines.sort ()
-        return os.linesep.join (sorted_lines)
-    else:
-        return os.linesep.join (lines)
-
 def main ():
     parser = argparse.ArgumentParser ("Dump known standard names")
+
     parser.add_argument ('-n', nargs=0, dest='names',
                          help='Print standard names', action=CustomAction)
     parser.add_argument ('-o', nargs=0, dest='objects',
@@ -61,17 +32,23 @@ def main ():
                          help='Print standard quantities', action=CustomAction)
     parser.add_argument ('-op', nargs=0, dest='operators',
                          help='Print standard operators', action=CustomAction)
+
     parser.add_argument ('--unsorted', action='store_true',
                         default=False, help='Do not sort names')
+    parser.add_argument ('--format', choices=FORMATTERS.keys (),
+                         default='plain', help='Output format')
+
     args = parser.parse_args ()
 
     try:
-        for key in args.ordered_args:
-            print list_to_string (names[key], sorted=not args.unsorted,
-                                  heading=key, level=2)
+        keys = args.ordered_args
     except AttributeError:
-        print list_to_string (names['names'], sorted=not args.unsorted,
-                              heading='names', level=2)
+        keys = ['names']
+
+    format = FORMATTERS[args.format]
+    for key in keys:
+        print format (names[key], sorted=not args.unsorted,
+                      heading=key, level=2)
 
 if __name__ == '__main__':
     main ()
