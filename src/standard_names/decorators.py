@@ -41,17 +41,3 @@ def yaml (f):
         return os.linesep.join (yaml_lines)
     return _wrapped
 
-def list_to_string (lines, **kwds):
-    sorted = kwds.pop ('sorted', False)
-
-    if sorted:
-        sorted_lines = list (lines)
-        sorted_lines.sort ()
-        return os.linesep.join (sorted_lines)
-    else:
-        return os.linesep.join (lines)
-
-FORMATTERS = dict (plain=list_to_string)
-for decorator in [wiki, yaml]:
-    FORMATTERS[decorator.__name__] = decorator (list_to_string)
-

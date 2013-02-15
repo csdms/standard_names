@@ -3,7 +3,6 @@
 import os
 import argparse
 
-from standard_names import StandardName
 from standard_names import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
 from standard_names import FORMATTERS
 
@@ -12,6 +11,7 @@ names = dict (names=NAMES,
               quantities=QUANTITIES,
               operators=OPERATORS,
              )
+formats = FORMATTERS.keys ()
 
 class CustomAction (argparse.Action):
     def __call__ (self, parser, namespace, values, option_string=None):
@@ -35,7 +35,7 @@ def main ():
 
     parser.add_argument ('--unsorted', action='store_true',
                         default=False, help='Do not sort names')
-    parser.add_argument ('--format', choices=FORMATTERS.keys (),
+    parser.add_argument ('--format', choices=formats,
                          default='plain', help='Output format')
 
     args = parser.parse_args ()

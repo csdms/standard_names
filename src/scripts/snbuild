@@ -1,74 +1,9 @@
 #! /usr/bin/env python
 
 import os
-from standard_names import StandardName
-
-def yaml_list (name, values):
-    """
-    Convert a list of values to a YAML string.
-    """
-    yaml_list = ['---', '%s:' % name]
-
-    ordered_values = list (values)
-    ordered_values.sort ()
-    for value in ordered_values:
-        yaml_list.append ('  - %s' % value)
-
-    return os.linesep.join (yaml_list)
-
-def find_unique_names (models):
-    """
-    Find unique names in a iterable of StandardNames.
-    """
-    names = set ()
-    for model in models:
-        try:
-            intent = model['exchange items'].keys ()
-            new_names = []
-            for key in model['exchange items']:
-                try:
-                    assert (key in ['input', 'output'])
-                except AssertionError:
-                    raise KeyError (key)
-                new_names.extend (model['exchange items'][key])
-        except AttributeError:
-            new_names = model['exchange items']
-
-        for name in new_names:
-            names.add (StandardName (name))
-
-    return names
-
-def unique_objects (names):
-    """
-    Find unique object names in a iterable of StandardNames.
-    """
-    objects = set ()
-    for name in names:
-        objects.add (name.object ())
-    return objects
-def unique_quantities (names):
-    """
-    Find unique quantity names in a iterable of StandardNames.
-    """
-    quantities = set ()
-    for name in names:
-        quantities.add (name.quantity ())
-    return quantities
-def unique_operators (names):
-    """
-    Find unique operation names in a iterable of StandardNames.
-    """
-    ops = set ()
-    for name in names:
-        try:
-            ops.add (name.operator ())
-        except AttributeError:
-            pass
-    return ops
+from standard_names import (from_model_file, FORMATTERS)
 
 def main ():
-    import yaml
     import argparse
 
     parser = argparse.ArgumentParser (
@@ -77,15 +12,23 @@ def main ():
                          help='YAML file describing model exchange items')
     args = parser.parse_args ()
 
-    models = yaml.load_all (args.file)
+    names = from_model_file (args.file)
 
-    names = find_unique_names (models)
+    format = FORMATTERS['yaml']
 
     print '%YAML 1.2'
-    print yaml_list ('names', [n.name () for n in names])
-    print yaml_list ('objects', unique_objects (names))
-    print yaml_list ('quantities', unique_quantities (names))
-    print yaml_list ('operators', unique_operators (names))
+    print '---'
+
+    print os.linesep.join ([
+        format (names.unique_names (), sorted=True, heading='names'),
+        '---',
+        format (names.unique_objects (), sorted=True, heading='objects'),
+        '---',
+        format (names.unique_quantities (), sorted=True, heading='quantities'),
+        '---',
+        format (names.unique_operators (), sorted=True, heading='operators'),
+        '...',
+    ])
 
 if __name__ == '__main__':
     main ()
