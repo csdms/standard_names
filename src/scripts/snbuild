@@ -1,0 +1,71 @@
+#! /usr/bin/env python
+
+from standard_names import StandardName
+
+def yaml_list (name, values):
+    yaml_list = ['---', '%s:' % name]
+
+    ordered_values = list (values)
+    ordered_values.sort ()
+    for value in ordered_values:
+        yaml_list.append ('  - %s' % value)
+
+    return os.linesep.join (yaml_list)
+
+def find_unique_names (models):
+    names = set ()
+    for model in models:
+        try:
+            for name in model['exchange items']['input']:
+                names.add (StandardName (name))
+        except KeyError:
+            pass
+        try:
+            for name in model['exchange items']['output']:
+                names.add (StandardName (name))
+        except KeyError:
+            pass
+
+    return names
+
+def unique_objects (names):
+    objects = set ()
+    for name in names:
+        objects.add (name.object ())
+    return objects
+def unique_quantities (names):
+    quantities = set ()
+    for name in names:
+        quantities.add (name.quantity ())
+    return quantities
+def unique_operators (names):
+    ops = set ()
+    for name in names:
+        try:
+            ops.add (name.operator ())
+        except AttributeError:
+            pass
+    return ops
+
+def main ():
+    import yaml
+    import argparse
+
+    parser = argparse.ArgumentParser ()
+    parser.add_argument ('file', type=argparse.FileType ('r'),
+                         help='YAML file describing model exchange items')
+    args = parser.parse_args ()
+
+    models = yaml.load_all (args.file)
+
+    names = find_unique_names (models)
+
+    print '%YAML 1.2'
+    print yaml_list ('names', [n.name () for n in names])
+    print yaml_list ('objects', unique_objects (names))
+    print yaml_list ('quantities', unique_quantities (names))
+    print yaml_list ('operators', unique_operators (names))
+
+if __name__ == '__main__':
+    main ()
+

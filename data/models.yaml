@@ -1,0 +1,223 @@
+%YAML 1.2
+---
+model name: hydrotrend
+exchange items:
+  output:
+  - channel_outflow_end_water__speed
+  - channel_outflow_end__width
+  - channel_outflow_end_water__depth
+  - channel_outflow_end_water__discharge
+  - channel_outflow_end_suspended_sediment__discharge
+  - channel_outflow_end_bed_load_sediment__mass_flow_rate
+  - atmosphere_water__mean_over_domain_of_liquid_equivalent_precipitation_rate
+  - air__mean_over_domain_of_temperature
+
+---
+model name: child
+exchange items:
+  intput:
+  - surface__elevation
+  - sea_floor__elevation
+  - sea_floor_bedrock_surface__elevation
+  - bedrock_surface__elevation
+  - bedrock_surface__elevation_increment
+
+  output:
+  - surface__elevation
+  - sea_floor__elevation
+  - surface__elevation_increment
+  - sediment__erosion_rate
+  - channel_water__discharge
+  - bed_load_sediment__mass_flow_rate
+
+---
+model name: cem
+exchange items:
+  input:
+  - surface_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_suspended_load__mass_flow_rate
+  - sea_water_surface_wave__from_direction
+  - sea_water_surface_wave__height
+  - sea_water_surface_wave__period
+
+  output:
+  - surface__elevation
+  - sea_water__depth
+  - sea_water_to_sediment__depth_ratio
+  - river_mouth__location_model_x_component
+  - river_mouth__location_model_y_component
+  - river_mouth_bed_load_sediment__mass_flow_rate
+
+---
+model name: waves
+exchange items:
+  input:
+  - sea_water_surface_wave__model_from_direction_asymmetry_constant
+  - sea_water_surface_wave__model_from_direction_highness_constant
+  - sea_water_surface_wave__height
+  - sea_water_surface_wave__period
+
+  output:
+  - sea_water_surface_wave__from_direction
+  - sea_water_surface_wave__max_over_increment_of_from_direction
+  - sea_water_surface_wave__min_over_increment_of_from_direction
+  - sea_water_surface_wave__mean_over_increment_of_from_direction
+  - sea_water_surface_wave__height
+  - sea_water_surface_wave__period
+
+---
+model name: plume
+exchange items:
+  input:
+  - channel_outflow_end_water__speed
+  - channel_outflow_end__bankfull_width
+  - channel_outflow_end_water__depth
+  - channel_outflow_end_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_suspended_load_sediment__volume_concentration
+  - river_mouth_event__duration
+
+  output:
+  - channel_outflow_end_water__speed 
+  - channel_outflow_end__bankfull_width
+  - channel_outflow_end_water__depth
+  - channel_outflow_end_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_suspended_load_sediment__volume_concentration
+  - river_mouth_event__duration
+  - model_grain_class__count
+
+avulsion:
+  intput:
+  - avulsion_model__random_walk_variance_constant
+  - avulsion_model__sediment_bed_load_exponent
+  - avulsion_model__water_discharge_exponent
+  - channel_inflow_end_water__discharge
+  - channel_inflow_end_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_water__discharge
+  - channel_outflow_end__location_model_x_component
+  - channel_outflow_end__location_model_y_component
+  - surface__elevation
+
+  output:
+  - avulsion_model__random_walk_variance_constant
+  - avulsion_model__sediment_bed_load_exponent
+  - avulsion_model__water_discharge_exponent
+  - channel_inflow_end_water__discharge
+  - channel_inflow_end_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_bed_load_sediment__mass_flow_rate
+  - channel_outflow_end_water__discharge
+  - channel_outflow_end__location_model_x_component
+  - channel_outflow_end__location_model_y_component
+  - channel_inflow_end_to_channel_outflow_end__angle
+  - surface__elevation
+  - surface_bed_load_sediment__mass_flow_rate
+
+---
+model name: sedflux3d
+exchange items:
+  input:
+  - bedrock_surface__elevation
+  - bedrock_surface__elevation_increment
+  - sediment__thickness_increment
+  - channel_outflow_end_water__discharge
+  - bed_load_sediment__mass_flow_rate
+
+  output:
+  - sea_water__depth
+  - sea_floor_surface__elevation
+  - sea_floor_surface__x_gradient_component
+  - sea_floor_surface__y_gradient_component
+  - sea_floor_sediment_grain__mean_diameter
+  - sea_floor_sediment__mean_duration_since_deposition
+  - sea_floor_sediment_sand__volume_fraction
+  - sea_floor_sediment_silt__volume_fraction
+  - sea_floor_sediment_clay__volume_fraction
+  - sea_floor_sediment_mud__volume_fraction
+  - sea_floor_sediment__bulk_density
+  - sea_floor_sediment__porosity
+  - sea_floor_sediment__permeability
+  - bedrock_surface__elevation
+  - sea_floor_sediment_model_grain_class_0__volume_fraction
+  - surface__elevation
+  - surface__x_gradient_component
+  - surface__y_gradient_component
+  - surface_sediment_grain__mean_diameter
+  - surface_sediment__mean_duration_since_deposition
+  - surface_sediment_sand__volume_fraction
+  - surface_sediment_silt__volume_fraction
+  - surface_sediment_clay__volume_fraction
+  - surface_sediment_mud__volume_fraction
+  - surface_sediment__bulk_density
+  - surface_sediment__porosity
+  - surface_sediment__permeability
+  - surface_sediment_model_grain_class_0__volume_fraction
+  - sediment_grain__mean_diameter
+  - sediment__mean_duration_since_deposition
+  - sediment__bulk_density
+  - sediment__porosity
+  - sediment__permeability
+
+---
+model name: sedflux2d
+exchange items:
+  input:
+  - bedrock_surface__elevation
+  - bedrock_surface__elevation_increment
+  - sediment__thickness_increment
+  - channel_outflow_end_water__discharge
+  - bed_load_sediment__mass_flow_rate
+
+  output:
+  - sea_water__depth
+  - sea_floor_surface__elevation
+  - sea_floor_surface__x_gradient_component
+  - sea_floor_surface__y_gradient_component
+  - sea_floor_sediment_grain__mean_diameter
+  - sea_floor_sediment__mean_duration_since_deposition
+  - sea_floor_sediment_sand__volume_fraction
+  - sea_floor_sediment_silt__volume_fraction
+  - sea_floor_sediment_clay__volume_fraction
+  - sea_floor_sediment_mud__volume_fraction
+  - sea_floor_sediment__bulk_density
+  - sea_floor_sediment__porosity
+  - sea_floor_sediment__permeability
+  - bedrock_surface__elevation
+  - sea_floor_sediment_model_grain_class_0__volume_fraction
+  - surface__elevation
+  - surface__x_gradient_component
+  - surface__y_gradient_component
+  - surface_sediment_grain__mean_diameter
+  - surface_sediment__mean_duration_since_deposition
+  - surface_sediment_sand__volume_fraction
+  - surface_sediment_silt__volume_fraction
+  - surface_sediment_clay__volume_fraction
+  - surface_sediment_mud__volume_fraction
+  - surface_sediment__bulk_density
+  - surface_sediment__porosity
+  - surface_sediment__permeability
+  - surface_sediment_model_grain_class_0__volume_fraction
+  - sediment_grain__mean_diameter
+  - sediment__mean_duration_since_deposition
+  - sediment__bulk_density
+  - sediment__porosity
+  - sediment__permeability
+
+---
+model name: wave watch iii
+exchange items:
+  output:
+  - sea_water__depth
+  - sea_surface_wave__max_over_time_of_period
+  - sea_surface_wave__significant_height
+  - model_grid_cell_center__longitude
+  - model_grid_cell_center__latitude
+
+  output:
+  - surface__elevation
+  - sea_water__depth
+  - sea_water_to_sediment__depth_ratio
+  - river_mouth__location_model_x_component
+  - river_mouth__location_model_y_component
+  - river_mouth_bed_load_sediment__mass_flow_rate
+
