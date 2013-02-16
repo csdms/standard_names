@@ -1,29 +1,44 @@
 #! /bin/env python
 
-import sys
+"""
+Some URLs to scrape:
+    http://csdms.colorado.edu/wiki/CSN_Quantity_Templates
+    http://csdms.colorado.edu/wiki/CSN_Object_Templates
+    http://csdms.colorado.edu/wiki/CSN_Operation_Templates
+"""
+
+import os
 import re
 import urllib
 
-from standard_names import (Collection, FORMATTERS)
-
+from standard_names import FORMATTERS, scrape_url
 as_yaml = FORMATTERS['yaml']
+
 def main ():
     import argparse
 
     parser = argparse.ArgumentParser ("Scrape standard names from a URL")
-    parser.add_argument ('url', metavar='URL', help="URL to scrape")
+    parser.add_argument ('url', nargs='+', metavar='URL', help="URL to scrape")
 
     args = parser.parse_args ()
 
-    url = urllib.urlopen (args.url)
-    text = url.read ()
+    pages = {}
+    for url in args.url:
+        pages[url] = scrape_url (url)
 
-    words = re.findall (r'\b\w+__\w+', text)
-    names = Collection ()
-    for word in words:
-        names.add (word)
+    documents = []
+    for (k, v) in pages.items ():
+        documents.append (os.linesep.join ([
+            'model name: %s' % k,
+            as_yaml (v, sorted=True, heading='exchange items')
+        ]))
 
-    print as_yaml (names, sorted=True, heading='names')
+    docsep = os.linesep + '---' + os.linesep
+
+    print '%YAML 1.2'
+    print '---'
+    print docsep.join (documents)
+    print '...'
 
 if __name__ == '__main__':
     main ()

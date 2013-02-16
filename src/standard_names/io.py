@@ -48,3 +48,14 @@ def from_model_file (file):
     names = _find_unique_names (models)
     return names
 
+def scrape_url (url):
+    import urllib, re
+
+    names = Collection ()
+    text = urllib.urlopen (url).read ()
+    words = re.findall (r'\b\w+__\w+', text)
+    for word in words:
+        names.add (word)
+
+    return names
+

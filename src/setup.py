@@ -12,7 +12,7 @@ setup (name='standard_names',
        url='https://csdms.colorado.edu',
        install_requires=['PyYAML'],
        packages=['standard_names'],
-       scripts=['scripts/snbuild', 'scripts/sndump', ],
+       scripts=['scripts/snbuild', 'scripts/sndump', 'scripts/snscrape'],
        package_data={'': ['data/*yaml']},
       )
 
