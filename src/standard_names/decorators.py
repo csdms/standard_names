@@ -41,3 +41,39 @@ def yaml (f):
         return os.linesep.join (yaml_lines)
     return _wrapped
 
+def file (func):
+    def _wrapped (file, **kwds):
+        with open (file, 'r') as f:
+            rtn = func (f, **kwds)
+        return rtn
+    return _wrapped
+
+def url (func):
+    def _wrapped (url, **kwds):
+        import urllib
+
+        f = urllib.urlopen (url)
+        rtn = func (f, **kwds)
+        return rtn
+    return _wrapped
+
+def google_doc (func):
+    def _wrapped (file, **kwds):
+        import subprocess
+        import tempfile
+
+        (f, tfile) = tempfile.mkstemp (text=True)
+
+        try:
+            subprocess.check_call (['google', 'docs', 'get', file, tfile])
+        except subprocess.CalledProcessError as e:
+            raise
+        else:
+            with open (tfile, 'r') as f:
+                rtn = func (f, **kwds)
+        finally:
+            os.remove (tfile)
+
+        return rtn
+    return _wrapped
+

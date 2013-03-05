@@ -1,4 +1,4 @@
-#! /bin/env python
+#! /usr/bin/env python
 
 """
 Some URLs to scrape:
@@ -8,26 +8,35 @@ Some URLs to scrape:
 """
 
 import os
-import re
-import urllib
 
-from standard_names import FORMATTERS, scrape_url
+from standard_names import FORMATTERS, SCRAPERS, scrape
 as_yaml = FORMATTERS['yaml']
+
+DEFAULT_SEARCH = r'\b\w+__\w+'
 
 def main ():
     import argparse
 
-    parser = argparse.ArgumentParser ("Scrape standard names from a URL")
-    parser.add_argument ('url', nargs='+', metavar='URL', help="URL to scrape")
+    parser = argparse.ArgumentParser ("Scrape standard names from a file or URL")
+    parser.add_argument ('file', nargs='+', metavar='FILE', help="URL or file to scrape")
+    parser.add_argument ('--reader', choices=SCRAPERS.keys (),
+                         default='url',
+                         help="Name of reader ")
+    parser.add_argument ('--regex', default=DEFAULT_SEARCH,
+                         help='Regular expression describing a standard name (%s)' % DEFAULT_SEARCH)
 
     args = parser.parse_args ()
 
-    pages = {}
-    for url in args.url:
-        pages[url] = scrape_url (url)
+    kwds = dict (format=args.reader)
+    if args.regex:
+        kwds['regex'] = args.regex
+
+    docs = {}
+    for file in args.file:
+        docs[file] = scrape (file, **kwds)
 
     documents = []
-    for (k, v) in pages.items ():
+    for (k, v) in docs.items ():
         documents.append (os.linesep.join ([
             'model name: %s' % k,
             as_yaml (v, sorted=True, heading='exchange items')

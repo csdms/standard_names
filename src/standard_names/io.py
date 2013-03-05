@@ -4,6 +4,7 @@ import os
 
 from standard_names import (StandardName, Collection)
 from standard_names import (wiki, yaml)
+from standard_names import (google_doc, url, file)
 
 def _list_to_string (lines, **kwds):
     sorted = kwds.pop ('sorted', False)
@@ -15,9 +16,24 @@ def _list_to_string (lines, **kwds):
     else:
         return os.linesep.join (lines)
 
+def _scrape_stream (stream, regex=r'\b\w+__\w+'):
+    import re
+    names = Collection ()
+
+    text = stream.read ()
+    words = re.findall (regex, text)
+    for word in words:
+        names.add (word)
+
+    return names
+
 FORMATTERS = dict (plain=_list_to_string)
 for decorator in [wiki, yaml]:
     FORMATTERS[decorator.__name__] = decorator (_list_to_string)
+
+SCRAPERS = dict ()
+for decorator in [google_doc, url, file]:
+    SCRAPERS[decorator.__name__] = decorator (_scrape_stream)
 
 def _find_unique_names (models):
     """
@@ -48,14 +64,9 @@ def from_model_file (file):
     names = _find_unique_names (models)
     return names
 
-def scrape_url (url):
-    import urllib, re
+def scrape (file_name, **kwds):
+    format = kwds.pop ('format', 'url')
 
-    names = Collection ()
-    text = urllib.urlopen (url).read ()
-    words = re.findall (r'\b\w+__\w+', text)
-    for word in words:
-        names.add (word)
+    return SCRAPERS[format] (file_name, **kwds)
 
-    return names
 
