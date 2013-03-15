@@ -21,7 +21,7 @@ class BadNameError(Error):
         return self._name
 
 
-class StandardName():
+class StandardName(str):
     """
     A CSDMS standard name.
     """
@@ -31,14 +31,13 @@ class StandardName():
 
         :name: String of the standard name
         """
+        super(StandardName, self).__init__(name)
+
         self._name = name
         
         (self._object,
          self._quantity,
-         operator) = StandardName.decompose_name(name)
-
-        if len(operator) > 0:
-            self._operator = operator
+         self._operators) = StandardName.decompose_name(name)
 
     @staticmethod
     def decompose_name(name):
@@ -54,12 +53,27 @@ class StandardName():
         except ValueError:
             raise BadNameError(name)
 
-        try:
-            (operator_part, quantity_part) = quantity_clause.split('_of_')
-        except ValueError:
-            (operator_part, quantity_part) = ('', quantity_clause)
+        (operators, quantity_part) = StandardName.decompose_quantity(
+            quantity_clause)
 
-        return (object_part, quantity_part, operator_part)
+        return (object_part, quantity_part, operators)
+
+    @staticmethod
+    def decompose_quantity(quantity_clause):
+        """
+        Decompose a quantity clause into operator and base quantity
+        constituents. Because multiple operators can act on a quantity,
+        the operators are given as a tuple regardless of the number of
+        operators.
+
+        :quantity_clause: Quantity as a string
+        :returns: Tuple of (operators, base quantity)
+        """
+        quantity_parts = quantity_clause.split('_of_')
+        quantity = quantity_parts[-1]
+        operators = tuple(quantity_parts[:-1])
+
+        return (operators, quantity)
 
     def name(self):
         """
@@ -85,22 +99,25 @@ class StandardName():
         """
         return self._quantity
 
-    def operator(self):
+    def operators(self):
         """
         The operator part of the standard name.
 
         :returns: Operator name as a string
         """
-        return self._operator
+        return self._operators
 
     def __repr__(self):
         return 'StandardName(%s)' % self._name
 
     def __eq__(self, that):
-        return self._name == that.name()
+        return self._name == str(that)
+
+    def __ne__(self, that):
+        return self._name != str(that)
 
     def __cmp__(self, that):
-        return self._name == that.name()
+        return self._name == str(that)
 
     def __hash__(self):
         return hash(self._name)

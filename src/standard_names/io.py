@@ -80,6 +80,9 @@ _VALID_INTENTS = ['input', 'output']
 def _find_unique_names(models):
     """
     Find unique names in a iterable of StandardNames.
+
+    :models: A dictionary of model information
+    :returns: A Collection of the unique names
     """
     names = Collection()
     for model in models:
@@ -93,17 +96,6 @@ def _find_unique_names(models):
                 new_names.extend(model['exchange items'][intent])
         else:
             new_names = model['exchange items']
-
-        #try:
-        #    new_names = []
-        #    for intent in model['exchange items']:
-        #        try:
-        #            assert(intent in ['input', 'output'])
-        #        except AssertionError:
-        #            raise KeyError(intent)
-        #        new_names.extend(model['exchange items'][intent])
-        #except KeyError:
-        #    new_names = model['exchange items']
 
         for name in new_names:
             names.add(StandardName(name))
