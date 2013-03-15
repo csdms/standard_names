@@ -1,72 +1,138 @@
 #! /usr/bin/env python
+"""
+Some IO functions for CmtStandardNames package.
+"""
 
 import os
 
 from standard_names import (StandardName, Collection)
-from standard_names import (wiki, yaml)
-from standard_names import (google_doc, url, file)
+from standard_names import (format_as_wiki, format_as_yaml)
+from standard_names import (google_doc, url, plain_text)
 
-def _list_to_string (lines, **kwds):
-    sorted = kwds.pop ('sorted', False)
 
-    if sorted:
-        sorted_lines = list (lines)
-        sorted_lines.sort ()
-        return os.linesep.join (sorted_lines)
+class Error(Exception):
+    """Base exception for this module."""
+    pass
+
+
+class BadIntentError(Error):
+    """Error to indicate a bad key for intent."""
+    def __init__(self, key, valid_keys):
+        super(BadIntentError, self).__init__()
+        self._key = key
+        self._valid_keys = valid_keys
+
+    def __str__(self):
+        return '%s: Should be one of %s' % (self._key,
+                                            ','.join(self._valid_keys))
+
+
+def _list_to_string(lines, **kwds):
+    """
+    Concatonate a list of strings into one big string using the line separator
+    as a joiner.
+
+    :lines: List of strings
+    :keyword sorted: Sort lines before joining
+    :returns: Joined lines as a string
+    """
+    sort_list = kwds.pop('sorted', False)
+
+    if sort_list:
+        sorted_lines = list(lines)
+        sorted_lines.sort()
+        return os.linesep.join(sorted_lines)
     else:
-        return os.linesep.join (lines)
+        return os.linesep.join(lines)
 
-def _scrape_stream (stream, regex=r'\b\w+__\w+'):
+
+def _scrape_stream(stream, regex=r'\b\w+__\w+'):
+    """
+    Scrape standard names from stream matching a regular expression.
+
+    :stream: A file-like object.
+    :keyword regex: A regular expression as a string
+    :returns: Scraped words as a Collection
+    """
     import re
-    names = Collection ()
+    names = Collection()
 
-    text = stream.read ()
-    words = re.findall (regex, text)
+    text = stream.read()
+    words = re.findall(regex, text)
     for word in words:
-        names.add (word)
+        names.add(word)
 
     return names
 
-FORMATTERS = dict (plain=_list_to_string)
-for decorator in [wiki, yaml]:
-    FORMATTERS[decorator.__name__] = decorator (_list_to_string)
 
-SCRAPERS = dict ()
-for decorator in [google_doc, url, file]:
-    SCRAPERS[decorator.__name__] = decorator (_scrape_stream)
+FORMATTERS = dict(plain=_list_to_string)
+for decorator in [format_as_wiki, format_as_yaml]:
+    FORMATTERS[decorator.__name__] = decorator(_list_to_string)
 
-def _find_unique_names (models):
+
+SCRAPERS = dict()
+for decorator in [google_doc, url, plain_text]:
+    SCRAPERS[decorator.__name__] = decorator(_scrape_stream)
+
+
+_VALID_INTENTS = ['input', 'output']
+
+def _find_unique_names(models):
     """
     Find unique names in a iterable of StandardNames.
     """
-    names = Collection ()
+    names = Collection()
     for model in models:
-        try:
-            intent = model['exchange items'].keys ()
+        if isinstance(model['exchange items'], dict):
             new_names = []
-            for key in model['exchange items']:
+            for intent in model['exchange items']:
                 try:
-                    assert (key in ['input', 'output'])
+                    assert(intent in _VALID_INTENTS)
                 except AssertionError:
-                    raise KeyError (key)
-                new_names.extend (model['exchange items'][key])
-        except AttributeError:
+                    raise BadIntentError(intent, _VALID_INTENTS)
+                new_names.extend(model['exchange items'][intent])
+        else:
             new_names = model['exchange items']
 
+        #try:
+        #    new_names = []
+        #    for intent in model['exchange items']:
+        #        try:
+        #            assert(intent in ['input', 'output'])
+        #        except AssertionError:
+        #            raise KeyError(intent)
+        #        new_names.extend(model['exchange items'][intent])
+        #except KeyError:
+        #    new_names = model['exchange items']
+
         for name in new_names:
-            names.add (StandardName (name))
+            names.add(StandardName(name))
 
     return names
 
-def from_model_file (file):
+
+def from_model_file(stream):
+    """
+    Get standard names from a YAML file listing standard names for particular
+    models and produce the corresponding Collection.
+
+    :stream: YAML stream
+    :returns: A Collection
+    """
     import yaml
-    models = yaml.load_all (file)
-    names = _find_unique_names (models)
+    models = yaml.load_all(stream)
+    names = _find_unique_names(models)
     return names
 
-def scrape (file_name, **kwds):
-    format = kwds.pop ('format', 'url')
 
-    return SCRAPERS[format] (file_name, **kwds)
+def scrape(name, **kwds):
+    """
+    Scrape standard names for a named source.
 
+    :name: Name of the source as a string
+    :keyword format: The format of the source
+    :returns: A Collection
+    """
+    source_format = kwds.pop('format', 'url')
 
+    return SCRAPERS[source_format](name, **kwds)
