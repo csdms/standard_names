@@ -9,7 +9,7 @@ Example usage:
 
 import os
 
-from standard_names import FORMATTERS, SCRAPERS, scrape
+from cmt.standard_names import FORMATTERS, SCRAPERS, scrape
 
 
 _AS_YAML = FORMATTERS['yaml']
@@ -42,7 +42,7 @@ def main():
 
     docs = {}
     for file_name in args.file:
-        docs[file] = scrape(file_name, **kwds)
+        docs[file_name] = scrape(file_name, **kwds)
 
     documents = []
     for (name, name_list) in docs.items():

@@ -3,6 +3,8 @@
 StandardName class to hold a CSDMS standard name.
 """
 
+import re
+
 
 class Error(Exception):
     """Base class for exceptions from this module."""
@@ -21,6 +23,22 @@ class BadNameError(Error):
         return self._name
 
 
+STANDARD_NAME_REGEX = re.compile(
+    '^[a-z][a-z0-9_]*[a-z0-9](__)[a-z0-9][a-z0-9_]*[a-z0-9]$'
+)
+
+
+def is_valid_name(name):
+    """
+    Check if a string is a valid standard name.
+
+    :name: Standard name as a string
+
+    :returns: True if the string is a valid standard name
+    """
+    return bool(STANDARD_NAME_REGEX.match(name))
+
+
 class StandardName(str):
     """
     A CSDMS standard name.
@@ -31,6 +49,9 @@ class StandardName(str):
 
         :name: String of the standard name
         """
+        if not is_valid_name(name):
+            raise BadNameError(name)
+
         super(StandardName, self).__init__(name)
 
         self._name = name

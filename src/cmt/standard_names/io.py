@@ -5,9 +5,9 @@ Some IO functions for CmtStandardNames package.
 
 import os
 
-from standard_names import (StandardName, Collection)
-from standard_names import (format_as_wiki, format_as_yaml)
-from standard_names import (google_doc, url, plain_text)
+from cmt.standard_names import (StandardName, Collection, BadNameError)
+from cmt.standard_names import (format_as_wiki, format_as_yaml)
+from cmt.standard_names import (google_doc, url, plain_text)
 
 
 class Error(Exception):
@@ -60,14 +60,17 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
     text = stream.read()
     words = re.findall(regex, text)
     for word in words:
-        names.add(word)
+        try:
+            names.add(word)
+        except BadNameError:
+            print word
 
     return names
 
 
 FORMATTERS = dict(plain=_list_to_string)
-for decorator in [format_as_wiki, format_as_yaml]:
-    FORMATTERS[decorator.__name__] = decorator(_list_to_string)
+for (name, decorator) in [('wiki', format_as_wiki), ('yaml', format_as_yaml)]:
+    FORMATTERS[name] = decorator(_list_to_string)
 
 
 SCRAPERS = dict()

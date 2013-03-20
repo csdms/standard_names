@@ -6,8 +6,8 @@ Example usage:
 
 import argparse
 
-from standard_names import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
-from standard_names import FORMATTERS
+from cmt.standard_names import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
+from cmt.standard_names import FORMATTERS
 
 
 _NAMES = dict(names=NAMES,

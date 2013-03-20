@@ -5,7 +5,7 @@ Unit tests for standard_names.StandardName
 
 import unittest
 
-from standard_names import StandardName, BadNameError
+from cmt.standard_names import StandardName, BadNameError
 
 
 class TestStandardName(unittest.TestCase):
@@ -26,6 +26,21 @@ class TestStandardName(unittest.TestCase):
         """
         with self.assertRaises(BadNameError):
             StandardName('air_temperature')
+
+        with self.assertRaises(BadNameError):
+            StandardName('air___temperature')
+
+        with self.assertRaises(BadNameError):
+            StandardName('Air__Temperature')
+
+        with self.assertRaises(BadNameError):
+            StandardName('_air__temperature')
+
+        with self.assertRaises(BadNameError):
+            StandardName('air__temperature_')
+
+        with self.assertRaises(BadNameError):
+            StandardName('air__temperature_0')
 
     def test_get_object(self):
         """
