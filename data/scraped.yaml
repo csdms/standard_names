@@ -64,54 +64,69 @@ exchange items:
 ---
 model name: http://csdms.colorado.edu/wiki/CSN_Operation_Templates
 exchange items:
-  - air__divergence_of_pressure_gradient
-  - air__divergence_of_temperature_gradient
-  - air__one_day_time_integral_of_upward_longwave_radiation_flux
-  - bedrock_surface__divergence_of_elevation_gradient
+  - air__curl_of_velocity
+  - air__gradient_of_pressure
+  - air__one_day_time_integral_of_upward_longwave_irradiation_flux
+  - bedrock_surface__laplacian_of_elevation
+  - bedrock_surface__opposite_of_gradient_of_elevation
   - bedrock_surface__time_derivative_of_elevation
-  - sea_water__time_derivative_of_northward_velocity_component
+  - sea_water__time_derivative_of_northward_component_of_velocity
   - soil__time_derivative_of_hydraulic_conductivity
 ---
 model name: http://csdms.colorado.edu/wiki/CSN_Quantity_Templates
 exchange items:
   - acetic_acid__ph
+  - air__anomaly_of_pressure
+  - air__anomaly_of_temperature
   - air__density
   - air__dielectric_constant
   - air__dynamic_shear_viscosity
   - air__dynamic_volume_viscosity
+  - air__increment_of_pressure
   - air__kinematic_shear_viscosity
   - air__kinematic_volume_viscosity
-  - air__pressure_anomaly
-  - air__pressure_increment
   - air__relative_humidity
   - air__standard_refraction_index
   - air__stp_density
-  - air__temperature_anomaly
   - air__temperature_lapse_rate
   - air__thermal_capacity
+  - air_ball__terminal_speed
   - air_carbon_dioxide__relative_saturation
+  - air_helium_plume__richardson_number
   - air_to_fuel__mass_ratio
-  - air_water__dew_point_temperature
+  - air_visible_light__speed
+  - air_water__saturated_partial_pressure
   - air_water_vapor__relative_saturation
+  - airfoil__drag_coefficient
+  - airfoil__lift_coefficient
+  - airfoil_enclosing_curve__circulation
   - airplane__altitude
   - airplane__mach_number
   - airplane_wing__span
   - aluminum__specific_thermal_capacity
   - atmosphere__absorbed_shortwave_irradiation_flux
   - atmosphere__beer_lambert_attenuation_coefficient
-  - atmosphere__eastward_velocity_component
-  - atmosphere__northward_vorticity_component
+  - atmosphere__eastward_component_of_velocity
+  - atmosphere__northward_component_of_vorticity
   - atmosphere__reflected_shortwave_irradiation_flux
   - atmosphere__transmitted_shortwave_irradiation_flux
   - atmosphere_aerosol__downward_longwave_radiation_flux
   - atmosphere_aerosol__reflected_shortwave_irradiation_flux
+  - atmosphere_carbon_dioxide__partial_pressure
+  - atmosphere_carbon_dioxide__relative_saturation
   - atmosphere_cloud__absorbed_shortwave_irradiation_flux
   - atmosphere_cloud__downward_longwave_radiation_flux
   - atmosphere_cloud__reflected_shortwave_irradiation_flux
+  - atmosphere_ice__precipitation_rate
+  - atmosphere_snow__precipitation_rate
+  - atmosphere_top_surface__longwave_radiation_flux
   - atmosphere_top_surface__shortwave_irradiation_flux
-  - atmosphere_water__liquid_equivalent_precipitation_flux
+  - atmosphere_water__dew_point_temperature
   - atmosphere_water__liquid_equivalent_precipitation_rate
   - atmosphere_water__precipitation_duration
+  - atmosphere_water__precipitation_rate
+  - atmosphere_water_vapor__partial_pressure
+  - atmosphere_water_vapor__saturated_partial_pressure
   - automobile__turning_radius
   - automobile_fuel__consumption_rate
   - automobile_fuel__economy
@@ -122,7 +137,7 @@ exchange items:
   - bear__brain_to_body_mass_ratio
   - bedrock__uplift_rate
   - bedrock_surface__elevation
-  - bedrock_surface__elevation_increment
+  - bedrock_surface__increment_of_elevation
   - black_hole__schwarzchild_radius
   - bluejack_oak_tree__mean_height
   - bluejack_oak_tree_trunk__diameter
@@ -130,8 +145,6 @@ exchange items:
   - bridge__span
   - burgess_shale_stratum__thickness
   - cantor_set__hausdorff_dimension
-  - carbon_dioxide_in_air__partial_pressure
-  - carbon_dioxide_in_air__relative_saturation
   - carbon_dioxide_in_water__solubility
   - carbon_isotope__neutron_number
   - carbon_to_hydrogen__bond_length
@@ -148,6 +161,7 @@ exchange items:
   - channel__meander_curvature_radius
   - channel__meander_wavelength
   - channel__station_hydraulic_geometry_width_vs_discharge_exponent
+  - channel_bed__magnitude_of_shear_stress
   - channel_bed__manning_coefficient
   - channel_bed__relative_roughness_ratio
   - channel_bed__roughness_length
@@ -188,7 +202,6 @@ exchange items:
   - channel_outflow_end__latitude
   - channel_outflow_end__specific_contributing_area
   - channel_outflow_end__total_contributing_area
-  - channel_suspended_sediment_in_water__mass_concentration
   - channel_water__darcy_friction_factor
   - channel_water__density
   - channel_water__depth
@@ -207,10 +220,11 @@ exchange items:
   - channel_water__speed
   - channel_water__temperature
   - channel_water__time_of_max_of_volume_outflow_rate
+  - channel_water__unit_length_volume_inflow_rate
   - channel_water__volume
   - channel_water__volume_inflow_rate
   - channel_water__volume_outflow_rate
-  - channel_water__x_axis_velocity_component
+  - channel_water__x_component_of_velocity
   - channel_water_surface__cross_stream_slope
   - channel_water_surface__downstream_slope
   - channel_water_suspended_sediment__mass_concentration
@@ -219,9 +233,11 @@ exchange items:
   - channel_water_total_sediment__discharge_law_area_exponent
   - channel_water_total_sediment__discharge_law_coefficient
   - channel_water_total_sediment__discharge_law_slope_exponent
+  - channel_water_total_sediment__howard_law_area_exponent
+  - channel_water_total_sediment__howard_law_coefficient
+  - channel_water_total_sediment__howard_law_slope_exponent
   - chicken_pox__incubation_period
   - chlorine_electron__affinity
-  - clay_in_soil__volume_fraction
   - coal__thermal_energy_content
   - convection_diffusion_equation__convection_term
   - convection_diffusion_equation__diffusion_term
@@ -284,63 +300,81 @@ exchange items:
   - ethanol_in_water__solubility
   - flood__expected_return_period
   - friedmann_universe__critical_density
-  - fuel__consumption_rate
   - fuel_to_oxidizer__equivalence_ratio
   - gas__thermal_energy_content
-  - glacier__area
-  - glacier__calving_rate
-  - glacier__cumulative_meltwater_volume
-  - glacier__downward_eastward_shear_stress_component
-  - glacier__eastward_velocity_component
-  - glacier__emissivity
+  - glacier__azimuth_angle_of_flow_velocity
+  - glacier__downward_component_of_flow_velocity
+  - glacier__eastward_component_of_flow_velocity
   - glacier__flow_speed
   - glacier__glen_law_coefficient
   - glacier__glen_law_exponent
+  - glacier__glen_law_parameter
   - glacier__internal_temperature
   - glacier__melt_rate
-  - glacier__retreat_rate
+  - glacier__northward_component_of_flow_velocity
+  - glacier__southward_component_of_flow_velocity
   - glacier__thickness
   - glacier__time_derivative_of_thickness
   - glacier__time_integral_of_melt_rate
   - glacier__volume
-  - glacier__x_axis_velocity_component
+  - glacier__westward_component_of_flow_velocity
+  - glacier__x_component_of_flow_velocity
+  - glacier__y_component_of_flow_velocity
+  - glacier__z_component_of_flow_velocity
+  - glacier__zenith_angle_of_flow_velocity
   - glacier_ablation_zone__area
   - glacier_ablation_zone__area_fraction
   - glacier_accumulation_zone__area
   - glacier_accumulation_zone__area_fraction
+  - glacier_bed__eastward_downward_component_of_shear_stress
+  - glacier_bed__magnitude_of_shear_stress
+  - glacier_bed__northward_downward_component_of_shear_stress
   - glacier_bed__pressure
-  - glacier_bed__shear_stress
   - glacier_bed__sliding_speed
+  - glacier_bed__x_z_component_of_shear_stress
+  - glacier_bed__y_z_component_of_shear_stress
+  - glacier_bed_surface__aspect_angle
   - glacier_bed_surface__slope
+  - glacier_bed_surface__slope_angle
   - glacier_equilibrium_line__altitude
-  - glacier_model__glen_law_exponent
-  - glacier_model__glen_law_parameter
   - glacier_surface__area
   - glacier_surface__elevation
   - glacier_surface__slope
+  - glacier_terminus__calving_rate
+  - glacier_terminus__retreat_rate
+  - glacier_terminus_left_side__latitude
+  - glacier_terminus_left_side__longitude
+  - glacier_terminus_right_side__latitude
+  - glacier_terminus_right_side__longitude
   - glacier_top__temperature
+  - glacier_top_surface__area
+  - glacier_top_surface__aspect_angle
+  - glacier_top_surface__emissivity
+  - glacier_top_surface__longwave_irradiation_flux
+  - glacier_top_surface__longwave_radiation_flux
+  - glacier_top_surface__shortwave_irradiation_flux
   - glacier_top_surface__slope
+  - glacier_top_surface__slope_angle
+  - glacier_top_surface__temperature
   - gm_hummer_fuel__consumption_rate
-  - grid_cell_water__incoming_discharge
-  - grid_cell_water__outgoing_discharge
-  - grid_cell_water__volume_inflow_rate
-  - grid_cell_water__volume_outflow_rate
   - ground_water_table__depth
   - ground_water_table_surface__aspect_angle
   - ground_water_table_surface__elevation
-  - ground_water_to_surface_water__seepage_rate
   - heat_equation__courant_number
   - helium_plume_in_air__richardson_number
-  - human__hearing_high_frequency_limit
+  - human__lower_limit_of_hearing_frequency
   - human__max_life_span
   - human__mean_height
+  - human__upper_limit_of_hearing_frequency
   - human_alcohol__consumption_rate
-  - human_eye_photon__detection_number_limit
+  - human_blood_platelet__count
+  - human_blood_red_cell__count
+  - human_blood_red_cell__unit_volume_count
+  - human_blood_white_cell__count
+  - human_eye_photon__lower_limit_of_detection_number
   - human_hair__thickness
-  - human_platelet__count
-  - human_red_blood_cell__count
-  - human_white_blood_cell__count
   - hydrogen_to_oxygen__bond_energy
+  - ice__melt_rate
   - ice__melting_point_temperature
   - ice__precipitation_rate
   - image__aspect_ratio
@@ -351,8 +385,8 @@ exchange items:
   - iron_atom__neutron_number
   - iron_atom__proton_number
   - lake_surface__area
-  - lake_water__incoming_discharge
   - lake_water__volume_inflow_rate
+  - lake_water__volume_outflow_rate
   - land_agricultural_portion__area_fraction
   - land_arable_portion__area_fraction
   - land_burned_portion__area_fraction
@@ -370,15 +404,13 @@ exchange items:
   - land_privately_owned_portion__area_fraction
   - land_publicly_owned_portion__area_fraction
   - land_snow_covered_portion__area_fraction
-  - land_subsurface_to_land_surface_water__seepage_rate
-  - land_subsurface_to_surface_water__seepage_rate
-  - land_subsurface_water_to_surface__seepage_rate
   - land_surface__aspect_angle
   - land_surface__backscattered_shortwave_irradiation_flux
   - land_surface__diffuse_shortwave_irradiation_flux
   - land_surface__direct_shortwave_irradiation_flux
   - land_surface__elevation
   - land_surface__elevation_increment
+  - land_surface__increment_of_elevation
   - land_surface__initial_elevation
   - land_surface__laplacian_curvature
   - land_surface__longwave_irradiation_flux
@@ -466,14 +498,23 @@ exchange items:
   - model_grid_cell__d8_flow_length
   - model_grid_cell__d8_flow_width
   - model_grid_cell__d8_slope
+  - model_grid_cell__d8_total_contributing_area
+  - model_grid_cell__d_infinity_slope
+  - model_grid_cell__d_infinity_total_contributing_area
   - model_grid_cell__east_edge_longitude
   - model_grid_cell__north_edge_latitude
   - model_grid_cell__row_major_index
   - model_grid_cell__row_number
   - model_grid_cell__south_edge_latitude
+  - model_grid_cell__total_contributing_area
   - model_grid_cell__west_edge_longitude
   - model_grid_cell__x_length
   - model_grid_cell__y_length
+  - model_grid_cell_water__time_derivative_of_volume
+  - model_grid_cell_water__volume_inflow_rate
+  - model_grid_cell_water__volume_outflow_rate
+  - model_grid_east_edge__longitude
+  - model_grid_north_edge__latitude
   - model_grid_south_edge__latitude
   - model_grid_west_edge__longitude
   - model_soil_layer_0__porosity
@@ -484,7 +525,7 @@ exchange items:
   - navier_stokes_equation__pressure_gradient_term
   - navier_stokes_equation__unsteady_acceleration_term
   - navier_stokes_equation__viscosity_term
-  - neutron_star__tolman_oppenheimer_volkoff_mass_limit
+  - neutron_star__tolman_oppenheimer_volkoff_limit_mass
   - oscillator__q_factor
   - paper__thickness
   - particle__cunningham_correction_factor
@@ -519,11 +560,10 @@ exchange items:
   - rubber_on_concrete__kinetic_friction_coefficient
   - rubber_on_pavement__static_friction_coefficient
   - salt_in_water__diffusion_coefficient
-  - sand_grain_in_water__settling_speed
-  - sand_in_soil__volume_fraction
-  - sea_floor_surface__normal_stress
+  - sea_floor_surface__normal_component_of_stress
   - sea_floor_surface__shortwave_irradiation_flux
-  - sea_floor_surface__x_z_shear_stress_component
+  - sea_floor_surface__x_z_component_of_shear_stress
+  - sea_floor_water__magnitude_of_shear_stress
   - sea_ice__age
   - sea_ice__area
   - sea_ice__area_fraction
@@ -531,32 +571,39 @@ exchange items:
   - sea_ice__extent
   - sea_ice__thickness
   - sea_ice__volume
+  - sea_surface__anomaly_of_temperature
   - sea_surface__elevation
   - sea_surface__reflected_shortwave_irradiation_flux
-  - sea_surface__temperature_anomaly
   - sea_surface_air__reference_pressure
   - sea_surface_air__reference_temperature
   - sea_water__brunt_vaisala_frequency
   - sea_water__density
   - sea_water__depth
-  - sea_water__downward_eastward_shear_stress_component
-  - sea_water__downward_northward_shear_stress_component
+  - sea_water__downward_component_of_vorticity
+  - sea_water__downward_eastward_component_of_shear_stress
+  - sea_water__downward_northward_component_of_shear_stress
   - sea_water__downward_shortwave_irradiation_flux
-  - sea_water__eastward_velocity_component
-  - sea_water__eastward_vorticity_component
+  - sea_water__eastward_component_of_flow_velocity
+  - sea_water__eastward_component_of_vorticity
   - sea_water__eddy_viscosity
   - sea_water__electrical_conductivity
   - sea_water__flow_speed
-  - sea_water__northward_vorticity_component
+  - sea_water__magnitude_of_vorticity
+  - sea_water__northward_component_of_vorticity
   - sea_water__secchi_depth
-  - sea_water__x_axis_vorticity_component
-  - sea_water__y_axis_vorticity_component
+  - sea_water__southward_component_of_vorticity
+  - sea_water__upward_component_of_vorticity
+  - sea_water__westward_component_of_vorticity
+  - sea_water__x_component_of_vorticity
+  - sea_water__y_component_of_vorticity
+  - sea_water__z_component_of_vorticity
   - sea_water_surface__elevation
   - sea_water_surface__mean_curvature
   - sea_water_surface__slope
   - sea_water_surface_wave__frequency
   - sea_water_surface_wave__number
   - sea_water_surface_wave__period
+  - sea_water_surface_wave_crestline__unit_length_power
   - sea_water_suspended_sediment__mass_concentration
   - sediment__discharge_law_area_exponent
   - sediment__discharge_law_coefficient
@@ -565,11 +612,11 @@ exchange items:
   - sediment_in_water__mass_flow_rate
   - ship__froude_number
   - sierpinski_gasket__hausdorff_dimension
-  - silt_in_soil__volume_fraction
   - sine_wave__crest_factor
   - skydiver__altitude
   - snow__cold_content
-  - snow__degree_day_temperature_threshold
+  - snow__degree_day_threshold_temperature
+  - snow__depth
   - snow__liquid_equivalent_depth
   - snow__melt_rate
   - snow__precipitation_rate
@@ -583,6 +630,7 @@ exchange items:
   - soil__brooks_corey_smith_c_parameter
   - soil__brooks_corey_smith_pressure_head_offset
   - soil__field_capacity_water_content
+  - soil__freeze_depth
   - soil__green_ampt_capillary_length
   - soil__hygroscopic_water_content
   - soil__initial_water_content
@@ -598,6 +646,7 @@ exchange items:
   - soil__specific_permeability
   - soil__temperature
   - soil__temperature_reference_depth
+  - soil__thaw_depth
   - soil__thermal_capacity
   - soil__thermal_conductivity
   - soil__thickness
@@ -653,17 +702,24 @@ exchange items:
   - soil_water_wetting_front__depth
   - sphere_surface__area
   - square__diameter
-  - steel__spring_constant
-  - steel_spring__hooke_law_constant
+  - steel_spring__hooke_law_coefficient
   - sulphuric_acid_to_water__chemical_affinity
   - sun__protection_factor
+  - tank_horizontal_cross_section__area
+  - tank_horizontal_cross_section__radius
+  - tank_outlet_cross_section__area
+  - tank_outlet_water__flow_speed
+  - tank_water__depth
+  - tank_water__initial_depth
+  - tank_water__volume
+  - titan_atmosphere_methane__liquid_equivalent_precipitation_rate
   - toyota_corolla_fuel__economy
   - turbulence__kinetic_energy
   - universe__cosmic_background_radiation_frequency
   - valley_centerline__straight_sinuosity
   - vehicle__identification_number
+  - vehicle_fuel__consumption_rate
   - venus_orbit__inclination_angle
-  - visible_light_in_air__speed
   - water__boiling_point_temperature
   - water__dynamic_shear_viscosity
   - water__dynamic_volume_viscosity
@@ -672,24 +728,19 @@ exchange items:
   - water__gibbs_free_energy
   - water__kinematic_shear_viscosity
   - water__kinematic_volume_viscosity
-  - water__liquid_equivalent_precipitation_rate
-  - water__precipitation_duration
   - water__vaporization_specific_latent_heat
+  - water_carbon_dioxide__solubility
   - water_electron__affinity
-  - water_from_grid_cell__discharge
-  - water_into_grid_cell__discharge
-  - water_into_lake__discharge
   - water_molecule__actual_bond_angle
   - water_molecule__hydrogen_number
   - water_molecule__ideal_bond_angle
   - water_molecule_h_o__bond_dissociation_energy
   - water_molecule_h_o__bond_length
   - water_molecule_h_o_h__bond_angle
+  - water_sand_grain__settling_speed
   - water_vapor_in_air__bubble_point_temperature
   - water_vapor_in_air__dew_point_temperature
   - water_vapor_in_air__frost_point_temperature
-  - water_vapor_in_air__partial_pressure
-  - water_vapor_in_air__saturated_partial_pressure
   - water_vapor_in_vertical_air_column__precipitable_depth
   - watershed__area
   - watershed__diameter
@@ -703,16 +754,16 @@ exchange items:
   - watershed__usgs_hydrologic_unit_code
   - watershed_forested_land__area_fraction
   - watershed_forested_portion__area_fraction
-  - watershed_outlet__width_to_depth_ratio
+  - watershed_outlet__bankfull_width_to_depth_ratio
   - watershed_outlet_water__discharge
   - watershed_outlet_water__time_max_of_discharge
   - watershed_outlet_water__time_min_of_discharge
   - watershed_outlet_water__volume_outflow_rate
+  - watershed_outlet_water__width_to_depth_ratio
   - watershed_sediment__yield
   - watershed_soil__topgraphic_index
   - watershed_soil__wetness_index
   - white_dwarf_star__chandrasekhar_limit_mass
-  - white_dwarf_star__chandrasekhar_mass_limit
   - wind__reference_height_speed
   - wind__speed
   - wind__speed_reference_height
