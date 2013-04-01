@@ -20,3 +20,8 @@ Changes
 ~~~~~~~
 
 - standard_names package is a namespace package of cmt
+
+Fix
+~~~
+
+- Fix bug that allowed standard names to have multiple sets of "__".
