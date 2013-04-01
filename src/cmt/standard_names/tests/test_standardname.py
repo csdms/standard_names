@@ -40,7 +40,10 @@ class TestStandardName(unittest.TestCase):
             StandardName('air__temperature_')
 
         with self.assertRaises(BadNameError):
-            StandardName('air__temperature_0')
+            StandardName('air__temperature__0')
+
+        with self.assertRaises(BadNameError):
+            StandardName('0_air__temperature')
 
     def test_get_object(self):
         """

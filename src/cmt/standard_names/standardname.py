@@ -23,9 +23,13 @@ class BadNameError(Error):
         return self._name
 
 
+_PREFIX_REGEX = '^[a-z]([a-z]|_(?!_))*'
+#_PREFIX_REGEX = '^[a-z0-9]([a-z]|_(?!_))*'
+_SUFFIX_REGEX ='[a-z0-9]([a-z]|_(?!_))*[a-z0-9]$' 
 STANDARD_NAME_REGEX = re.compile(
-    '^[a-z][a-z0-9_]*[a-z0-9](__)[a-z0-9][a-z0-9_]*[a-z0-9]$'
+    _PREFIX_REGEX + '(__)' + _SUFFIX_REGEX
 )
+#    '^[a-z][a-z0-9_]*[a-z0-9](__)[a-z0-9][a-z0-9_]*[a-z0-9]$'
 
 
 def is_valid_name(name):
