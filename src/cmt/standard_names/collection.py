@@ -19,7 +19,8 @@ class Collection(set):
             for name in args[0]:
                 self.add(name)
         else:
-            raise TypeError('Collection expected at most 1 argument, got %d' % len(args))
+            raise TypeError('Collection expected at most 1 argument, got %d' %
+                            len(args))
 
     def add(self, name):
         """
@@ -31,36 +32,36 @@ class Collection(set):
         else:
             super(Collection, self).add(StandardName(name))
 
-    def unique_names(self):
+    def names(self):
         """
         The unique names of a collection.
         """
         return set([str(n) for n in self])
 
-    def unique_objects(self):
+    def objects(self):
         """
         The unique object names of a collection.
         """
         objects = set()
         for name in self:
-            objects.add(name.object())
+            objects.add(name.object)
         return objects
 
-    def unique_quantities(self):
+    def quantities(self):
         """
         The unique quantity names of a collection.
         """
         quantities = set()
         for name in self:
-            quantities.add(name.quantity())
+            quantities.add(name.quantity)
         return quantities
 
-    def unique_operators(self):
+    def operators(self):
         """
         The unique operation names of a collection.
         """
         ops = set()
         for name in self:
-            for operator in name.operators():
+            for operator in name.operators:
                 ops.add(operator)
         return ops
