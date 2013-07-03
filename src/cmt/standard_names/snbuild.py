@@ -31,16 +31,16 @@ def main():
     print '---'
 
     print os.linesep.join([
-        formatter(names.unique_names(), sorted=True, heading='names'),
+        formatter(names.names(), sorted=True, heading='names'),
         '---',
-        formatter(names.unique_objects(), sorted=True, heading='objects'),
+        formatter(names.objects(), sorted=True, heading='objects'),
         '---',
-        formatter(names.unique_quantities(), sorted=True,
-                  heading='quantities'),
+        formatter(names.quantities(), sorted=True, heading='quantities'),
         '---',
         formatter(names.unique_operators(), sorted=True, heading='operators'),
         '...',
     ])
+
 
 if __name__ == '__main__':
     main()

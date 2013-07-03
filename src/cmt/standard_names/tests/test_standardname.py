@@ -18,7 +18,7 @@ class TestStandardName(unittest.TestCase):
         """
         name = StandardName('air__temperature')
 
-        self.assertEqual(name.name(), 'air__temperature')
+        self.assertEqual(name.name, 'air__temperature')
 
     def test_bad_name(self):
         """
@@ -50,14 +50,14 @@ class TestStandardName(unittest.TestCase):
         Retrieve an object from a standard name.
         """
         name = StandardName('air__temperature')
-        self.assertEqual(name.object(), 'air')
+        self.assertEqual(name.object, 'air')
 
     def test_get_quantity(self):
         """
         Retrieve a quantity from a standard name.
         """
         name = StandardName('air__temperature')
-        self.assertEqual(name.quantity(), 'temperature')
+        self.assertEqual(name.quantity, 'temperature')
 
     def test_get_empty_operator(self):
         """
@@ -65,7 +65,7 @@ class TestStandardName(unittest.TestCase):
         """
         name = StandardName('air__temperature')
 
-        self.assertTupleEqual(name.operators(), ())
+        self.assertTupleEqual(name.operators, ())
 
     def test_get_one_operator(self):
         """
@@ -73,14 +73,14 @@ class TestStandardName(unittest.TestCase):
         """
         name = StandardName('air__log_of_temperature')
 
-        self.assertTupleEqual(name.operators(), ('log', ))
+        self.assertTupleEqual(name.operators, ('log', ))
 
     def test_get_multiple_operators(self):
         """
         Retrieve an operator from a standard name.
         """
         name = StandardName('air__mean_of_log_of_temperature')
-        self.assertTupleEqual(name.operators(), ('mean', 'log'))
+        self.assertTupleEqual(name.operators, ('mean', 'log'))
 
     def test_compare_names(self):
         """

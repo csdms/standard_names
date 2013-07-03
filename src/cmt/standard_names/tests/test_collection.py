@@ -94,7 +94,7 @@ class TestStandardNameCollection(unittest.TestCase):
         """
         collection = Collection(['air__temperature', 'water__temperature'])
 
-        names = collection.unique_names()
+        names = collection.names()
 
         self.assertEqual(len(names), 2)
         self.assertTrue('air__temperature' in names)
@@ -106,7 +106,7 @@ class TestStandardNameCollection(unittest.TestCase):
         """
         collection = Collection(['air__temperature', 'water__temperature'])
 
-        objs = collection.unique_objects()
+        objs = collection.objects()
 
         self.assertEqual(len(objs), 2)
         self.assertTrue('air' in objs)
@@ -118,7 +118,7 @@ class TestStandardNameCollection(unittest.TestCase):
         """
         collection = Collection(['air__temperature', 'water__temperature'])
 
-        quantities = collection.unique_quantities()
+        quantities = collection.quantities()
 
         self.assertEqual(len(quantities), 1)
         self.assertTrue('temperature' in quantities)
@@ -133,7 +133,7 @@ class TestStandardNameCollection(unittest.TestCase):
                                  'air__mean_of_log_of_temperature',
                                 ])
 
-        operators = collection.unique_operators()
+        operators = collection.operators()
 
         self.assertEqual(len(operators), 2)
         self.assertTrue('log' in operators)
