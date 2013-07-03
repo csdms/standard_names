@@ -49,9 +49,7 @@ class StandardName(str):
     """
     def __init__(self, name):
         """
-        Initialize a standard name.
-
-        :name: String of the standard name
+        Initialize a standard name object from the string, *name*.
         """
         if not is_valid_name(name):
             raise BadNameError(name)
@@ -67,11 +65,10 @@ class StandardName(str):
     @staticmethod
     def decompose_name(name):
         """
-        Decompose a standard name into it's constituent parts (object,
-        quantity, and operator).
-
-        :name: String of the standard name
-        :returns: A 3-tuple of (object, quantity, operator)
+        Decompose the *name* standard name string into it's constituent
+        parts (object, quantity, and operator). Returns a tuple of
+        (object, quantity, operator) where object and quantitiy are strings,
+        and operator is itself a tuple of strings (or empty).
         """
         try:
             (object_part, quantity_clause) = name.split('__')
@@ -83,16 +80,26 @@ class StandardName(str):
 
         return (object_part, quantity_part, operators)
 
+    def _compose_name(self):
+        """
+        Create a string from the parts of StandardName.
+        """
+        operator = '_of_'.join(self._operators)
+        if len(operator) > 0:
+            quantity = '_of_'.join([operator, self._quantity])
+        else:
+            quantity = self._quantity
+
+        return self._object + '__' + quantity
+
     @staticmethod
     def decompose_quantity(quantity_clause):
         """
-        Decompose a quantity clause into operator and base quantity
-        constituents. Because multiple operators can act on a quantity,
-        the operators are given as a tuple regardless of the number of
-        operators.
-
-        :quantity_clause: Quantity as a string
-        :returns: Tuple of (operators, base quantity)
+        Decompose the *quantity_clause* string into operator and base
+        quantity constituents. Because multiple operators can act on a
+        quantity, the operators are given as a tuple regardless of the
+        number of operators actually present. Returns the parts of the
+        quantity as a tuple of (operators, base_quantity)
         """
         quantity_parts = quantity_clause.split('_of_')
         quantity = quantity_parts[-1]
@@ -100,14 +107,19 @@ class StandardName(str):
 
         return (operators, quantity)
 
+    @property
     def name(self):
         """
-        The full string of the standard name
-
-        :returns: Standard name as a string
+        The full standard name as a string.
         """
-        return self._name
+        #return self._name
+        return str(self)
 
+    #@name.setter
+    #def name(self, value):
+    #    self._name = value
+
+    @property
     def object(self):
         """
         The object part of the standard name.
@@ -116,6 +128,11 @@ class StandardName(str):
         """
         return self._object
 
+    @object.setter
+    def object(self, value):
+        self._object = value
+
+    @property
     def quantity(self):
         """
         The quantity part of the standard name.
@@ -124,6 +141,11 @@ class StandardName(str):
         """
         return self._quantity
 
+    @quantity.setter
+    def quantity(self, value):
+        self._quantity = value
+
+    @property
     def operators(self):
         """
         The operator part of the standard name.
@@ -132,17 +154,24 @@ class StandardName(str):
         """
         return self._operators
 
+    @operators.setter
+    def operators(self, value):
+        self._operators = value
+
     def __repr__(self):
-        return 'StandardName(%s)' % self._name
+        return 'StandardName(%r)' % self.name
+
+    def __str__(self):
+        return self._compose_name()
 
     def __eq__(self, that):
-        return self._name == str(that)
+        return self.name == str(that)
 
     def __ne__(self, that):
-        return self._name != str(that)
+        return self.name != str(that)
 
     def __cmp__(self, that):
-        return self._name == str(that)
+        return self.name == str(that)
 
     def __hash__(self):
-        return hash(self._name)
+        return hash(self.name)
