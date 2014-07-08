@@ -9,7 +9,7 @@ Example usage:
 
 import os
 
-from cmt.standard_names import FORMATTERS, SCRAPERS, scrape
+from . import FORMATTERS, SCRAPERS, scrape
 
 
 _AS_YAML = FORMATTERS['yaml']
