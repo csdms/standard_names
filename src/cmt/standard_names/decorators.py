@@ -69,6 +69,24 @@ def format_as_yaml(func):
     return _wrapped
 
 
+def format_as_plain_text(func):
+    def _wrapped(lines, **kwds):
+        heading = kwds.pop('heading', None)
+        text = func(lines, **kwds)
+        lines = text.split(os.linesep)
+
+        if heading:
+            stripped_lines = ['# %s' % heading]
+        else:
+            stripped_lines = []
+
+        for line in lines:
+            stripped_lines.append(line.strip())
+
+        return os.linesep.join(stripped_lines)
+    return _wrapped
+
+
 def plain_text(func):
     """
     Decoratate a function that reads from a file-like object. The decorated

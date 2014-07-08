@@ -2,11 +2,13 @@
 """
 Some IO functions for CmtStandardNames package.
 """
+from __future__ import print_function
 
 import os
+import sys
 
 from . import (StandardName, Collection, BadNameError)
-from . import (format_as_wiki, format_as_yaml)
+from .decorators import (format_as_wiki, format_as_yaml, format_as_plain_text)
 from . import (google_doc, url, plain_text)
 
 
@@ -62,15 +64,21 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
     for word in words:
         try:
             names.add(word)
-        except BadNameError:
-            print word
+        except BadNameError as error:
+            print(error, file=sys.stderr)
 
     return names
 
 
-FORMATTERS = dict(plain=_list_to_string)
-for (name, decorator) in [('wiki', format_as_wiki), ('yaml', format_as_yaml)]:
-    FORMATTERS[name] = decorator(_list_to_string)
+FORMATTERS = {
+    'plain': _list_to_string,
+    'wiki': format_as_wiki(_list_to_string),
+    'yaml': format_as_yaml(_list_to_string),
+    'txt': format_as_plain_text(_list_to_string),
+}
+#for (name, decorator) in [('wiki', format_as_wiki), ('yaml', format_as_yaml),
+#    ('txt', format_as_plain_text)]:
+#    FORMATTERS[name] = decorator(_list_to_string)
 
 
 SCRAPERS = dict()
