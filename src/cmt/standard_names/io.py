@@ -5,9 +5,9 @@ Some IO functions for CmtStandardNames package.
 
 import os
 
-from cmt.standard_names import (StandardName, Collection, BadNameError)
-from cmt.standard_names import (format_as_wiki, format_as_yaml)
-from cmt.standard_names import (google_doc, url, plain_text)
+from . import (StandardName, Collection, BadNameError)
+from . import (format_as_wiki, format_as_yaml)
+from . import (google_doc, url, plain_text)
 
 
 class Error(Exception):
@@ -80,6 +80,7 @@ for decorator in [google_doc, url, plain_text]:
 
 _VALID_INTENTS = ['input', 'output']
 
+
 def _find_unique_names(models):
     """
     Find unique names in a iterable of StandardNames.
@@ -100,8 +101,8 @@ def _find_unique_names(models):
         else:
             new_names = model['exchange items']
 
-        for name in new_names:
-            names.add(StandardName(name))
+        for new_name in new_names:
+            names.add(StandardName(new_name))
 
     return names
 
@@ -120,14 +121,14 @@ def from_model_file(stream):
     return names
 
 
-def scrape(name, **kwds):
+def scrape(source, **kwds):
     """
     Scrape standard names for a named source.
 
-    :name: Name of the source as a string
+    :source: Name of the source as a string
     :keyword format: The format of the source
     :returns: A Collection
     """
     source_format = kwds.pop('format', 'url')
 
-    return SCRAPERS[source_format](name, **kwds)
+    return SCRAPERS[source_format](source, **kwds)
