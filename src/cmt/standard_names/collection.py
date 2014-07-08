@@ -3,7 +3,7 @@
 A collection of StandardNames.
 """
 
-from cmt.standard_names import StandardName
+from . import StandardName
 
 
 class Collection(set):

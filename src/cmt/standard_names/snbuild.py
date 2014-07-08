@@ -6,7 +6,7 @@ Example usage:
 """
 
 import os
-from cmt.standard_names import (from_model_file, FORMATTERS, Collection)
+from . import (from_model_file, FORMATTERS, Collection)
 
 
 def main():

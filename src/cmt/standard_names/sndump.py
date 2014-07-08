@@ -6,15 +6,12 @@ Example usage:
 
 import argparse
 
-from cmt.standard_names import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
-from cmt.standard_names import FORMATTERS
+from . import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
+from . import FORMATTERS
 
 
-_NAMES = dict(names=NAMES,
-             objects=OBJECTS,
-             quantities=QUANTITIES,
-             operators=OPERATORS,
-            )
+_NAMES = dict(names=NAMES, objects=OBJECTS, quantities=QUANTITIES,
+              operators=OPERATORS, )
 _FORMATS = FORMATTERS.keys()
 
 
@@ -46,7 +43,7 @@ def main():
                         help='Print standard operators', action=CustomAction)
 
     parser.add_argument('--unsorted', action='store_true',
-                       default=False, help='Do not sort names')
+                        default=False, help='Do not sort names')
     parser.add_argument('--format', choices=_FORMATS,
                         default='plain', help='Output format')
 

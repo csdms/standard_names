@@ -25,7 +25,7 @@ class BadNameError(Error):
 
 _PREFIX_REGEX = '^[a-z]([a-z]|_(?!_))*'
 #_PREFIX_REGEX = '^[a-z0-9]([a-z]|_(?!_))*'
-_SUFFIX_REGEX ='[a-z0-9]([a-z]|_(?!_))*[a-z0-9]$' 
+_SUFFIX_REGEX = '[a-z0-9]([a-z]|_(?!_))*[a-z0-9]$'
 STANDARD_NAME_REGEX = re.compile(
     _PREFIX_REGEX + '(__)' + _SUFFIX_REGEX
 )
@@ -78,7 +78,7 @@ class StandardName(str):
         (operators, quantity_part) = StandardName.decompose_quantity(
             quantity_clause)
 
-        return (object_part, quantity_part, operators)
+        return object_part, quantity_part, operators
 
     def _compose_name(self):
         """
@@ -105,7 +105,7 @@ class StandardName(str):
         quantity = quantity_parts[-1]
         operators = tuple(quantity_parts[:-1])
 
-        return (operators, quantity)
+        return operators, quantity
 
     @property
     def name(self):
