@@ -30,8 +30,8 @@ snbuild
 
     snbuild data/models.yaml data/scraped.yaml > standard_names/data/standard_names.yaml
 
-snbuild
--------
+sndump
+------
 
     sndump -n -o -q -op --format=wiki > standard_names.wiki
 
