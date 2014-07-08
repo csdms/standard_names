@@ -6,13 +6,14 @@ Example usage:
              http://csdms.colorado.edu/wiki/CSN_Operation_Templates \
             > data/scraped.yaml
 """
+from __future__ import print_function
 
 import os
 
 from . import FORMATTERS, SCRAPERS, scrape
 
 
-_AS_YAML = FORMATTERS['yaml']
+_AS_TXT = FORMATTERS['txt']
 
 _DEFAULT_SEARCH = r'\b\w+__\w+'
 
@@ -29,7 +30,7 @@ def main():
                         help="URL or file to scrape")
     parser.add_argument('--reader', choices=SCRAPERS.keys(),
                         default='url',
-                        help="Name of reader ")
+                        help="Name of reader")
     parser.add_argument('--regex', default=_DEFAULT_SEARCH,
                         help='Regular expression describing '
                              'a standard name (%s)' % _DEFAULT_SEARCH)
@@ -46,17 +47,10 @@ def main():
 
     documents = []
     for (name, name_list) in docs.items():
-        documents.append(os.linesep.join([
-            'model name: %s' % name,
-            _AS_YAML(name_list, sorted=True, heading='exchange items')
-        ]))
-
-    docsep = os.linesep + '---' + os.linesep
-
-    print '%YAML 1.2'
-    print '---'
-    print docsep.join(documents)
-    print '...'
+        documents.append(
+            _AS_TXT(name_list, sorted=True, heading='Scraped from %s' % name),
+        )
+    print(os.linesep.join(documents))
 
 
 if __name__ == '__main__':
