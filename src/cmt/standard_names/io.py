@@ -129,6 +129,15 @@ def from_model_file(stream):
     return names
 
 
+def from_list_file(stream):
+    names = Collection()
+    for line in stream:
+        if not line.startswith('#'):
+            names.add(StandardName(line.strip()))
+            #names.add(line.strip())
+    return names
+
+
 def scrape(source, **kwds):
     """
     Scrape standard names for a named source.
