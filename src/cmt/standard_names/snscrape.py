@@ -15,7 +15,7 @@ from . import FORMATTERS, SCRAPERS, scrape
 
 _AS_TXT = FORMATTERS['txt']
 
-_DEFAULT_SEARCH = r'\b\w+__\w+'
+_DEFAULT_SEARCH = r'\b[\w-]+__[\w-]+'
 
 
 def main():
