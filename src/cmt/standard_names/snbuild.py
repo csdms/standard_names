@@ -7,6 +7,7 @@ Example usage:
 
 import os
 from . import (from_model_file, FORMATTERS, Collection)
+from .io import from_list_file
 
 
 def main():
@@ -23,7 +24,7 @@ def main():
 
     names = Collection()
     for model_file in args.file:
-        names |= from_model_file(model_file)
+        names |= from_list_file(model_file)
 
     formatter = FORMATTERS['yaml']
 
@@ -37,7 +38,7 @@ def main():
         '---',
         formatter(names.quantities(), sorted=True, heading='quantities'),
         '---',
-        formatter(names.unique_operators(), sorted=True, heading='operators'),
+        formatter(names.operators(), sorted=True, heading='operators'),
         '...',
     ])
 
