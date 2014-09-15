@@ -11,15 +11,14 @@ setup (name='CmtStandardNames',
        author_email='eric.hutton@colorado.edu',
        url='https://csdms.colorado.edu',
        install_requires=['PyYAML'],
-       namespace_packages=['cmt'],
-       packages=['cmt', 'cmt.standard_names', 'cmt.standard_names.tests'],
+       packages=['standard_names', 'standard_names.tests'],
        entry_points = {
            'console_scripts': [
-               'snbuild = cmt.standard_names.snbuild:main',
-               'sndump = cmt.standard_names.sndump:main',
-               'snscrape = cmt.standard_names.snscrape:main',
+               'snbuild = standard_names.snbuild:main',
+               'sndump = standard_names.sndump:main',
+               'snscrape = standard_names.snscrape:main',
            ]
        },
        package_data={'': ['data/*yaml']},
-       test_suite='cmt.standard_names.tests',
+       test_suite='standard_names.tests',
       )

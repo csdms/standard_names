@@ -5,7 +5,7 @@ Unit tests for standard_names.StandardName
 
 import unittest
 
-from cmt.standard_names import StandardName, BadNameError
+from standard_names import StandardName, BadNameError
 
 
 class TestStandardName(unittest.TestCase):
