@@ -6,9 +6,9 @@ Example usage:
 import sys
 import argparse
 
-from . import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
-from . import FORMATTERS
-from .validnames import load_names_from_yaml
+from .. import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
+from .. import FORMATTERS
+from ..validnames import load_names_from_yaml
 
 
 _NAMES = dict(names=NAMES, objects=OBJECTS, quantities=QUANTITIES,

@@ -6,8 +6,8 @@ Example usage:
 """
 
 import os
-from . import (from_model_file, FORMATTERS, Collection)
-from .io import from_list_file
+from .. import (from_model_file, FORMATTERS, Collection)
+from ..io import from_list_file
 
 
 def main():

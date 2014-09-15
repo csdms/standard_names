@@ -10,7 +10,7 @@ from __future__ import print_function
 
 import os
 
-from . import FORMATTERS, SCRAPERS, scrape
+from .. import FORMATTERS, SCRAPERS, scrape
 
 
 _AS_TXT = FORMATTERS['txt']
