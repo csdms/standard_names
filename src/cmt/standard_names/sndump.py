@@ -3,11 +3,12 @@
 Example usage:
     sndump -n -o -q -op --format=wiki > standard_names.wiki
 """
-
+import sys
 import argparse
 
 from . import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
 from . import FORMATTERS
+from .validnames import load_names_from_yaml
 
 
 _NAMES = dict(names=NAMES, objects=OBJECTS, quantities=QUANTITIES,
@@ -38,10 +39,13 @@ def main():
     parser.add_argument('-o', nargs=0, dest='objects',
                         help='Print standard objects', action=CustomAction)
     parser.add_argument('-q', nargs=0, dest='quantities',
-                        help='Print standard quantities', action=CustomAction)
+                        help='Print standard quantities',
+                        action=CustomAction)
     parser.add_argument('-op', nargs=0, dest='operators',
                         help='Print standard operators', action=CustomAction)
 
+    parser.add_argument('file', type=argparse.FileType('r'), default=None,
+                        help='Read names from a file')
     parser.add_argument('--unsorted', action='store_true',
                         default=False, help='Do not sort names')
     parser.add_argument('--format', choices=_FORMATS,
@@ -54,9 +58,14 @@ def main():
     except AttributeError:
         keys = ['names']
 
+    if args.file:
+        names = load_names_from_yaml(args.file)
+    else:
+        names = _NAMES
+
     formatter = FORMATTERS[args.format]
     for key in keys:
-        print formatter(_NAMES[key], sorted=not args.unsorted,
+        print formatter(names[key], sorted=not args.unsorted,
                         heading=key, level=2)
 
 
