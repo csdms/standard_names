@@ -5,7 +5,7 @@ use_setuptools ()
 from setuptools import setup
 
 setup (name='CmtStandardNames',
-       version='0.1.2',
+       version='0.2',
        description='CSDMS standard names',
        author='Eric Hutton',
        author_email='eric.hutton@colorado.edu',
