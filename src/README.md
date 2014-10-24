@@ -1,10 +1,6 @@
-====
+====================
 CSDMS Standard Names
-====
-
-package name: CmtStandardNames
-version: 0.1
-release data: 2013-03-15
+====================
 
 Python utilities for working with CSDMS standard names.
 
@@ -20,23 +16,41 @@ Examples
 snscrape
 --------
 
-    snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
-             http://csdms.colorado.edu/wiki/CSN_Object_Templates \
-             http://csdms.colorado.edu/wiki/CSN_Operation_Templates \
-            > data/scraped.yaml
+Scrape names for URLs that are known to contain standard names and put them
+in a text file with one names per line.
+
+    > snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
+               http://csdms.colorado.edu/wiki/CSN_Object_Templates \
+               http://csdms.colorado.edu/wiki/CSN_Operation_Templates \
+              > scraped.txt
 
 snbuild
 -------
 
-    snbuild data/models.yaml data/scraped.yaml > standard_names/data/standard_names.yaml
+Build a database of standard names, object, quantities, operators from a
+text file that contains a list of full names. The database is a simple
+YAML file.
+
+    > snbuild scraped.txt > names.yaml
 
 sndump
 ------
 
-    sndump -n -o -q -op --format=wiki > standard_names.wiki
+Dump a standard-names database (YAML) file to a given format. The following
+will dump full names (-n), operators (-o), quantities (-q), and operators
+(-op). The output format will be as MediaWiki markdown (other options are
+*plain*, *txt*, and *yaml*).
 
-Author
-======
+    > sndump -n -o -q -op --format=wiki names.yaml > names.wiki
 
-author: Eric Hutton
-email: eric.hutton@colorado.edu
+Putting it all together
+-----------------------
+
+Since each of these commands can read from *stdin* and print to *stdout*, they
+can be used in a chain like,
+
+    > URLS="http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
+            http://csdms.colorado.edu/wiki/CSN_Object_Templates \
+            http://csdms.colorado.edu/wiki/CSN_Operation_Templates \
+            http://csdms.colorado.edu/wiki/CSN_Examples"
+    > snscrape $URLS | snbuild - | sndump - -n -o -q -op --format=wiki
