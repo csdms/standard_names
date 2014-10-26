@@ -18,6 +18,7 @@ setup (name='CmtStandardNames',
                'snbuild = standard_names.cmd.snbuild:main',
                'sndump = standard_names.cmd.sndump:main',
                'snscrape = standard_names.cmd.snscrape:main',
+               'snsql= standard_names.cmd.snsql:main',
            ]
        },
        package_data={'': ['data/*yaml']},
