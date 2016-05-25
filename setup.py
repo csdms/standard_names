@@ -4,13 +4,13 @@ from ez_setup import use_setuptools
 use_setuptools ()
 from setuptools import setup
 
-setup (name='CmtStandardNames',
+setup (name='standard_names',
        version='0.2.2',
        description='CSDMS standard names',
        author='Eric Hutton',
        author_email='eric.hutton@colorado.edu',
        url='https://csdms.colorado.edu',
-       install_requires=['PyYAML'],
+       install_requires=['pyyaml'],
        packages=['standard_names', 'standard_names.cmd',
                  'standard_names.tests'],
        entry_points = {

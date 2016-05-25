@@ -1,0 +1,19 @@
+package:
+  name: standard_names
+  version: "0.2.2"
+
+source:
+  path: ..
+
+requirements:
+  build:
+    - setuptools
+    - python
+    - pyyaml
+
+  run:
+    - python
+    - pyyaml
+
+build:
+  string: {{ environ.get('BUILD_STR', '') }}
