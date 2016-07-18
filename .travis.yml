@@ -1,0 +1,11 @@
+os:
+- linux
+- osx
+sudo: false
+install:
+- bash .ci/travis/install_python.sh
+- export PATH="$HOME/miniconda/bin:$PATH"
+- conda build -q conda-recipe
+- conda install -q standard_names --use-local
+script:
+- nosetests --with-doctest standard_names
