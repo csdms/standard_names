@@ -21,6 +21,6 @@ setup (name='standard_names',
                'snsql= standard_names.cmd.snsql:main',
            ]
        },
-       package_data={'': ['data/*yaml']},
+       package_data={'': ['data/*txt']},
        test_suite='standard_names.tests',
       )
