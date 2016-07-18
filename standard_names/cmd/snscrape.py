@@ -34,6 +34,8 @@ def main():
     parser.add_argument('--regex', default=_DEFAULT_SEARCH,
                         help='Regular expression describing '
                              'a standard name (%s)' % _DEFAULT_SEARCH)
+    parser.add_argument('--no-headers', action='store_true',
+                        help='Do not print headers between scrapes')
 
     args = parser.parse_args()
 
@@ -47,9 +49,11 @@ def main():
 
     documents = []
     for (name, name_list) in docs.items():
-        documents.append(
-            _AS_TXT(name_list, sorted=True, heading='Scraped from %s' % name),
-        )
+        if args.no_headers:
+            heading = None
+        else:
+            heading = 'Scraped from %s' % name
+        documents.append(_AS_TXT(name_list, sorted=True, heading=heading), )
     print(os.linesep.join(documents))
 
 
