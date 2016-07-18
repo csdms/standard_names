@@ -92,8 +92,3 @@ def _load_names():
 
 
 _load_names()
-
-
-if __name__ == '__main__':
-    for standard_name in NAMES:
-        print standard_name
