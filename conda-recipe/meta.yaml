@@ -10,11 +10,11 @@ requirements:
     - setuptools
     - python
     - pyyaml
-    - nose
 
   run:
     - python
     - pyyaml
+    - nose
 
 build:
   string: {{ environ.get('BUILD_STR', '') }}
