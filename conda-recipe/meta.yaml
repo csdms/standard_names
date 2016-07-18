@@ -10,6 +10,7 @@ requirements:
     - setuptools
     - python
     - pyyaml
+    - nose
 
   run:
     - python
