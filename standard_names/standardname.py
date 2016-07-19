@@ -42,7 +42,7 @@ def is_valid_name(name):
     return bool(STANDARD_NAME_REGEX.match(name))
 
 
-class StandardName(str):
+class StandardName(object):
     """
     A CSDMS standard name.
     """
@@ -52,8 +52,6 @@ class StandardName(str):
         """
         if not is_valid_name(name):
             raise BadNameError(name)
-
-        super(StandardName, self).__init__(name)
 
         self._name = name
         
@@ -111,12 +109,7 @@ class StandardName(str):
         """
         The full standard name as a string.
         """
-        #return self._name
-        return str(self)
-
-    #@name.setter
-    #def name(self, value):
-    #    self._name = value
+        return self._name
 
     @property
     def object(self):
@@ -161,13 +154,19 @@ class StandardName(str):
         return 'StandardName(%r)' % self.name
 
     def __str__(self):
-        return self._compose_name()
+        return self.name
 
     def __eq__(self, that):
         return self.name == str(that)
 
     def __ne__(self, that):
         return self.name != str(that)
+
+    def __lt__(self, that):
+        return self.name < str(that)
+
+    def __gt__(self, that):
+        return self.name > str(that)
 
     def __cmp__(self, that):
         return self.name == str(that)
