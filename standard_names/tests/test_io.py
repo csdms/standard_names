@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """Unit tests for standard_names.io module."""
-
-from StringIO import StringIO
+from six.moves import StringIO
 
 from nose.tools import assert_equal, assert_in
 
