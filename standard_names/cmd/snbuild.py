@@ -7,7 +7,7 @@ Example usage:
 
 import os
 from ..io import FORMATTERS
-from ..standard_names import NamesRegistry
+from ..registry import NamesRegistry
 
 
 def main():

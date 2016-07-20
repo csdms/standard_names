@@ -3,7 +3,7 @@
 import os
 
 from .. import FORMATTERS
-from ..standard_names import NamesRegistry
+from ..registry import NamesRegistry
 
 
 _NAMES_SCHEMA = """
