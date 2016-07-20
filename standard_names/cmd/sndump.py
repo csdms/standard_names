@@ -3,6 +3,8 @@
 Example usage:
     sndump -n -o -q -op --format=wiki > standard_names.wiki
 """
+from __future__ import print_function
+
 import sys
 import argparse
 
@@ -63,8 +65,8 @@ def main():
     formatter = FORMATTERS[args.format]
     for key in keys:
         list_to_print = getattr(names, key)
-        print formatter(list_to_print, sorted=not args.unsorted,
-                        heading=key, level=2)
+        print(formatter(list_to_print, sorted=not args.unsorted,
+                        heading=key, level=2))
 
 
 if __name__ == '__main__':

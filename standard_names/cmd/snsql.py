@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+from __future__ import print_function
 
 import os
 
@@ -67,7 +68,7 @@ def main():
     args = parser.parse_args()
 
     names = NamesRegistry(args.file)
-    print as_sql_commands(names)
+    print(as_sql_commands(names))
 
 
 if __name__ == '__main__':

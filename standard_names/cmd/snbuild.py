@@ -4,6 +4,7 @@ Example usage:
     snbuild data/models.yaml data/scraped.yaml \
             > standard_names/data/standard_names.yaml
 """
+from __future__ import print_function
 
 import os
 from ..io import FORMATTERS
@@ -26,10 +27,10 @@ def main():
 
     formatter = FORMATTERS['yaml']
 
-    print '%YAML 1.2'
-    print '---'
+    print('%YAML 1.2')
+    print('---')
 
-    print os.linesep.join([
+    print(os.linesep.join([
         formatter(names.names, sorted=True, heading='names'),
         '---',
         formatter(names.objects, sorted=True, heading='objects'),
@@ -38,7 +39,7 @@ def main():
         '---',
         formatter(names.operators, sorted=True, heading='operators'),
         '...',
-    ])
+    ]))
 
 
 if __name__ == '__main__':
