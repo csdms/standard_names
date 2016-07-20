@@ -6,13 +6,10 @@ Example usage:
 import sys
 import argparse
 
-from .. import (NAMES, OBJECTS, QUANTITIES, OPERATORS)
+from ..registry import NamesRegistry
 from .. import FORMATTERS
-from ..validnames import load_names_from_yaml
 
 
-_NAMES = dict(names=NAMES, objects=OBJECTS, quantities=QUANTITIES,
-              operators=OPERATORS, )
 _FORMATS = FORMATTERS.keys()
 
 
@@ -59,13 +56,14 @@ def main():
         keys = ['names']
 
     if args.file:
-        names = load_names_from_yaml(args.file)
+        names = NamesRegistry(args.file)
     else:
-        names = _NAMES
+        names = NamesRegistry()
 
     formatter = FORMATTERS[args.format]
     for key in keys:
-        print formatter(names[key], sorted=not args.unsorted,
+        list_to_print = getattr(names, key)
+        print formatter(list_to_print, sorted=not args.unsorted,
                         heading=key, level=2)
 
 
