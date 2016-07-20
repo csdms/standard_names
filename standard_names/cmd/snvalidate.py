@@ -15,15 +15,13 @@ def main():
     parser = argparse.ArgumentParser("Validate a list of standard names")
 
     parser.add_argument('file', type=argparse.FileType('r'), nargs='+',
-                        default=None,
-                        help='Read names from a file')
+                        default=None, help='Read names from a file')
 
     args = parser.parse_args()
 
     try:
         names = NamesRegistry(args.file)
     except BadRegistryError as err:
-        # print('List contains invalid names', file=sys.stderr)
         print(os.linesep.join(err.names), file=sys.stderr)
         sys.exit(1)
     else:
