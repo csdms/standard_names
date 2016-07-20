@@ -6,8 +6,8 @@ Example usage:
 """
 
 import os
-from .. import (from_model_file, FORMATTERS, Collection)
-from ..io import from_list_file
+from ..io import FORMATTERS
+from ..standard_names import NamesRegistry
 
 
 def main():
@@ -22,9 +22,7 @@ def main():
                         help='YAML file describing model exchange items')
     args = parser.parse_args()
 
-    names = Collection()
-    for model_file in args.file:
-        names |= from_list_file(model_file)
+    names = NamesRegistry(args.file)
 
     formatter = FORMATTERS['yaml']
 
@@ -32,13 +30,13 @@ def main():
     print '---'
 
     print os.linesep.join([
-        formatter(names.names(), sorted=True, heading='names'),
+        formatter(names.names, sorted=True, heading='names'),
         '---',
-        formatter(names.objects(), sorted=True, heading='objects'),
+        formatter(names.objects, sorted=True, heading='objects'),
         '---',
-        formatter(names.quantities(), sorted=True, heading='quantities'),
+        formatter(names.quantities, sorted=True, heading='quantities'),
         '---',
-        formatter(names.operators(), sorted=True, heading='operators'),
+        formatter(names.operators, sorted=True, heading='operators'),
         '...',
     ])
 

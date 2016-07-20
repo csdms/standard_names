@@ -7,9 +7,10 @@ from __future__ import print_function
 import os
 import sys
 
-from . import (StandardName, Collection, BadNameError)
+from . import StandardName, BadNameError
 from .decorators import (format_as_wiki, format_as_yaml, format_as_plain_text)
 from . import (google_doc, url, plain_text)
+from .registry import NamesRegistry
 
 
 class Error(Exception):
@@ -57,7 +58,7 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
     :returns: Scraped words as a Collection
     """
     import re
-    names = Collection()
+    names = NamesRegistry(None)
 
     text = stream.read()
     words = re.findall(regex, text)
@@ -96,7 +97,7 @@ def _find_unique_names(models):
     :models: A dictionary of model information
     :returns: A Collection of the unique names
     """
-    names = Collection()
+    names = NamesRegistry(None)
     for model in models:
         if isinstance(model['exchange items'], dict):
             new_names = []
@@ -110,7 +111,8 @@ def _find_unique_names(models):
             new_names = model['exchange items']
 
         for new_name in new_names:
-            names.add(StandardName(new_name))
+            names.add(new_name)
+            # names.add(StandardName(new_name))
 
     return names
 
@@ -130,11 +132,10 @@ def from_model_file(stream):
 
 
 def from_list_file(stream):
-    names = Collection()
+    names = NamesRegistry(None)
     for line in stream:
         if not line.startswith('#'):
-            names.add(StandardName(line.strip()))
-            #names.add(line.strip())
+            names.add(line.strip())
     return names
 
 

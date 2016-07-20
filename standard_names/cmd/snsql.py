@@ -2,8 +2,8 @@
 
 import os
 
-from .. import (from_model_file, FORMATTERS, Collection)
-from ..io import from_list_file
+from .. import FORMATTERS
+from ..standard_names import NamesRegistry
 
 
 _NAMES_SCHEMA = """
@@ -39,13 +39,13 @@ def as_sql_commands(names):
 
         c = db.cursor()
 
-        for name in names.names():
+        for name in names.names:
             c.execute("INSERT INTO names(name) VALUES ('%s');" % name)
-        for name in names.objects():
+        for name in names.objects:
             c.execute("INSERT INTO objects(name) VALUES ('%s');" % name)
-        for name in names.quantities():
+        for name in names.quantities:
             c.execute("INSERT INTO quantities(name) VALUES ('%s');" % name)
-        for name in names.operators():
+        for name in names.operators:
             c.execute("INSERT INTO operators(name) VALUES ('%s');" % name)
         db.commit()
 
@@ -66,10 +66,7 @@ def main():
                         help='List of names')
     args = parser.parse_args()
 
-    names = Collection()
-    for model_file in args.file:
-        names |= from_list_file(model_file)
-
+    names = NamesRegistry(args.file)
     print as_sql_commands(names)
 
 
