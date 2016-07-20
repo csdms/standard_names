@@ -6,8 +6,7 @@ Unit tests for standard_names.io module
 import unittest
 from StringIO import StringIO
 
-from standard_names import (Collection, StandardName, BadNameError,
-                            from_model_file)
+from standard_names import StandardName, BadNameError, from_model_file
 
 
 _SINGLE_MODEL_FILE_STREAM = StringIO(
