@@ -10,11 +10,12 @@ requirements:
     - setuptools
     - python
     - pyyaml
-
+    - six
   run:
     - python
     - pyyaml
     - nose
+    - six
 
 build:
   string: {{ environ.get('BUILD_STR', '') }}

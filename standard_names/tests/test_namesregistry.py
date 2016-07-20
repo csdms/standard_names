@@ -2,6 +2,7 @@
 """Unit tests for standard_names.Collection"""
 from nose.tools import (assert_greater, assert_equal, assert_raises,
                         assert_in, assert_is_instance, assert_tuple_equal)
+from six import string_types
 
 from standard_names import NamesRegistry, StandardName, BadNameError
 
@@ -45,7 +46,7 @@ def test_collection_contains_names():
     nreg.add('water__temperature')
 
     for name in nreg:
-        assert_is_instance(name, basestring)
+        assert_is_instance(name, string_types)
 
 def test_add_name():
     """Add a name to the collection."""
