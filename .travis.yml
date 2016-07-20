@@ -3,14 +3,15 @@ env:
   - TRAVIS_PYTHON_VERSION="2.7"
   - TRAVIS_PYTHON_VERSION="3.5"
   global:
-  - secure: RW04wYATFx9Jg6rzHe6j2TqK5CPsZ1wd3SO8KKknYiCerpe0OJ56B9kY6fn9cmaMHMPjopgWmz9S7Z0Kb5169cL3xJKux2u8Q0gsDXVxNA/jnh+KR9oEM7cFGvIf2F8p6+tkkQT/nr+bVXn1Fgrv3sN5ZWimBYs65KpHvXoQ=
+    secure: fQDopgWxen7KDFRdI1vjZDUh2cV6+MOY1pqeht410uTq9HynLoWduzPN65FV7rxcGSN2uWV77GBU0OZKQTb7j1LP7A2o+Z/Usebc/aGAyG0ev9O54ff7ghaG+dfJ0UZ/Fjt1qgD0EVfIBbnc02MgUnkwR2cio0lUBlamel8rZzo=
 os:
 - linux
 - osx
 sudo: false
 install:
 - echo "Build on $TRAVIS_OS_NAME"
-- if [[ "$TRAVIS_TAG" == v* ]]; then export BUILD_STR=""; else export BUILD_STR="dev"; fi
+- if [[ "$TRAVIS_TAG" == v* ]]; then export BUILD_STR=""; else export BUILD_STR="dev";
+  fi
 - bash .ci/travis/install_python.sh
 - export PATH="$HOME/miniconda/bin:$PATH"
 - conda build -q conda-recipe
