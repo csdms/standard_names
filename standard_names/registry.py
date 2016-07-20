@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import os
 import warnings
-import types
 from glob import glob
 
 from .standardname import StandardName, BadNameError
@@ -66,7 +65,7 @@ class NamesRegistry(object):
         if paths is None:
             paths = []
 
-        if isinstance(paths, types.StringTypes) or hasattr(paths, 'readline'):
+        if isinstance(paths, basestring) or hasattr(paths, 'readline'):
             paths = [paths]
 
         self._names = set()
@@ -77,7 +76,7 @@ class NamesRegistry(object):
         self._version = kwds.get('version', '0.0.0')
 
         for path in paths:
-            if isinstance(path, types.StringTypes):
+            if isinstance(path, basestring):
                 with open(path, 'r') as fp:
                     self._load(fp)
             else:
@@ -147,7 +146,7 @@ class NamesRegistry(object):
         return names
 
     def names_with(self, parts):
-        if isinstance(parts, types.StringTypes):
+        if isinstance(parts, basestring):
             parts = (parts, )
 
         remaining_names = self._names
