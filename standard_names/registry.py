@@ -7,22 +7,21 @@ from glob import glob
 from .standardname import StandardName, BadNameError
 
 
-def load_names_from_txt(file, onerror='raise'):
+def load_names_from_txt(file_like, onerror='raise'):
     if onerror not in ('pass', 'raise', 'warn'):
         return ValueError('value for onerror keyword not understood')
 
     bad_names = set()
     names = set()
-    with open(file, 'r') as fp:
-        for name in fp:
-            name = name.strip()
-            if name:
-                try:
-                    csn = StandardName(name)
-                except BadNameError:
-                    bad_names.add(name)
-                else:
-                    names.add(csn)
+    for name in file_like:
+        name = name.strip()
+        if name:
+            try:
+                csn = StandardName(name)
+            except BadNameError:
+                bad_names.add(name)
+            else:
+                names.add(csn)
 
     if bad_names:
         for name in bad_names:
@@ -67,7 +66,7 @@ class NamesRegistry(object):
         if paths is None:
             paths = []
 
-        if isinstance(paths, types.StringTypes):
+        if isinstance(paths, types.StringTypes) or hasattr(paths, 'readline'):
             paths = [paths]
 
         self._names = set()
@@ -75,17 +74,17 @@ class NamesRegistry(object):
         self._quantities = set()
         self._operators = set()
 
-        # if paths is None:
-        #     paths, version = _get_latest_names_file()
-
         self._version = kwds.get('version', '0.0.0')
-        # self._version = version or '0.0.0'
 
         for path in paths:
-            self._load(path)
+            if isinstance(path, types.StringTypes):
+                with open(path, 'r') as fp:
+                    self._load(fp)
+            else:
+                self._load(path)
 
-    def _load(self, path, onerror='raise'):
-        for name in load_names_from_txt(path, onerror=onerror):
+    def _load(self, file_like, onerror='raise'):
+        for name in load_names_from_txt(file_like, onerror=onerror):
             self.add(name)
 
     @property
