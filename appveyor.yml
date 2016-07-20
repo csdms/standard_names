@@ -1,0 +1,51 @@
+environment:
+
+  global:
+    WITH_COMPILER: "cmd /E:ON /V:ON /C .\\.ci\\appveyor\\run_with_env.cmd"
+    BUILD_STR: "dev"
+
+  matrix:
+    - PYTHON: "C:\\Python27"
+      DISTUTILS_USE_SDK: "1"
+      PYTHON_VERSION: "2.7"
+    - PYTHON: "C:\\Python35"
+      PYTHON_VERSION: "3.5"
+
+platform:
+  - x64
+  - x86
+
+init:
+  - "ECHO %PYTHON% %PYTHON_VERSION% %HOME% %PLATFORM%"
+  - "ECHO %APPVEYOR_REPO_BRANCH%"
+
+install:
+  - powershell .ci/appveyor/install.ps1
+  - if "%APPVEYOR_REPO_TAG%"=="true" if "%APPVEYOR_REPO_TAG_NAME:~0,1%"=="v" set BUILD_STR=""
+  - IF "%PLATFORM%"=="x64" (SET SUFFIX="_64") ELSE (SET SUFFIX="_32")
+  - "set PATH=%PYTHON%%SUFFIX%;%PYTHON%%SUFFIX%/Scripts;%PYTHON%%SUFFIX%/Library/bin;%PATH%"
+  - conda info
+  - conda config --set always_yes yes
+  - conda install -q --force --no-deps conda psutil ruamel_yaml requests
+  - conda install -q python=%PYTHON_VERSION%
+  - conda install -q conda-build
+  - conda install -q anaconda-client
+  - pip install twine
+  - "%WITH_COMPILER% conda build -q conda-recipe"
+  - "%WITH_COMPILER% conda install -q standard_names --use-local"
+  - "conda list"
+build: false
+
+test_script:
+  - "%WITH_COMPILER% nosetests --with-doctest standard_names"
+
+after_test:
+  - "%WITH_COMPILER% python setup.py bdist_wheel"
+
+artifacts:
+  # Archive the generated conda package in the ci.appveyor.com build report.
+  - path: 'dist\*'
+
+# deploy_script:
+#   - "python .ci/appveyor/pypi_upload.py"
+#   - "python .ci/appveyor/anaconda_upload.py"
