@@ -5,7 +5,7 @@ from glob import glob
 
 from six import string_types
 
-from .standardname import StandardName, BadNameError
+from .standardname import StandardName, BadNameError, BadRegistryError
 
 
 def load_names_from_txt(file_like, onerror='raise'):
@@ -25,10 +25,11 @@ def load_names_from_txt(file_like, onerror='raise'):
                 names.add(csn)
 
     if bad_names:
-        for name in bad_names:
-            warnings.warn('{name}: not a valid name'.format(name=name))
-        if onerror == 'raise':
-            raise ValueError('poorly formed name(s)')
+        if onerror == 'warn':
+            for name in bad_names:
+                warnings.warn('{name}: not a valid name'.format(name=name))
+        elif onerror == 'raise':
+            raise BadRegistryError(bad_names)
 
     return names
 
@@ -42,9 +43,13 @@ def _get_latest_names_file():
 
     newest = None
     for file in files:
-        version = StrictVersion(file[len('names-'): -len('.txt')])
-        if newest is None or version > newest:
-            newest = version
+        try:
+            version = StrictVersion(file[len('names-'): -len('.txt')])
+        except ValueError:
+            pass
+        else:
+            if newest is None or version > newest:
+                newest = version
 
     if newest:
         version = str(newest)
@@ -60,7 +65,7 @@ class NamesRegistry(object):
         if len(args) == 0:
             paths, version = _get_latest_names_file()
         elif len(args) == 1:
-            paths = args[0]
+            paths, version = args[0], None
         else:
             raise ValueError('0 or 1 arguments expected')
 
@@ -75,7 +80,7 @@ class NamesRegistry(object):
         self._quantities = set()
         self._operators = set()
 
-        self._version = kwds.get('version', '0.0.0')
+        self._version = version or '0.0.0'
 
         for path in paths:
             if isinstance(path, string_types):
