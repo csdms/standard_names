@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-"""
-Unit tests for standard_names.io module
-"""
+"""Unit tests for standard_names.io module."""
 
-import unittest
 from StringIO import StringIO
+
+from nose.tools import assert_equal, assert_in
 
 from standard_names import StandardName, BadNameError, from_model_file
 
@@ -47,42 +46,33 @@ exchange items:
     - air__emissivity
 ...""")
 
-class TestStandardNameIO(unittest.TestCase):
+
+def test_from_model_file():
+    """Read from a YAML model file that contains one model."""
+    names = from_model_file(_SINGLE_MODEL_FILE_STREAM)
+
+    assert_in('air__density', names)
+    assert_in('air__emissivity', names)
+    assert_equal(len(names), 2)
+
+
+def test_from_multiple_model_file():
+    """Read from a YAML model file that contains multiple models."""
+    names = from_model_file(_MULTIPLE_MODEL_FILE_STREAM)
+
+    assert_in('air__density', names)
+    assert_in('air__emissivity', names)
+    assert_in('water__temperature', names)
+    assert_equal(len(names), 3)
+
+
+def test_from_model_file_with_intent():
     """
-    Unit tests for standard_names.io module
+    Read from a YAML model file that contains one model but that indicates
+    intent of variables.
     """
-    def test_from_model_file(self):
-        """
-        Read from a YAML model file that contains one model.
-        """
-        names = from_model_file(_SINGLE_MODEL_FILE_STREAM)
+    names = from_model_file(_SINGLE_MODEL_FILE_STREAM_WITH_INTENT)
 
-        self.assertTrue('air__density' in names)
-        self.assertTrue('air__emissivity' in names)
-        self.assertEqual(len(names), 2)
-
-    def test_from_multiple_model_file(self):
-        """
-        Read from a YAML model file that contains multiple models.
-        """
-        names = from_model_file(_MULTIPLE_MODEL_FILE_STREAM)
-
-        self.assertTrue('air__density' in names)
-        self.assertTrue('air__emissivity' in names)
-        self.assertTrue('water__temperature' in names)
-        self.assertEqual(len(names), 3)
-
-    def test_from_model_file_with_intent(self):
-        """
-        Read from a YAML model file that contains one model but that indicates
-        intent of variables.
-        """
-        names = from_model_file(_SINGLE_MODEL_FILE_STREAM_WITH_INTENT)
-
-        self.assertTrue('air__density' in names)
-        self.assertTrue('air__emissivity' in names)
-        self.assertEqual(len(names), 2)
-
-
-if __name__ == '__main__':
-    unittest.main()
+    assert_in('air__density', names)
+    assert_in('air__emissivity', names)
+    assert_equal(len(names), 2)
