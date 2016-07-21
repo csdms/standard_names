@@ -1,7 +1,5 @@
 #! /usr/bin/env python
-"""
-Some IO functions for CmtStandardNames package.
-"""
+"""Some IO functions for standard_names package."""
 from __future__ import print_function
 
 import os
@@ -55,7 +53,7 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
 
     :stream: A file-like object.
     :keyword regex: A regular expression as a string
-    :returns: Scraped words as a Collection
+    :returns: Scraped words as a NamesRegistry
     """
     import re
     names = NamesRegistry(None)
@@ -95,7 +93,7 @@ def _find_unique_names(models):
     Find unique names in a iterable of StandardNames.
 
     :models: A dictionary of model information
-    :returns: A Collection of the unique names
+    :returns: A NamesRegistry of the unique names
     """
     names = NamesRegistry(None)
     for model in models:
@@ -120,10 +118,10 @@ def _find_unique_names(models):
 def from_model_file(stream):
     """
     Get standard names from a YAML file listing standard names for particular
-    models and produce the corresponding Collection.
+    models and produce the corresponding NamesRegistry.
 
     :stream: YAML stream
-    :returns: A Collection
+    :returns: A NamesRegistry
     """
     import yaml
     models = yaml.load_all(stream)
@@ -145,7 +143,7 @@ def scrape(source, **kwds):
 
     :source: Name of the source as a string
     :keyword format: The format of the source
-    :returns: A Collection
+    :returns: A NamesRegistry
     """
     source_format = kwds.pop('format', 'url')
 

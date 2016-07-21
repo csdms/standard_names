@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Unit tests for standard_names.Collection"""
+"""Unit tests for standard_names.NamesRegistry."""
 from nose.tools import (assert_greater, assert_equal, assert_raises,
                         assert_in, assert_is_instance, assert_tuple_equal)
 from six import string_types
@@ -40,7 +40,7 @@ def test_add_string():
 
 
 def test_collection_contains_names():
-    """Make sure a Collection only contains StandardName objects."""
+    """Make sure a NamesRegistry only contains StandardName objects."""
     nreg = NamesRegistry(None)
     nreg.add('air__temperature')
     nreg.add('water__temperature')
