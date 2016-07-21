@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/csdms/standard_names.svg?branch=master)](https://travis-ci.org/csdms/standard_names)
+[![Build status](https://ci.appveyor.com/api/projects/status/xb4lalkn0603ac1o/branch/master?svg=true)](https://ci.appveyor.com/project/mcflugen/standard-names/branch/master)
+
 ====================
 CSDMS Standard Names
 ====================
