@@ -12,12 +12,16 @@ from .registry import NamesRegistry
 
 
 class Error(Exception):
+
     """Base exception for this module."""
+
     pass
 
 
 class BadIntentError(Error):
+
     """Error to indicate a bad key for intent."""
+
     def __init__(self, key, valid_keys):
         super(BadIntentError, self).__init__()
         self._key = key
@@ -29,13 +33,22 @@ class BadIntentError(Error):
 
 
 def _list_to_string(lines, **kwds):
-    """
+    """Join strings with the line separator.
+
     Concatonate a list of strings into one big string using the line separator
     as a joiner.
 
-    :lines: List of strings
-    :keyword sorted: Sort lines before joining
-    :returns: Joined lines as a string
+    Parameters
+    ----------
+    lines : iterable of str
+        String to join.
+    sorted : bool, optional
+        Sort the strings before joining them.
+
+    Returns
+    -------
+    str
+        The joined strings.
     """
     sort_list = kwds.pop('sorted', False)
 
@@ -48,12 +61,20 @@ def _list_to_string(lines, **kwds):
 
 
 def _scrape_stream(stream, regex=r'\b\w+__\w+'):
-    """
-    Scrape standard names from stream matching a regular expression.
+    """Scrape standard names from stream matching a regular expression.
 
-    :stream: A file-like object.
-    :keyword regex: A regular expression as a string
-    :returns: Scraped words as a NamesRegistry
+    Parameters
+    ----------
+    stream : file_like
+        File-like object from which to read (only a ``read`` method is
+        necessary).
+    regex : str, optional
+        A regular expression that indicates a word to scrape.
+
+    Returns
+    -------
+    NamesRegistry
+        The scraped words.
     """
     import re
     names = NamesRegistry(None)
@@ -89,11 +110,17 @@ _VALID_INTENTS = ['input', 'output']
 
 
 def _find_unique_names(models):
-    """
-    Find unique names in a iterable of StandardNames.
+    """Find unique names in a iterable of StandardNames.
 
-    :models: A dictionary of model information
-    :returns: A NamesRegistry of the unique names
+    Parameters
+    ----------
+    models : dict
+        Dictionary of model information
+
+    Returns
+    -------
+    NamesRegistry
+        A collection of unique names.
     """
     names = NamesRegistry(None)
     for model in models:
@@ -116,12 +143,20 @@ def _find_unique_names(models):
 
 
 def from_model_file(stream):
-    """
+    """Read names from a model file.
+
     Get standard names from a YAML file listing standard names for particular
     models and produce the corresponding NamesRegistry.
 
-    :stream: YAML stream
-    :returns: A NamesRegistry
+    Parameters
+    ----------
+    stream : file_like
+        YAML stream.
+
+    Returns
+    -------
+    NamesRegistry
+        A collection of names for the model file.
     """
     import yaml
     models = yaml.load_all(stream)
@@ -130,6 +165,18 @@ def from_model_file(stream):
 
 
 def from_list_file(stream):
+    """Read names from a text file.
+
+    Parameters
+    ----------
+    stream : file_like
+        Source from which to read names (requires only a ``readline`` method).
+
+    Returns
+    -------
+    NamesRegistry
+        A collection of names read from the source.
+    """
     names = NamesRegistry(None)
     for line in stream:
         if not line.startswith('#'):
@@ -138,12 +185,21 @@ def from_list_file(stream):
 
 
 def scrape(source, **kwds):
-    """
-    Scrape standard names for a named source.
+    """Scrape standard names for a named source.
 
-    :source: Name of the source as a string
-    :keyword format: The format of the source
-    :returns: A NamesRegistry
+    Parameters
+    ----------
+    source : str
+        Name of the source.
+    format: str, optional
+        The format of the source. Valid values are given by the keys
+        of the ``SCRAPERS` global. Currently this is ``google_doc``,
+        ``url``, and ``plain_text`` (default is ``url``).
+
+    Returns
+    -------
+    NamesRegistry
+        A collection of names read from the source.
     """
     source_format = kwds.pop('format', 'url')
 

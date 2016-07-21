@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-"""
-StandardName class to hold a CSDMS standard name.
-"""
+"""A CSDMS standard name."""
+
 
 import re
 
@@ -44,23 +43,32 @@ STANDARD_NAME_REGEX = re.compile(
 
 
 def is_valid_name(name):
-    """
-    Check if a string is a valid standard name.
+    """Check if a string is a valid standard name.
 
-    :name: Standard name as a string
+    Parameters
+    ----------
+    name : str
+        Standard name as a string
 
-    :returns: True if the string is a valid standard name
+    Returns
+    -------
+    bool
+        ``True`` if the string is a valid standard name
     """
     return bool(STANDARD_NAME_REGEX.match(name))
 
 
 class StandardName(object):
-    """
-    A CSDMS standard name.
-    """
+
+    """A CSDMS standard name."""
+
     def __init__(self, name):
-        """
-        Initialize a standard name object from the string, *name*.
+        """Create a standard name object from a string.
+        
+        Parameters
+        ----------
+        name : str
+            A Standard Name.
         """
         if not is_valid_name(name):
             raise BadNameError(name)
@@ -73,11 +81,22 @@ class StandardName(object):
 
     @staticmethod
     def decompose_name(name):
-        """
+        """Decompose a name into its parts.
+
         Decompose the *name* standard name string into it's constituent
         parts (object, quantity, and operator). Returns a tuple of
         (object, quantity, operator) where object and quantitiy are strings,
         and operator is itself a tuple of strings (or empty).
+
+        Parameters
+        ----------
+        name : str
+            A CSDMS Standard Name.
+
+        Returns
+        -------
+        tuple of str
+            The parts of a name as ``(object, quantity, operators)``
         """
         try:
             (object_part, quantity_clause) = name.split('__')
@@ -90,9 +109,7 @@ class StandardName(object):
         return object_part, quantity_part, operators
 
     def _compose_name(self):
-        """
-        Create a string from the parts of StandardName.
-        """
+        """Create a string from the parts of StandardName."""
         operator = '_of_'.join(self._operators)
         if len(operator) > 0:
             quantity = '_of_'.join([operator, self._quantity])
@@ -103,12 +120,23 @@ class StandardName(object):
 
     @staticmethod
     def decompose_quantity(quantity_clause):
-        """
+        """Decompose a quantity into operators and quantities.
+
         Decompose the *quantity_clause* string into operator and base
         quantity constituents. Because multiple operators can act on a
         quantity, the operators are given as a tuple regardless of the
         number of operators actually present. Returns the parts of the
         quantity as a tuple of (operators, base_quantity)
+
+        Parameters
+        ----------
+        quantity_clause : str
+            A CSDMS Standard Name quantity.
+
+        Returns
+        -------
+        tuple of str
+            The parts of the quantity as ``(operators, quantity)``.
         """
         quantity_parts = quantity_clause.split('_of_')
         quantity = quantity_parts[-1]
@@ -118,18 +146,12 @@ class StandardName(object):
 
     @property
     def name(self):
-        """
-        The full standard name as a string.
-        """
+        """The full standard name as a string."""
         return self._name
 
     @property
     def object(self):
-        """
-        The object part of the standard name.
-
-        :returns: Object name as a string
-        """
+        """The object part of the standard name."""
         return self._object
 
     @object.setter
@@ -138,11 +160,7 @@ class StandardName(object):
 
     @property
     def quantity(self):
-        """
-        The quantity part of the standard name.
-
-        :returns: Quantity name as a string
-        """
+        """The quantity part of the standard name."""
         return self._quantity
 
     @quantity.setter
@@ -151,11 +169,7 @@ class StandardName(object):
 
     @property
     def operators(self):
-        """
-        The operator part of the standard name.
-
-        :returns: Operator name as a string
-        """
+        """The operator part of the standard name."""
         return self._operators
 
     @operators.setter

@@ -9,6 +9,21 @@ from .standardname import StandardName, BadNameError, BadRegistryError
 
 
 def load_names_from_txt(file_like, onerror='raise'):
+    """Load names from a text file.
+
+    Parameters
+    ----------
+    file_like : file-like
+        A file-like object that represents the contents of a text file
+        (only a ``readline`` method need be available).
+    onerror : {'raise', 'warn', 'pass'}
+        What to do if a bad name is encountered in the file.
+
+    Returns
+    -------
+    set of str
+        The Standard Names read from the file.
+    """
     if onerror not in ('pass', 'raise', 'warn'):
         return ValueError('value for onerror keyword not understood')
 
@@ -61,6 +76,79 @@ def _get_latest_names_file():
 
 
 class NamesRegistry(object):
+
+    """A registry of CSDMS Standard Names.
+
+    Parameters
+    ----------
+    paths : str or iterable of str, optional
+        Name(s) of the data file(s) from which to read. If not given,
+        use a default database. If ``None``, create an empty registry.
+    version : str, optional
+        The version of the names registry.
+    
+    Attributes
+    ----------
+    version
+    names
+    objects
+    quantities
+    operators
+
+    Examples
+    --------
+    >>> from standard_names import NamesRegistry
+
+    Get the default set of names.
+
+    >>> registry = NamesRegistry()
+    >>> len(registry) > 0
+    True
+
+    Create an empty registry and add a name to it.
+
+    >>> registry = NamesRegistry(None)
+    >>> len(registry)
+    0
+    >>> registry.add('air__temperature')
+    >>> len(registry)
+    1
+
+    Use the ``names``, ``objects``, ``quantities``, and ``operators`` to
+    get lists of each in the registry.
+
+    >>> registry.names
+    ('air__temperature',)
+    >>> registry.objects
+    ('air',)
+    >>> registry.quantities
+    ('temperature',)
+    >>> registry.operators
+    ()
+
+    You can search the registry for names using the ``names_with``,
+    ``match``, and ``search`` methods.
+
+    Use ``names_with`` to look for names that contain a given string or
+    strings.
+
+    >>> registry.add('water__temperature')
+    >>> sorted(registry.names_with('temperature'))
+    ['air__temperature', 'water__temperature']
+    >>> registry.names_with(['temperature', 'air'])
+    ['air__temperature']
+
+    Use ``match`` to match names using a glob-style pattern.
+
+    >>> registry.match('air*')
+    ['air__temperature']
+
+    Use ``search`` to do a fuzzy search of the list.
+
+    >>> registry.search('air__temp')
+    ['air__temperature']
+    """
+
     def __init__(self, *args, **kwds):
         if len(args) == 0:
             paths, version = _get_latest_names_file()
@@ -95,29 +183,83 @@ class NamesRegistry(object):
 
     @property
     def version(self):
+        """The version of the names database.
+        
+        Returns
+        -------
+        str
+            The registry version.
+        """
         return self._version
 
     @property
     def names(self):
+        """All names in the registry.
+        
+        Returns
+        -------
+        tuple of str
+            All of the names in the registry.
+        """
         return tuple(self._names)
 
     @property
     def objects(self):
+        """All objects in the registry.
+        
+        Returns
+        -------
+        tuple of str
+            All of the objects in the registry.
+        """
         return tuple(self._objects)
 
     @property
     def quantities(self):
+        """All quantities in the registry.
+        
+        Returns
+        -------
+        tuple of str
+            All of the quantities in the registry.
+        """
         return tuple(self._quantities)
 
     @property
     def operators(self):
+        """All operators in the registry.
+        
+        Returns
+        -------
+        tuple of str
+            All of the operators in the registry.
+        """
         return tuple(self._operators)
 
     @classmethod
     def from_path(cls, path):
+        """Create a new registry from a text file.
+
+        Parameters
+        ----------
+        path : str
+            Path to a text file of Standard Names.
+
+        Returns
+        -------
+        NamesRegistry
+            A newly-created registry filled with names from the file.
+        """
         return cls(path)
 
     def add(self, name):
+        """Add a name to the registry.
+
+        Parameters
+        ----------
+        name : str
+            A Standard Name.
+        """
         if not isinstance(name, StandardName):
             name = StandardName(name)
 
@@ -140,10 +282,34 @@ class NamesRegistry(object):
             yield name
 
     def search(self, name):
+        """Search the registry for a name.
+
+        Parameters
+        ----------
+        name : str
+            Name to search for.
+
+        Returns
+        -------
+        tuple of str
+            Names that closely match the given name.
+        """
         from difflib import get_close_matches
         return get_close_matches(name, self._names)
 
     def match(self, pattern):
+        """Search the registry for names that match a pattern.
+
+        Parameters
+        ----------
+        pattern : str
+            Glob-style pattern with which to search the registry.
+
+        Returns
+        -------
+        list of str
+            List of names matching the pattern.
+        """
         import re, fnmatch
         p = re.compile(fnmatch.translate(pattern))
         names = []
@@ -153,6 +319,18 @@ class NamesRegistry(object):
         return names
 
     def names_with(self, parts):
+        """Search the registry for names containing words.
+
+        Parameters
+        ----------
+        parts : str or iterable of str
+            Word(s) to search for.
+
+        Returns
+        -------
+        tuple of str
+            Names from the registry that contains the given words.
+        """
         if isinstance(parts, string_types):
             parts = (parts, )
 
