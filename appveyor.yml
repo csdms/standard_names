@@ -2,6 +2,8 @@ environment:
 
   global:
     WITH_COMPILER: "cmd /E:ON /V:ON /C .\\.ci\\appveyor\\run_with_env.cmd"
+    ANACONDA_TOKEN:
+      secure: zCRzslOrbeC7LtC9Z7qHe4PnG3oUhSo5CHI7V9KShfMO/ZGZrWLbk1U7y7HM+09Y
     BUILD_STR: "dev"
 
   matrix:
@@ -46,6 +48,6 @@ artifacts:
   # Archive the generated conda package in the ci.appveyor.com build report.
   - path: 'dist\*'
 
-# deploy_script:
+deploy_script:
+  - "python .ci/appveyor/anaconda_upload.py"
 #   - "python .ci/appveyor/pypi_upload.py"
-#   - "python .ci/appveyor/anaconda_upload.py"
