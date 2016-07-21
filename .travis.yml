@@ -14,6 +14,7 @@ install:
   fi
 - bash .ci/travis/install_python.sh
 - export PATH="$HOME/miniconda/bin:$PATH"
+- conda info -a
 - conda build -q conda-recipe
 - conda install -q standard_names --use-local
 script:
