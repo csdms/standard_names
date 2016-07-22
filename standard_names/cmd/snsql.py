@@ -32,6 +32,50 @@ create table operators (
 
 
 def as_sql_commands(names):
+    """Create an sql database from a NamesRegistry.
+
+    Parameters
+    ----------
+    names : NamesRegistry
+        A collection of CSDMS Standard Names.
+
+    Returns
+    -------
+    str
+        The SQL commands to create the database.
+
+    Examples
+    --------
+    >>> import standard_names as csn
+    >>> names = csn.NamesRegistry(None)
+    >>> names.add('air__temperature')
+    >>> print(csn.cmd.snsql.as_sql_commands(names))
+    BEGIN TRANSACTION;
+    CREATE TABLE names (
+        id       integer primary key,
+        name     text,
+        unique(name)
+    );
+    INSERT INTO "names" VALUES(1,'air__temperature');
+    CREATE TABLE objects (
+        id       integer primary key,
+        name     text,
+        unique(name)
+    );
+    INSERT INTO "objects" VALUES(1,'air');
+    CREATE TABLE operators (
+        id       integer primary key,
+        name     text,
+        unique(name)
+    );
+    CREATE TABLE quantities (
+        id       integer primary key,
+        name     text,
+        unique(name)
+    );
+    INSERT INTO "quantities" VALUES(1,'temperature');
+    COMMIT;
+    """
     from contextlib import closing
     from sqlite3 import connect
 

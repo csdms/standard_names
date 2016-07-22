@@ -16,9 +16,7 @@ _FORMATS = FORMATTERS.keys()
 
 
 class CustomAction(argparse.Action):
-    """
-    Keep track of the order of options are given on the command line.
-    """
+    """Keep track of the order of options are given on the command line."""
     def __call__(self, parser, namespace, values, option_string=None):
         if not 'ordered_args' in namespace:
             setattr(namespace, 'ordered_args', [])
@@ -28,9 +26,7 @@ class CustomAction(argparse.Action):
 
 
 def main():
-    """
-    Dump a list of known standard names.
-    """
+    """Dump a list of known standard names."""
     parser = argparse.ArgumentParser("Dump known standard names")
 
     parser.add_argument('-n', nargs=0, dest='names',
