@@ -25,7 +25,7 @@ def load_names_from_txt(file_like, onerror='raise'):
         The Standard Names read from the file.
     """
     if onerror not in ('pass', 'raise', 'warn'):
-        return ValueError('value for onerror keyword not understood')
+        raise ValueError('value for onerror keyword not understood')
 
     bad_names = set()
     names = set()
