@@ -2,7 +2,8 @@
 The CSDMS Standard Names
 """
 
-from .standardname import StandardName, BadNameError, is_valid_name
+from .standardname import (StandardName, BadNameError, is_valid_name,
+                           BadRegistryError)
 from .registry import NamesRegistry
 from .decorators import format_as_wiki, format_as_yaml
 from .decorators import google_doc, url, plain_text
