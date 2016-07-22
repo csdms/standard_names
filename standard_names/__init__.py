@@ -7,3 +7,8 @@ from .registry import NamesRegistry
 from .decorators import format_as_wiki, format_as_yaml
 from .decorators import google_doc, url, plain_text
 from .io import from_model_file, scrape, FORMATTERS, SCRAPERS
+
+
+def check():
+    from nose.core import run
+    run('standard_names')
