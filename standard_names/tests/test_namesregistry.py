@@ -1,10 +1,31 @@
 #!/usr/bin/env python
 """Unit tests for standard_names.NamesRegistry."""
 from nose.tools import (assert_greater, assert_equal, assert_raises,
-                        assert_in, assert_is_instance, assert_tuple_equal)
+                        assert_in, assert_is_instance, assert_tuple_equal,
+                        assert_list_equal, assert_set_equal)
 from six import string_types
+from six.moves import StringIO
 
-from standard_names import NamesRegistry, StandardName, BadNameError
+from standard_names import (NamesRegistry, StandardName, BadNameError,
+                            BadRegistryError)
+from standard_names.registry import load_names_from_txt
+
+
+def test_load_names_bad_onerror():
+    with assert_raises(ValueError):
+        load_names_from_txt('dummy_arg', onerror='bad_value')
+
+
+def test_load_names_bad_name_pass():
+    file_like = StringIO("air__temperature\nwater_temperature")
+    names = load_names_from_txt(file_like, onerror='pass')
+    assert_set_equal(names, {'air__temperature'})
+
+
+def test_load_names_bad_name_raise():
+    file_like = StringIO(r"air__temperature\nwater_temperature")
+    with assert_raises(BadRegistryError):
+        load_names_from_txt(file_like, onerror='raise')
 
 
 def test_create_full():
@@ -17,6 +38,33 @@ def test_create_empty():
     """Test creating default registry."""
     nreg = NamesRegistry(None)
     assert_equal(len(nreg), 0)
+
+
+def test_create_with_too_many_args():
+    """Test creating a registry with too many arguments."""
+    with assert_raises(ValueError):
+        NamesRegistry('file1', 'file2')
+
+
+def test_create_with_file_like():
+    """Test creating a registry from a file_like object."""
+    file_like = StringIO("air__temperature")
+    names = NamesRegistry(file_like)
+    assert_tuple_equal(names.names, ('air__temperature',))
+
+    file_like = StringIO("air__temperature")
+    another_file_like = StringIO("water__temperature")
+    names = NamesRegistry([file_like, another_file_like])
+    assert_is_instance(names.names, tuple)
+    assert_list_equal(sorted(names.names),
+                      ['air__temperature', 'water__temperature'])
+
+
+def test_create_with_from_path():
+    """Test creating registry with from_path."""
+    file_like = StringIO("air__temperature")
+    names = NamesRegistry.from_path(file_like)
+    assert_tuple_equal(names.names, ('air__temperature',))
 
 
 def test_bad_name():
