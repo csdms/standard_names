@@ -62,6 +62,13 @@ Get a registry of the currently defined standard names.
   >>> 'air__temperature' in registry
   True
 
+User Guide
+----------
+
+.. toctree::
+  :maxdepth: 1
+
+  getting
 
 References
 ==========
