@@ -81,7 +81,7 @@ References
 
   https://github.com/csdms/standard_names
 
-.. [StandardNamesRegistry] The current Standard Names Registriy on GitHub.
+.. [StandardNamesRegistry] The current Standard Names Registry on GitHub.
 
   https://github.com/csdms/standard_names_registry
 
