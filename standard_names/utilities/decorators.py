@@ -13,7 +13,7 @@ def format_as_wiki(func):
     Examples
     --------
     >>> from __future__ import print_function
-    >>> from standard_names.decorators import format_as_wiki
+    >>> from standard_names.utilities.decorators import format_as_wiki
 
     >>> def func(lines):
     ...     return lines
@@ -64,7 +64,7 @@ def format_as_yaml(func):
     Examples
     --------
     >>> from __future__ import print_function
-    >>> from standard_names.decorators import format_as_yaml
+    >>> from standard_names.utilities.decorators import format_as_yaml
 
     >>> def func(lines):
     ...     return lines
@@ -116,7 +116,7 @@ def format_as_plain_text(func):
     Examples
     --------
     >>> from __future__ import print_function
-    >>> from standard_names.decorators import format_as_plain_text
+    >>> from standard_names.utilities.decorators import format_as_plain_text
 
     >>> def func(lines):
     ...     return lines

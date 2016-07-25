@@ -3,7 +3,7 @@ from __future__ import print_function
 
 import os
 
-from .. import FORMATTERS
+from ..utilities import FORMATTERS
 from ..registry import NamesRegistry
 
 

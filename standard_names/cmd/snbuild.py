@@ -7,7 +7,7 @@ Example usage:
 from __future__ import print_function
 
 import os
-from ..io import FORMATTERS
+from ..utilities.io import FORMATTERS
 from ..registry import NamesRegistry
 
 

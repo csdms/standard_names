@@ -9,7 +9,7 @@ import sys
 import argparse
 
 from ..registry import NamesRegistry
-from .. import FORMATTERS
+from ..utilities import FORMATTERS
 
 
 _FORMATS = FORMATTERS.keys()

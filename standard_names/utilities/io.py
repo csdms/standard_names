@@ -7,9 +7,9 @@ import sys
 import re
 import warnings
 
-from .standardname import StandardName
-from .registry import NamesRegistry
-from .error import BadNameError, BadIntentError
+from ..standardname import StandardName
+from ..registry import NamesRegistry
+from ..error import BadNameError, BadIntentError
 from .decorators import (format_as_wiki, format_as_yaml, format_as_plain_text,
                          google_doc, url, plain_text)
 
@@ -36,10 +36,10 @@ def _list_to_string(lines, **kwds):
     --------
     >>> from __future__ import print_function
     >>> import standard_names as csn
-    >>> print(csn.io._list_to_string(('foo', 'bar')))
+    >>> print(csn.utilities.io._list_to_string(('foo', 'bar')))
     foo
     bar
-    >>> print(csn.io._list_to_string(('foo', 'bar'), sorted=True))
+    >>> print(csn.utilities.io._list_to_string(('foo', 'bar'), sorted=True))
     bar
     foo
     """
@@ -77,7 +77,7 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
     ... the pattern but is not a valid name, ignore it (Air__Temperature
     ... is an example).
     ... \"\"\")
-    >>> names = csn.io._scrape_stream(stream)
+    >>> names = csn.utilities.io._scrape_stream(stream)
     >>> sorted(names.names)
     ['air__temperature', 'water__temperature']
     """
@@ -186,7 +186,7 @@ def from_list_file(stream):
     ... # A comment
     ... water__temperature # Another comment
     ... \"\"\")
-    >>> names = csn.io.from_list_file(stream)
+    >>> names = csn.utilities.from_list_file(stream)
     >>> sorted(names.names)
     ['air__temperature', 'water__temperature']
     """

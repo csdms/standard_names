@@ -12,7 +12,7 @@ setup (name='standard_names',
        url='https://csdms.colorado.edu',
        install_requires=['pyyaml'],
        packages=['standard_names', 'standard_names.cmd',
-                 'standard_names.tests'],
+                 'standard_names.utilities', 'standard_names.tests'],
        entry_points = {
            'console_scripts': [
                'snbuild = standard_names.cmd.snbuild:main',
