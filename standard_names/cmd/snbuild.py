@@ -11,9 +11,48 @@ from ..utilities.io import FORMATTERS
 from ..registry import NamesRegistry
 
 
+def snbuild(file):
+    """Build a YAML-formatted database of names.
+
+    Parameters
+    ----------
+    file : str
+        Text file of names.
+
+    Returns
+    -------
+    str
+        YAML-formatted text of the names database.
+    """
+    names = NamesRegistry(file)
+
+    formatter = FORMATTERS['yaml']
+
+    lines = [
+        '%YAML 1.2',
+        '---',
+        formatter(names.names, sorted=True, heading='names'),
+        '---',
+        formatter(names.objects, sorted=True, heading='objects'),
+        '---',
+        formatter(names.quantities, sorted=True, heading='quantities'),
+        '---',
+        formatter(names.operators, sorted=True, heading='operators'),
+        '...',
+    ]
+    return os.linesep.join(lines)
+
+
 def main():
     """
     Build a list of CSDMS standard names for YAML description files.
+
+    Examples
+    --------
+    >>> import standard_names as csn
+    >>> import sys
+    >>> sys.argv = ['snbuild', '-h']
+    >>> csn.cmd.snbuild.main()
     """
     import argparse
 
@@ -23,23 +62,7 @@ def main():
                         help='YAML file describing model exchange items')
     args = parser.parse_args()
 
-    names = NamesRegistry(args.file)
-
-    formatter = FORMATTERS['yaml']
-
-    print('%YAML 1.2')
-    print('---')
-
-    print(os.linesep.join([
-        formatter(names.names, sorted=True, heading='names'),
-        '---',
-        formatter(names.objects, sorted=True, heading='objects'),
-        '---',
-        formatter(names.quantities, sorted=True, heading='quantities'),
-        '---',
-        formatter(names.operators, sorted=True, heading='operators'),
-        '...',
-    ]))
+    print(snbuild(args.file))
 
 
 if __name__ == '__main__':

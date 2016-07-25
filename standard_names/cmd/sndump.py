@@ -15,6 +15,21 @@ from ..utilities import FORMATTERS
 _FORMATS = FORMATTERS.keys()
 
 
+def sndump(file=None, format='plain', sorted=True, keys=None):
+    keys = keys or ('names', )
+
+    if file is not None:
+        names = NamesRegistry(file)
+    else:
+        names = NamesRegistry()
+
+    formatter = FORMATTERS[format]
+    for key in keys:
+        list_to_print = getattr(names, key)
+        print(formatter(list_to_print, sorted=unsorted,
+                        heading=key, level=2))
+
+
 class CustomAction(argparse.Action):
     """Keep track of the order of options are given on the command line."""
     def __call__(self, parser, namespace, values, option_string=None):
@@ -53,16 +68,8 @@ def main():
     except AttributeError:
         keys = ['names']
 
-    if args.file:
-        names = NamesRegistry(args.file)
-    else:
-        names = NamesRegistry()
-
-    formatter = FORMATTERS[args.format]
-    for key in keys:
-        list_to_print = getattr(names, key)
-        print(formatter(list_to_print, sorted=not args.unsorted,
-                        heading=key, level=2))
+    sndump(file=args.file, format=args.format, sorted=not args.unsorted,
+           keys=keys)
 
 
 if __name__ == '__main__':
