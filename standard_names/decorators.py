@@ -1,7 +1,5 @@
 #! /usr/bin/env python
-"""
-Some decorators for the CmtStandardNames package.
-"""
+"""Some decorators for the CmtStandardNames package."""
 
 import os
 
@@ -11,6 +9,25 @@ def format_as_wiki(func):
     Decoratate a function that reads lines from a file. Put some wiki
     formatting around each line of the file and add a header, and
     footer.
+
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> from standard_names.decorators import format_as_wiki
+
+    >>> def func(lines):
+    ...     return lines
+
+    >>> wikize = format_as_wiki(func)
+    >>> print(wikize(\"\"\"
+    ... line 1
+    ... line 2
+    ... \"\"\".strip(), heading='Lines'))
+    = Lines =
+    <tt>
+    line 1<br/>
+    line 2<br/>
+    </tt>
     """
     def _wrapped(lines, **kwds):
         """
@@ -43,13 +60,37 @@ def format_as_yaml(func):
     Decoratate a function that reads lines from a file. Put some YAML
     formatting around each line of the file and add a header, and
     footer.
+
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> from standard_names.decorators import format_as_yaml
+
+    >>> def func(lines):
+    ...     return lines
+
+    >>> yamlize = format_as_yaml(func)
+    >>> print(yamlize(\"\"\"
+    ... line 1
+    ... line 2
+    ... \"\"\".strip(), heading='Lines'))
+    Lines:
+      - line 1
+      - line 2
     """
     def _wrapped(lines, **kwds):
         """
         Decorate a list of strings.
 
-        :lines: List of strings
-        :returns: Decorated strings concatoranted with line separators
+        Parameters
+        ---------
+        lines : iterable or str
+            List of strings
+
+        Returns
+        -------
+        str
+            Decorated strings concatoranted with line separators
         """
         heading = kwds.pop('heading', None)
         text = func(lines, **kwds)
@@ -70,6 +111,25 @@ def format_as_yaml(func):
 
 
 def format_as_plain_text(func):
+    """
+
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> from standard_names.decorators import format_as_plain_text
+
+    >>> def func(lines):
+    ...     return lines
+
+    >>> textize = format_as_plain_text(func)
+    >>> print(textize(\"\"\"
+    ... line 1
+    ... line 2
+    ... \"\"\".strip(), heading='Lines'))
+    # Lines
+    line 1
+    line 2
+    """
     def _wrapped(lines, **kwds):
         heading = kwds.pop('heading', None)
         text = func(lines, **kwds)
@@ -93,10 +153,12 @@ def plain_text(func):
     function will instead read from a file with a given name.
     """
     def _wrapped(name, **kwds):
-        """
-        Open a file by name.
+        """Open a file by name.
 
-        :name: Name of the file as a string.
+        Parameters
+        ----------
+        name : str
+            Name of the file as a string.
         """
         with open(name, 'r') as file_like:
             rtn = func(file_like, **kwds)
@@ -110,10 +172,12 @@ def url(func):
     function will instead read from a file with a URL.
     """
     def _wrapped(name, **kwds):
-        """
-        Open a URL by name.
+        """Open a URL by name.
 
-        :name: Name of the URL as a string.
+        Parameters
+        ----------
+        name : str
+            Name of the URL as a string.
         """
         import urllib
 
@@ -129,10 +193,12 @@ def google_doc(func):
     function will instead read from a remote Google Doc file.
     """
     def _wrapped(name, **kwds):
-        """
-        Open a Google Doc file by name.
+        """Open a Google Doc file by name.
 
-        :name: Name of the Google Doc file as a string.
+        Parameters
+        ----------
+        name : str
+            Name of the Google Doc file as a string.
         """
         import subprocess
         import tempfile

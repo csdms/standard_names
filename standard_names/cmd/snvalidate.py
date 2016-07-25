@@ -7,7 +7,7 @@ import sys
 import argparse
 
 from ..registry import NamesRegistry
-from ..standardname import BadRegistryError
+from ..error import BadRegistryError
 
 
 def main():
