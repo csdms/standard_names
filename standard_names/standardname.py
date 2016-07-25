@@ -105,10 +105,10 @@ class StandardName(object):
         >>> csn.StandardName.decompose_name(name)
         ('atmosphere_air', 'temperature', ('elevation_angle', 'gradient'))
 
-        >>> StandardName.decompose_name('air_temperature')
-        Traceback (most recent call last):
-        ...
-        BadNameError: air_temperature
+        >>> try:
+        ...     StandardName.decompose_name('air_temperature')
+        ... except BadNameError:
+        ...     pass
         """
         try:
             (object_part, quantity_clause) = name.split('__')
