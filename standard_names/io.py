@@ -5,31 +5,11 @@ from __future__ import print_function
 import os
 import sys
 
-from . import StandardName, BadNameError
-from .decorators import (format_as_wiki, format_as_yaml, format_as_plain_text)
-from . import (google_doc, url, plain_text)
+from .standardname import StandardName
 from .registry import NamesRegistry
-
-
-class Error(Exception):
-
-    """Base exception for this module."""
-
-    pass
-
-
-class BadIntentError(Error):
-
-    """Error to indicate a bad key for intent."""
-
-    def __init__(self, key, valid_keys):
-        super(BadIntentError, self).__init__()
-        self._key = key
-        self._valid_keys = valid_keys
-
-    def __str__(self):
-        return '%s: Should be one of %s' % (self._key,
-                                            ','.join(self._valid_keys))
+from .error import BadNameError, BadIntentError
+from .decorators import (format_as_wiki, format_as_yaml, format_as_plain_text,
+                         google_doc, url, plain_text)
 
 
 def _list_to_string(lines, **kwds):
@@ -127,9 +107,7 @@ def _find_unique_names(models):
         if isinstance(model['exchange items'], dict):
             new_names = []
             for intent in model['exchange items']:
-                try:
-                    assert(intent in _VALID_INTENTS)
-                except AssertionError:
+                if intent not in _VALID_INTENTS:
                     raise BadIntentError(intent, _VALID_INTENTS)
                 new_names.extend(model['exchange items'][intent])
         else:

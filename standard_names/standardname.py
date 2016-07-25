@@ -1,40 +1,11 @@
 #! /usr/bin/env python
 """A CSDMS standard name."""
-
-
 import re
 
-
-class Error(Exception):
-    """Base class for exceptions from this module."""
-    pass
+from .error import BadNameError
 
 
-class BadNameError(Error):
-    """Error to indicate a poorly-formed standard name."""
-    def __init__(self, name):
-        super(BadNameError, self).__init__()
-        self._name = name
-
-    def __str__(self):
-        return self._name
-
-
-class BadRegistryError(Error):
-    """Error to indicate a bad NamesRegistry."""
-    def __init__(self, names):
-        super(BadRegistryError, self).__init__()
-        self._names = names
-
-    def __str__(self):
-        return "Registry contains invalid names"
-
-    @property
-    def names(self):
-        return tuple(self._names)
-
-
-_PREFIX_REGEX = '^[a-z]([a-zA-Z0-9~-]|_(?!_))*'
+ePREFIX_REGEX = '^[a-z]([a-zA-Z0-9~-]|_(?!_))*'
 _SUFFIX_REGEX = '[a-z0-9]([a-z0-9~-]|_(?!_))*[a-z0-9]$'
 STANDARD_NAME_REGEX = re.compile(
     _PREFIX_REGEX + '(__)' + _SUFFIX_REGEX
