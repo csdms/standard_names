@@ -79,8 +79,7 @@ def format_as_yaml(func):
       - line 2
     """
     def _wrapped(lines, **kwds):
-        """
-        Decorate a list of strings.
+        """Decorate a list of strings.
 
         Parameters
         ---------
@@ -103,8 +102,12 @@ def format_as_yaml(func):
             yaml_lines = []
             indent = 0
 
-        for line in lines:
-            yaml_lines.append('%s- %s' % (' ' * indent, line))
+        items = [line for line in lines if line]
+        if items:
+            for line in items:
+                yaml_lines.append('%s- %s' % (' ' * indent, line))
+        else:
+            yaml_lines.append('%s[]' % (' ' * indent))
 
         return os.linesep.join(yaml_lines)
     return _wrapped

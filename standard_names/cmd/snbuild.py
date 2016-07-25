@@ -23,6 +23,34 @@ def snbuild(file):
     -------
     str
         YAML-formatted text of the names database.
+
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> from six.moves import StringIO
+    >>> import standard_names as csn
+
+    >>> names = StringIO(\"\"\"
+    ... air__temperature
+    ... water__temperature
+    ... \"\"\")
+    >>> print(csn.cmd.snbuild.snbuild(names))
+    %YAML 1.2
+    ---
+    names:
+      - air__temperature
+      - water__temperature
+    ---
+    objects:
+      - air
+      - water
+    ---
+    quantities:
+      - temperature
+    ---
+    operators:
+      []
+    ...
     """
     names = NamesRegistry(file)
 
@@ -44,16 +72,7 @@ def snbuild(file):
 
 
 def main():
-    """
-    Build a list of CSDMS standard names for YAML description files.
-
-    Examples
-    --------
-    >>> import standard_names as csn
-    >>> import sys
-    >>> sys.argv = ['snbuild', '-h']
-    >>> csn.cmd.snbuild.main()
-    """
+    """Build a list of CSDMS standard names for YAML description files."""
     import argparse
 
     parser = argparse.ArgumentParser(

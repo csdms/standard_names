@@ -5,6 +5,7 @@ Example usage:
 """
 from __future__ import print_function
 
+import os
 import sys
 import argparse
 
@@ -16,18 +17,49 @@ _FORMATS = FORMATTERS.keys()
 
 
 def sndump(file=None, format='plain', sorted=True, keys=None):
+    """Dump a registry to different formats.
+
+    Parameters
+    ----------
+    file : str, optional
+        Name of a registry file of names.
+    format : {'plain'}, optional
+        Output format.
+    sorted : bool, optional
+        Sort results.
+    keys : {'names, 'objects', 'quantities', 'operators'} or iterable
+        Standard Name element or elements to print.
+
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> from six.moves import StringIO
+    >>> import standard_names as csn
+
+    >>> names = StringIO(\"\"\"
+    ... air__temperature
+    ... water__temperature
+    ... \"\"\")
+    >>> print(csn.cmd.sndump.sndump(names))
+    air__temperature
+    water__temperature
+    """
     keys = keys or ('names', )
-
-    if file is not None:
-        names = NamesRegistry(file)
+    if file:
+        args = (file, )
     else:
-        names = NamesRegistry()
+        args = ()
 
+    names = NamesRegistry(*args)
+
+    lines = []
     formatter = FORMATTERS[format]
     for key in keys:
         list_to_print = getattr(names, key)
-        print(formatter(list_to_print, sorted=unsorted,
-                        heading=key, level=2))
+        lines.append(formatter(list_to_print, sorted=sorted, heading=key,
+                               level=2))
+
+    return os.linesep.join(lines)
 
 
 class CustomAction(argparse.Action):
