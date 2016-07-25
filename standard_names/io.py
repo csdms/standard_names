@@ -4,6 +4,8 @@ from __future__ import print_function
 
 import os
 import sys
+import re
+import warnings
 
 from .standardname import StandardName
 from .registry import NamesRegistry
@@ -29,10 +31,19 @@ def _list_to_string(lines, **kwds):
     -------
     str
         The joined strings.
-    """
-    sort_list = kwds.pop('sorted', False)
 
-    if sort_list:
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> import standard_names as csn
+    >>> print(csn.io._list_to_string(('foo', 'bar')))
+    foo
+    bar
+    >>> print(csn.io._list_to_string(('foo', 'bar'), sorted=True))
+    bar
+    foo
+    """
+    if kwds.pop('sorted', False):
         sorted_lines = list(lines)
         sorted_lines.sort()
         return os.linesep.join(sorted_lines)
@@ -55,8 +66,21 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
     -------
     NamesRegistry
         The scraped words.
+
+    Examples
+    --------
+    >>> import standard_names as csn
+    >>> from six.moves import StringIO
+    >>> stream = StringIO(\"\"\"
+    ... Some text with a standard name (air__temperature) in it.
+    ... More words with more names: water__temperature. If a word matches
+    ... the pattern but is not a valid name, ignore it (Air__Temperature
+    ... is an example).
+    ... \"\"\")
+    >>> names = csn.io._scrape_stream(stream)
+    >>> sorted(names.names)
+    ['air__temperature', 'water__temperature']
     """
-    import re
     names = NamesRegistry(None)
 
     text = stream.read()
@@ -65,7 +89,8 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
         try:
             names.add(word)
         except BadNameError as error:
-            print(error, file=sys.stderr)
+            print("{name}: matches pattern but not a valid name. "
+                  "Ignoring.".format(name=error.name), file=sys.stderr)
 
     return names
 
@@ -76,9 +101,6 @@ FORMATTERS = {
     'yaml': format_as_yaml(_list_to_string),
     'txt': format_as_plain_text(_list_to_string),
 }
-#for (name, decorator) in [('wiki', format_as_wiki), ('yaml', format_as_yaml),
-#    ('txt', format_as_plain_text)]:
-#    FORMATTERS[name] = decorator(_list_to_string)
 
 
 SCRAPERS = dict()
@@ -154,11 +176,27 @@ def from_list_file(stream):
     -------
     NamesRegistry
         A collection of names read from the source.
+
+    Examples
+    --------
+    >>> import standard_names as csn
+    >>> from six.moves import StringIO
+    >>> stream = StringIO(\"\"\"
+    ... air__temperature
+    ... # A comment
+    ... water__temperature # Another comment
+    ... \"\"\")
+    >>> names = csn.io.from_list_file(stream)
+    >>> sorted(names.names)
+    ['air__temperature', 'water__temperature']
     """
     names = NamesRegistry(None)
     for line in stream:
-        if not line.startswith('#'):
-            names.add(line.strip())
+        if '#' in line:
+            line = line[:line.find('#')]
+        line = line.strip()
+        if line:
+            names.add(line)
     return names
 
 
