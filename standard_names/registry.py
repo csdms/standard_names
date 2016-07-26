@@ -24,6 +24,18 @@ def load_names_from_txt(file_like, onerror='raise'):
     -------
     set of str
         The Standard Names read from the file.
+
+    Examples
+    --------
+    >>> from six.moves import StringIO
+    >>> import standard_names as csn
+    >>> names = StringIO(\"\"\"
+    ... air__temperature
+    ... Water__Temperature
+    ... \"\"\")
+    >>> set_of_names = csn.registry.load_names_from_txt(names, onerror='warn')
+    >>> [name.name for name in set_of_names]
+    ['air__temperature']
     """
     if onerror not in ('pass', 'raise', 'warn'):
         raise ValueError('value for onerror keyword not understood')
@@ -50,17 +62,57 @@ def load_names_from_txt(file_like, onerror='raise'):
     return names
 
 
-def _get_latest_names_file():
+def _strict_version_or_raise(version_str):
     from distutils.version import StrictVersion
 
-    data_dir = os.path.join(os.path.dirname(__file__), 'data')
-    data_file_pattern = os.path.join(data_dir, 'names-*.txt')
+    if StrictVersion.version_re.match(version_str):
+        return StrictVersion(version_str)
+    else:
+        raise ValueError(
+            '{version}: Not a version string'.format(version=version_str))
+
+
+def _get_latest_names_file(path=None, prefix='names-', suffix='.txt'):
+    """Get the most recent version of a names file.
+
+    Parameters
+    ----------
+    path : str, optional
+        If given, the path to a folder holding names files. Otherwise,
+        the default location within the *standard_names* package.
+    prefix : str, optional
+        The prefix for names-file glob.
+    suffix : str, optional
+        The suffix for names-file glob.
+
+    Returns
+    -------
+    tuple of str
+        Tuple of the name of the latest file and its version.
+
+    Examples
+    --------
+    >>> from standard_names.registry import _get_latest_names_file
+    >>> _get_latest_names_file() # doctest: +ELLIPSIS
+    ('.../standard_names/data/names-0.8.3.txt', '0.8.3')
+
+    >>> _get_latest_names_file(prefix='garbage')
+    (None, None)
+
+    >>> _get_latest_names_file(prefix='names-0.8.3')
+    (None, None)
+    """
+    data_dir = path or os.path.join(os.path.dirname(__file__), 'data')
+
+    name_glob = '{prefix}*{suffix}'.format(prefix=prefix, suffix=suffix)
+    data_file_pattern = os.path.join(data_dir, name_glob)
     files = [os.path.basename(file_) for file_ in glob(data_file_pattern)]
 
     newest = None
     for file in files:
+        version_str = file[len(prefix): -len(suffix)]
         try:
-            version = StrictVersion(file[len('names-'): -len('.txt')])
+            version = _strict_version_or_raise(version_str)
         except ValueError:
             pass
         else:
@@ -70,7 +122,9 @@ def _get_latest_names_file():
     if newest:
         version = str(newest)
         names_file = os.path.join(
-            data_dir, 'names-{version}.txt'.format(version=version))
+            data_dir,
+            '{prefix}{version}{suffix}'.format(prefix=prefix, suffix=suffix,
+                                               version=version))
         return names_file, version
     else:
         return None, None
