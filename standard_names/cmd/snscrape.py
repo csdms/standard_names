@@ -50,10 +50,9 @@ def snscrape(files, with_headers=False, regex=None, format='url'):
     ... A file is two names: air__temperature, and water__temperature.
     ... \"\"\")
 
-    >>> print(csn.cmd.snscrape.snscrape([file1, file2], format='plain_text'))
-    air__temperature
-    air__temperature
-    water__temperature
+    >>> lines = csn.cmd.snscrape.snscrape([file1, file2], format='plain_text')
+    >>> sorted(lines.split(os.linesep))
+    ['air__temperature', 'air__temperature', 'water__temperature']
     """
     regex = regex or _DEFAULT_SEARCH
     
