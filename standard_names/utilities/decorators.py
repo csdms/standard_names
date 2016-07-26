@@ -3,6 +3,8 @@
 
 import os
 
+from six import string_types
+
 
 def format_as_wiki(func):
     """
@@ -163,8 +165,11 @@ def plain_text(func):
         name : str
             Name of the file as a string.
         """
-        with open(name, 'r') as file_like:
-            rtn = func(file_like, **kwds)
+        if isinstance(name, string_types):
+            with open(name, 'r') as file_like:
+                rtn = func(file_like, **kwds)
+        else:
+            rtn = func(name, **kwds)
         return rtn
     return _wrapped
 
