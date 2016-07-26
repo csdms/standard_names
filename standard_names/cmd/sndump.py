@@ -72,8 +72,33 @@ class CustomAction(argparse.Action):
         setattr(namespace, 'ordered_args', previous)
 
 
-def main():
-    """Dump a list of known standard names."""
+def main(args=None):
+    """Dump a list of known standard names.
+
+    Parameters
+    ----------
+    args : iterable of str, optional
+        Arguments to pass to *parse_args*. If not provided, use ``sys.argv``.
+
+    Examples
+    --------
+    >>> import os
+    >>> import standard_names as csn
+    >>> (fname, _) = csn.registry._get_latest_names_file()
+    >>> registry = csn.NamesRegistry()
+
+    >>> names = csn.cmd.sndump.main(['-n', fname]).split(os.linesep)
+    >>> len(names) == len(registry)
+    True
+
+    >>> objects = csn.cmd.sndump.main(['-o', fname]).split(os.linesep)
+    >>> len(objects) == len(registry.objects)
+    True
+
+    >>> names = csn.cmd.sndump.main(['-n', '-o', fname]).split(os.linesep)
+    >>> len(names) == len(registry) + len(registry.objects)
+    True
+    """
     parser = argparse.ArgumentParser("Dump known standard names")
 
     parser.add_argument('-n', nargs=0, dest='names',
@@ -93,16 +118,19 @@ def main():
     parser.add_argument('--format', choices=_FORMATS,
                         default='plain', help='Output format')
 
-    args = parser.parse_args()
+    if args is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(args)
 
     try:
         keys = args.ordered_args
     except AttributeError:
         keys = ['names']
 
-    sndump(file=args.file, format=args.format, sorted=not args.unsorted,
-           keys=keys)
+    return sndump(file=args.file, format=args.format, sorted=not args.unsorted,
+                  keys=keys)
 
 
 if __name__ == '__main__':
-    main()
+    print(main())
