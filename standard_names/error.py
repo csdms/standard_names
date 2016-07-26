@@ -30,14 +30,14 @@ class BadRegistryError(Error):
 
     def __init__(self, names):
         super(BadRegistryError, self).__init__()
-        self._names = names
+        self._names = tuple(sorted(names))
 
     def __str__(self):
         return "Registry contains invalid names"
 
     @property
     def names(self):
-        return tuple(self._names)
+        return self._names
 
 
 class BadIntentError(Error):

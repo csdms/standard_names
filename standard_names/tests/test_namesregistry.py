@@ -2,7 +2,8 @@
 """Unit tests for standard_names.NamesRegistry."""
 from nose.tools import (assert_greater, assert_equal, assert_raises,
                         assert_in, assert_is_instance, assert_tuple_equal,
-                        assert_list_equal, assert_set_equal)
+                        assert_list_equal, assert_set_equal,
+                        assert_raises_regexp)
 from six import string_types
 from six.moves import StringIO
 
@@ -23,9 +24,16 @@ def test_load_names_bad_name_pass():
 
 
 def test_load_names_bad_name_raise():
-    file_like = StringIO(r"air__temperature\nwater_temperature")
-    with assert_raises(BadRegistryError):
+    file_like = StringIO("air__temperature\nwater_temperature")
+    with assert_raises_regexp(BadRegistryError,
+                              'Registry contains invalid names'):
         load_names_from_txt(file_like, onerror='raise')
+
+    file_like = StringIO("air__temperature\nwater_temperature")
+    try:
+        load_names_from_txt(file_like, onerror='raise')
+    except BadRegistryError as error:
+        assert_tuple_equal(error.names, ('water_temperature', ))
 
 
 def test_create_full():
