@@ -38,19 +38,3 @@ class BadRegistryError(Error):
     @property
     def names(self):
         return self._names
-
-
-class BadIntentError(Error):
-
-    """Error to indicate a bad key for intent."""
-
-    def __init__(self, key, valid_keys):
-        super(BadIntentError, self).__init__()
-        self._key = key
-        self._valid_keys = valid_keys
-
-    def __str__(self):
-        return '%s: Should be one of %s' % (self._key,
-                                            ','.join(self._valid_keys))
-
-

@@ -9,7 +9,7 @@ import warnings
 
 from ..standardname import StandardName
 from ..registry import NamesRegistry
-from ..error import BadNameError, BadIntentError
+from ..error import BadNameError
 from .decorators import (format_as_wiki, format_as_yaml, format_as_plain_text,
                          google_doc, url, plain_text)
 
@@ -130,7 +130,8 @@ def _find_unique_names(models):
             new_names = []
             for intent in model['exchange items']:
                 if intent not in _VALID_INTENTS:
-                    raise BadIntentError(intent, _VALID_INTENTS)
+                    raise ValueError(
+                        '{intent}: Bad intent'.format(intent=intent))
                 new_names.extend(model['exchange items'][intent])
         else:
             new_names = model['exchange items']
