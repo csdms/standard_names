@@ -37,9 +37,11 @@ def _list_to_string(lines, **kwds):
     >>> from __future__ import print_function
     >>> import standard_names as csn
     >>> print(csn.utilities.io._list_to_string(('foo', 'bar')))
+    ...     # doctest: + NORMALIZE_WHITESPACE
     foo
     bar
     >>> print(csn.utilities.io._list_to_string(('foo', 'bar'), sorted=True))
+    ...     # doctest: + NORMALIZE_WHITESPACE
     bar
     foo
     """
