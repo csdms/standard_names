@@ -66,16 +66,15 @@ def format_as_yaml(func):
     Examples
     --------
     >>> from __future__ import print_function
+    >>> import os
     >>> from standard_names.utilities.decorators import format_as_yaml
 
     >>> def func(lines):
     ...     return lines
 
     >>> yamlize = format_as_yaml(func)
-    >>> print(yamlize(\"\"\"
-    ... line 1
-    ... line 2
-    ... \"\"\".strip(), heading='Lines', newline='\\n'))
+    >>> lines = os.linesep.join(['line 1', 'line 2'])
+    >>> print(yamlize(lines, heading='Lines', newline='\\n'))
     Lines:
       - line 1
       - line 2
