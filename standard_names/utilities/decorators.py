@@ -23,7 +23,7 @@ def format_as_wiki(func):
 
     >>> wikize = format_as_wiki(func)
     >>> lines = os.linesep.join(['line 1', 'line 2'])
-    >>> print(wikize(lines, heading='Lines'))
+    >>> print(wikize(lines, heading='Lines', newline='\\n'))
     = Lines =
     <tt>
     line 1<br/>
@@ -31,14 +31,15 @@ def format_as_wiki(func):
     </tt>
     """
     def _wrapped(lines, **kwds):
-        """
-        Decorate a list of strings.
+        """Decorate a list of strings.
 
         :lines: List of strings
         :returns: Decorated strings concatoranted with line separators
         """
+        newline = kwds.pop('newline', os.linesep)
         heading = kwds.pop('heading', None)
         heading_level = kwds.pop('level', 1)
+
         text = func(lines, **kwds)
         lines = text.split(os.linesep)
 
@@ -52,7 +53,7 @@ def format_as_wiki(func):
             pre = '=' * heading_level
             wiki_lines.insert(0, '%s %s %s' % (pre, heading.title(), pre))
 
-        return os.linesep.join(wiki_lines)
+        return newline.join(wiki_lines)
     return _wrapped
 
 
