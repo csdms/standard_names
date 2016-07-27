@@ -10,23 +10,46 @@ from ..registry import NamesRegistry
 from ..error import BadRegistryError
 
 
-def main():
-    """Validate a list of names."""
+def main(args=None):
+    """Validate a list of names.
+
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> import standard_names as csn
+
+    >>> (fname, _) = csn.registry._get_latest_names_file()
+    >>> csn.cmd.snvalidate.main([fname])
+    0
+
+    >>> import tempfile
+    >>> with tempfile.NamedTemporaryFile() as fp:
+    ...     print('air__temperature', file=fp)
+    ...     print('Water__temperature', file=fp)
+    ...     print('water_temperature', file=fp)
+    ...     fp.seek(0)
+    ...     status = csn.cmd.snvalidate.main([fp.name])
+    >>> status
+    2
+    """
     parser = argparse.ArgumentParser("Validate a list of standard names")
 
     parser.add_argument('file', type=argparse.FileType('r'), nargs='+',
                         default=None, help='Read names from a file')
 
-    args = parser.parse_args()
+    if args is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(args)
 
     try:
         names = NamesRegistry(args.file)
     except BadRegistryError as err:
         print(os.linesep.join(err.names), file=sys.stderr)
-        sys.exit(1)
+        return len(err.names)
     else:
-        sys.exit(0)
+        return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

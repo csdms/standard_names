@@ -78,6 +78,9 @@ def format_as_yaml(func):
     Lines:
       - line 1
       - line 2
+    >>> print(yamlize(lines, newline='\\n'))
+    - line 1
+    - line 2
     """
     def _wrapped(lines, **kwds):
         """Decorate a list of strings.

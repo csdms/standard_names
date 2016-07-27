@@ -77,7 +77,7 @@ def snbuild(file, newline=None):
     return newline.join(lines)
 
 
-def main():
+def main(args=None):
     """Build a list of CSDMS standard names for YAML description files."""
     import argparse
 
@@ -85,10 +85,14 @@ def main():
         'Scan a model description file for CSDMS standard names')
     parser.add_argument('file', nargs='+', type=argparse.FileType('r'),
                         help='YAML file describing model exchange items')
-    args = parser.parse_args()
 
-    print(snbuild(args.file))
+    if args is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(args)
+
+    return snbuild(args.file)
 
 
 if __name__ == '__main__':
-    main()
+    print(main())

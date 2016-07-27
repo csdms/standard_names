@@ -74,8 +74,28 @@ def snscrape(files, with_headers=False, regex=None, format='url', newline=None):
     return newline.join(documents)
 
 
-def main():
-    """Scrape standard names from a file or URL."""
+def main(args=None):
+    """Scrape standard names from a file or URL.
+
+    Examples
+    --------
+    >>> import os
+    >>> import tempfile
+    >>> import standard_names as csn
+
+    >>> contents = \"\"\"
+    ... A file with text and names (air__temperature) mixed in. Some names
+    ... have double underscores (like, Water__Temperature) by are not
+    ... valid names. Others, like water__temperature, are good.
+    ... \"\"\"
+    >>> with tempfile.NamedTemporaryFile() as fp:
+    ...     print(contents, file=fp)
+    ...     fp.seek(0)
+    ...     names = csn.cmd.snscrape.main(
+    ...         [fp.name, '--reader=plain_text', '--no-headers'])
+    >>> names.split(os.linesep)
+    ['air__temperature', 'water__temperature']
+    """
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -91,13 +111,14 @@ def main():
     parser.add_argument('--no-headers', action='store_true',
                         help='Do not print headers between scrapes')
 
-    args = parser.parse_args()
+    if args is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(args)
 
-    names = snscrape(args.file, with_headers=not args.no_headers,
-                     regex=args.regex, format=args.reader)
-
-    print(names)
+    return snscrape(args.file, with_headers=not args.no_headers,
+                    regex=args.regex, format=args.reader)
 
 
 if __name__ == '__main__':
-    main()
+    print(main())
