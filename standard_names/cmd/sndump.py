@@ -61,7 +61,7 @@ def sndump(file=None, format='plain', sorted=True, keys=None, newline=None):
     for key in keys:
         list_to_print = getattr(names, key)
         lines.append(formatter(list_to_print, sorted=sorted, heading=key,
-                               level=2))
+                               level=2, newline=newline))
 
     return newline.join(lines)
 
