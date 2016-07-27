@@ -11,13 +11,15 @@ from ..utilities.io import FORMATTERS
 from ..registry import NamesRegistry
 
 
-def snbuild(file):
+def snbuild(file, newline=None):
     """Build a YAML-formatted database of names.
 
     Parameters
     ----------
     file : str
         Text file of names.
+    newline : str, optional
+        Newline character to use for output.
 
     Returns
     -------
@@ -52,6 +54,7 @@ def snbuild(file):
       []
     ...
     """
+    newline = newline or os.linesep
     names = NamesRegistry(file)
 
     formatter = FORMATTERS['yaml']
@@ -68,7 +71,7 @@ def snbuild(file):
         formatter(names.operators, sorted=True, heading='operators'),
         '...',
     ]
-    return os.linesep.join(lines)
+    return newline.join(lines)
 
 
 def main():

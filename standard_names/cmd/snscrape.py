@@ -18,7 +18,7 @@ _AS_TXT = FORMATTERS['txt']
 _DEFAULT_SEARCH = r'\b[\w~-]+__[\w~-]+'
 
 
-def snscrape(files, with_headers=False, regex=None, format='url'):
+def snscrape(files, with_headers=False, regex=None, format='url', newline=None):
     """Scrape names from a URL.
 
     Parameters
@@ -31,6 +31,8 @@ def snscrape(files, with_headers=False, regex=None, format='url'):
         A regular expression that defines what a Standard Name is.
     format : {'url', 'plain_text'}, optional
         The format of the target that's being scraped.
+    newline : str, optional
+        Newline character to use for output.
 
     Returns
     -------
@@ -54,6 +56,7 @@ def snscrape(files, with_headers=False, regex=None, format='url'):
     >>> sorted(lines.split(os.linesep))
     ['air__temperature', 'air__temperature', 'water__temperature']
     """
+    newline = newline or os.linesep
     regex = regex or _DEFAULT_SEARCH
     
     docs = {}
@@ -68,7 +71,7 @@ def snscrape(files, with_headers=False, regex=None, format='url'):
             heading = None
         documents.append(_AS_TXT(name_list, sorted=True, heading=heading), )
 
-    return os.linesep.join(documents)
+    return newline.join(documents)
 
 
 def main():

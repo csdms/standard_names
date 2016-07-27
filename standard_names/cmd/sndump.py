@@ -16,7 +16,7 @@ from ..utilities import FORMATTERS
 _FORMATS = FORMATTERS.keys()
 
 
-def sndump(file=None, format='plain', sorted=True, keys=None):
+def sndump(file=None, format='plain', sorted=True, keys=None, newline=None):
     """Dump a registry to different formats.
 
     Parameters
@@ -29,6 +29,8 @@ def sndump(file=None, format='plain', sorted=True, keys=None):
         Sort results.
     keys : {'names, 'objects', 'quantities', 'operators'} or iterable
         Standard Name element or elements to print.
+    newline : str, optional
+        Specify the newline character to use for output.
 
     Examples
     --------
@@ -40,10 +42,11 @@ def sndump(file=None, format='plain', sorted=True, keys=None):
     ... air__temperature
     ... water__temperature
     ... \"\"\")
-    >>> print(csn.cmd.sndump.sndump(names))
+    >>> print(csn.cmd.sndump.sndump(names, newline='\\n'))
     air__temperature
     water__temperature
     """
+    newline = newline or os.linesep
     keys = keys or ('names', )
     if file:
         args = (file, )
@@ -59,7 +62,7 @@ def sndump(file=None, format='plain', sorted=True, keys=None):
         lines.append(formatter(list_to_print, sorted=sorted, heading=key,
                                level=2))
 
-    return os.linesep.join(lines)
+    return newline.join(lines)
 
 
 class CustomAction(argparse.Action):

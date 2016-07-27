@@ -26,6 +26,8 @@ def _list_to_string(lines, **kwds):
         String to join.
     sorted : bool, optional
         Sort the strings before joining them.
+    newline : str, optional
+        Newline character to use for output.
 
     Returns
     -------
@@ -36,21 +38,20 @@ def _list_to_string(lines, **kwds):
     --------
     >>> from __future__ import print_function
     >>> import standard_names as csn
-    >>> print(csn.utilities.io._list_to_string(('foo', 'bar')))
-    ...     # doctest: + NORMALIZE_WHITESPACE
+    >>> print(csn.utilities.io._list_to_string(('foo', 'bar'), newline='\\n'))
     foo
     bar
-    >>> print(csn.utilities.io._list_to_string(('foo', 'bar'), sorted=True))
-    ...     # doctest: + NORMALIZE_WHITESPACE
+    >>> print(csn.utilities.io._list_to_string(('foo', 'bar'), sorted=True, newline='\\n'))
     bar
     foo
     """
+    newline = kwds.pop('newline', os.linesep)
     if kwds.pop('sorted', False):
         sorted_lines = list(lines)
         sorted_lines.sort()
-        return os.linesep.join(sorted_lines)
+        return newline.join(sorted_lines)
     else:
-        return os.linesep.join(lines)
+        return newline.join(lines)
 
 
 def _scrape_stream(stream, regex=r'\b\w+__\w+'):
