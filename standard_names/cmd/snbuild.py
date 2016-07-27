@@ -62,13 +62,16 @@ def snbuild(file, newline=None):
     lines = [
         '%YAML 1.2',
         '---',
-        formatter(names.names, sorted=True, heading='names'),
+        formatter(names.names, sorted=True, heading='names', newline=newline),
         '---',
-        formatter(names.objects, sorted=True, heading='objects'),
+        formatter(names.objects, sorted=True, heading='objects',
+                  newline=newline),
         '---',
-        formatter(names.quantities, sorted=True, heading='quantities'),
+        formatter(names.quantities, sorted=True, heading='quantities',
+                  newline=newline),
         '---',
-        formatter(names.operators, sorted=True, heading='operators'),
+        formatter(names.operators, sorted=True, heading='operators',
+                  newline=newline),
         '...',
     ]
     return newline.join(lines)
