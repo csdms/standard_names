@@ -129,7 +129,7 @@ def format_as_plain_text(func):
 
     >>> textize = format_as_plain_text(func)
     >>> lines = os.linesep.join(['line 1', 'line 2'])
-    >>> print(textize(lines, heading='Lines'))
+    >>> print(textize(lines, heading='Lines', newline='\\n'))
     # Lines
     line 1
     line 2
