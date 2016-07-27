@@ -92,7 +92,7 @@ def main(args=None):
     >>> (fd, fname) = tempfile.mkstemp()
     >>> os.close(fd)
 
-    >>> with open(fname, 'w+b') as fp:
+    >>> with open(fname, 'w') as fp:
     ...     print(contents, file=fp)
 
     >>> names = csn.cmd.snscrape.main(
