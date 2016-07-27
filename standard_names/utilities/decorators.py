@@ -139,6 +139,8 @@ def format_as_plain_text(func):
     """
     def _wrapped(lines, **kwds):
         heading = kwds.pop('heading', None)
+        newline = kwds.pop('newline', os.linesep)
+
         text = func(lines, **kwds)
         lines = text.split(os.linesep)
 
@@ -150,7 +152,7 @@ def format_as_plain_text(func):
         for line in lines:
             stripped_lines.append(line.strip())
 
-        return os.linesep.join(stripped_lines)
+        return newline.join(stripped_lines)
     return _wrapped
 
 
