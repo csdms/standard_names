@@ -16,6 +16,7 @@ def main(args=None):
     Examples
     --------
     >>> from __future__ import print_function
+    >>> import os
     >>> import standard_names as csn
 
     >>> (fname, _) = csn.registry._get_latest_names_file()
@@ -23,14 +24,16 @@ def main(args=None):
     0
 
     >>> import tempfile
-    >>> with tempfile.NamedTemporaryFile() as fp:
+    >>> (_, fname) = tempfile.mkstemp()
+    >>> with open(fname, 'w+b') as fp:
     ...     print('air__temperature', file=fp)
     ...     print('Water__temperature', file=fp)
     ...     print('water_temperature', file=fp)
-    ...     fp.seek(0)
-    ...     status = csn.cmd.snvalidate.main([fp.name])
-    >>> status
+
+    >>> csn.cmd.snvalidate.main([fp.name])
     2
+
+    >>> os.remove(fname)
     """
     parser = argparse.ArgumentParser("Validate a list of standard names")
 

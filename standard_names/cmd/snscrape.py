@@ -88,13 +88,17 @@ def main(args=None):
     ... have double underscores (like, Water__Temperature) by are not
     ... valid names. Others, like water__temperature, are good.
     ... \"\"\"
-    >>> with tempfile.NamedTemporaryFile() as fp:
+
+    >>> (_, fname) = tempfile.mkstemp()
+    >>> with open(fname, 'w+b') as fp:
     ...     print(contents, file=fp)
-    ...     fp.seek(0)
-    ...     names = csn.cmd.snscrape.main(
-    ...         [fp.name, '--reader=plain_text', '--no-headers'])
+
+    >>> names = csn.cmd.snscrape.main(
+    ...     [fp.name, '--reader=plain_text', '--no-headers'])
     >>> names.split(os.linesep)
     ['air__temperature', 'water__temperature']
+
+    >>> os.remove(fname)
     """
     import argparse
 
