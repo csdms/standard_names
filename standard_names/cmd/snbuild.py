@@ -36,7 +36,7 @@ def snbuild(file, newline=None):
     ... air__temperature
     ... water__temperature
     ... \"\"\")
-    >>> print(csn.cmd.snbuild.snbuild(names))
+    >>> print(csn.cmd.snbuild.snbuild(names, newline='\\n'))
     %YAML 1.2
     ---
     names:
