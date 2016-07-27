@@ -15,16 +15,15 @@ def format_as_wiki(func):
     Examples
     --------
     >>> from __future__ import print_function
+    >>> import os
     >>> from standard_names.utilities.decorators import format_as_wiki
 
     >>> def func(lines):
     ...     return lines
 
     >>> wikize = format_as_wiki(func)
-    >>> print(wikize(\"\"\"
-    ... line 1
-    ... line 2
-    ... \"\"\".strip(), heading='Lines'))
+    >>> lines = os.linesep.join(['line 1', 'line 2'])
+    >>> print(wikize(lines, heading='Lines'))
     = Lines =
     <tt>
     line 1<br/>
@@ -128,10 +127,8 @@ def format_as_plain_text(func):
     ...     return lines
 
     >>> textize = format_as_plain_text(func)
-    >>> print(textize(\"\"\"
-    ... line 1
-    ... line 2
-    ... \"\"\".strip(), heading='Lines'))
+    >>> lines = os.linesep.join(['line 1', 'line 2'])
+    >>> print(textize(lines, heading='Lines'))
     # Lines
     line 1
     line 2

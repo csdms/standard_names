@@ -35,14 +35,14 @@ def sndump(file=None, format='plain', sorted=True, keys=None, newline=None):
     Examples
     --------
     >>> from __future__ import print_function
+    >>> import os
     >>> from six.moves import StringIO
     >>> import standard_names as csn
 
-    >>> names = StringIO(\"\"\"
-    ... air__temperature
-    ... water__temperature
-    ... \"\"\")
-    >>> print(csn.cmd.sndump.sndump(names, newline='\\n'))
+    >>> lines = os.linesep.join(['air__temperature', 'water__temperature'])
+    >>> names = StringIO(lines)
+
+    >>> print(csn.cmd.sndump.sndump(names))
     air__temperature
     water__temperature
     """

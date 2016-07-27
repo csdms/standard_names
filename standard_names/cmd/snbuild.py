@@ -29,13 +29,13 @@ def snbuild(file, newline=None):
     Examples
     --------
     >>> from __future__ import print_function
+    >>> import os
     >>> from six.moves import StringIO
     >>> import standard_names as csn
 
-    >>> names = StringIO(\"\"\"
-    ... air__temperature
-    ... water__temperature
-    ... \"\"\")
+    >>> lines = os.linesep.join(['air__temperature', 'water__temperature'])
+    >>> names = StringIO(lines)
+
     >>> print(csn.cmd.snbuild.snbuild(names, newline='\\n'))
     %YAML 1.2
     ---
