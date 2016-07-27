@@ -24,7 +24,9 @@ def main(args=None):
     0
 
     >>> import tempfile
-    >>> (_, fname) = tempfile.mkstemp()
+    >>> (fd, fname) = tempfile.mkstemp()
+    >>> os.close(fd)
+
     >>> with open(fname, 'w+b') as fp:
     ...     print('air__temperature', file=fp)
     ...     print('Water__temperature', file=fp)

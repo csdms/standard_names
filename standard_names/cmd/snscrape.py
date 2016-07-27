@@ -89,7 +89,9 @@ def main(args=None):
     ... valid names. Others, like water__temperature, are good.
     ... \"\"\"
 
-    >>> (_, fname) = tempfile.mkstemp()
+    >>> (fd, fname) = tempfile.mkstemp()
+    >>> os.close(fd)
+
     >>> with open(fname, 'w+b') as fp:
     ...     print(contents, file=fp)
 
