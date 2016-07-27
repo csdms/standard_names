@@ -75,7 +75,7 @@ def format_as_yaml(func):
     >>> print(yamlize(\"\"\"
     ... line 1
     ... line 2
-    ... \"\"\".strip(), heading='Lines'))
+    ... \"\"\".strip(), heading='Lines', newline='\\n'))
     Lines:
       - line 1
       - line 2
@@ -94,6 +94,8 @@ def format_as_yaml(func):
             Decorated strings concatoranted with line separators
         """
         heading = kwds.pop('heading', None)
+        newline = kwds.pop('newline', os.linesep)
+
         text = func(lines, **kwds)
         lines = text.split(os.linesep)
 
@@ -111,7 +113,7 @@ def format_as_yaml(func):
         else:
             yaml_lines.append('%s[]' % (' ' * indent))
 
-        return os.linesep.join(yaml_lines)
+        return newline.join(yaml_lines)
     return _wrapped
 
 
