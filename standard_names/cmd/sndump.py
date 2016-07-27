@@ -42,7 +42,7 @@ def sndump(file=None, format='plain', sorted=True, keys=None, newline=None):
     >>> lines = os.linesep.join(['air__temperature', 'water__temperature'])
     >>> names = StringIO(lines)
 
-    >>> print(csn.cmd.sndump.sndump(names), newline='\\n')
+    >>> print(csn.cmd.sndump.sndump(names, newline='\\n'))
     ...     # doctest: +REPORT_NDIFF
     air__temperature
     water__temperature
