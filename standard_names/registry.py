@@ -96,7 +96,7 @@ def _get_latest_names_file(path=None, prefix='names-', suffix='.txt'):
     >>> from standard_names.registry import _get_latest_names_file
 
     >>> fname, version = _get_latest_names_file()
-    >>> '/'.join(os.path.split(fname)[-3:]) # doctest: +ELLIPSIS
+    >>> fname.replace('\\\\', '/') # doctest: +ELLIPSIS
     '...standard_names/data/names-0.8.3.txt'
     >>> version
     '0.8.3'
