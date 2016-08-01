@@ -62,6 +62,8 @@ class StandardName(object):
 
     """A CSDMS standard name."""
 
+    re = _PREFIX_REGEX + '(__)' + _SUFFIX_REGEX
+
     def __init__(self, name):
         """Create a standard name object from a string.
         
