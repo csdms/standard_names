@@ -1,9 +1,13 @@
-"""
-The CSDMS Standard Names
-"""
+"""The CSDMS Standard Names"""
 
-from .standardname import StandardName, BadNameError, is_valid_name
+from .standardname import StandardName, is_valid_name
 from .registry import NamesRegistry
-from .decorators import format_as_wiki, format_as_yaml
-from .decorators import google_doc, url, plain_text
-from .io import from_model_file, scrape, FORMATTERS, SCRAPERS
+from .error import BadNameError, BadRegistryError
+
+
+__version__ = '0.2.2'
+
+
+def check():
+    from nose.core import run
+    run('standard_names')

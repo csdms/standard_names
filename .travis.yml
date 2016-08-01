@@ -17,7 +17,9 @@ install:
 - conda info -a
 - conda build -q conda-recipe
 - conda install -q standard_names --use-local
+- pip install coveralls
 script:
-- nosetests --with-doctest standard_names
+- nosetests --with-doctest --with-coverage --cover-package=standard_names standard_names
 after_success:
+- coveralls --verbose
 - bash .ci/travis/deploy_to_anaconda.sh

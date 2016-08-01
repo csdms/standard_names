@@ -4,7 +4,8 @@ from six.moves import StringIO
 
 from nose.tools import assert_equal, assert_in
 
-from standard_names import StandardName, BadNameError, from_model_file
+from standard_names import StandardName, BadNameError
+from standard_names.utilities import from_model_file
 
 
 _SINGLE_MODEL_FILE_STREAM = StringIO(

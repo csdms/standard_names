@@ -10,7 +10,7 @@ from __future__ import print_function
 
 import os
 
-from .. import FORMATTERS, SCRAPERS, scrape
+from ..utilities import FORMATTERS, SCRAPERS, scrape
 
 
 _AS_TXT = FORMATTERS['txt']
@@ -18,9 +18,89 @@ _AS_TXT = FORMATTERS['txt']
 _DEFAULT_SEARCH = r'\b[\w~-]+__[\w~-]+'
 
 
-def main():
+def snscrape(files, with_headers=False, regex=None, format='url', newline=None):
+    """Scrape names from a URL.
+
+    Parameters
+    ----------
+    files : iterable of str
+        List of files or URL to scrape.
+    with_headers : bool, optional
+        Include headers in the output that indicate the name of the source.
+    regex : str, optional
+        A regular expression that defines what a Standard Name is.
+    format : {'url', 'plain_text'}, optional
+        The format of the target that's being scraped.
+    newline : str, optional
+        Newline character to use for output.
+
+    Returns
+    -------
+    str
+        The scraped names.
+
+    Examples
+    --------
+    >>> from __future__ import print_function
+    >>> from six.moves import StringIO
+    >>> import standard_names as csn
+
+    >>> file1 = StringIO(\"\"\"
+    ... A file is one name, which is air__temperature.
+    ... \"\"\")
+    >>> file2 = StringIO(\"\"\"
+    ... A file is two names: air__temperature, and water__temperature.
+    ... \"\"\")
+
+    >>> lines = csn.cmd.snscrape.snscrape([file1, file2], format='plain_text')
+    >>> sorted(lines.split(os.linesep))
+    ['air__temperature', 'air__temperature', 'water__temperature']
     """
-    Scrape standard names from a file or URL.
+    newline = newline or os.linesep
+    regex = regex or _DEFAULT_SEARCH
+    
+    docs = {}
+    for file_name in files:
+        docs[file_name] = scrape(file_name, regex=regex, format=format)
+
+    documents = []
+    for (name, name_list) in docs.items():
+        if with_headers:
+            heading = 'Scraped from %s' % name
+        else:
+            heading = None
+        documents.append(_AS_TXT(name_list, sorted=True, heading=heading), )
+
+    return newline.join(documents)
+
+
+def main(args=None):
+    """Scrape standard names from a file or URL.
+
+    Examples
+    --------
+    >>> import os
+    >>> import tempfile
+    >>> import standard_names as csn
+
+    >>> contents = \"\"\"
+    ... A file with text and names (air__temperature) mixed in. Some names
+    ... have double underscores (like, Water__Temperature) by are not
+    ... valid names. Others, like water__temperature, are good.
+    ... \"\"\"
+
+    >>> (fd, fname) = tempfile.mkstemp()
+    >>> os.close(fd)
+
+    >>> with open(fname, 'w') as fp:
+    ...     print(contents, file=fp)
+
+    >>> names = csn.cmd.snscrape.main(
+    ...     [fp.name, '--reader=plain_text', '--no-headers'])
+    >>> names.split(os.linesep)
+    ['air__temperature', 'water__temperature']
+
+    >>> os.remove(fname)
     """
     import argparse
 
@@ -37,25 +117,14 @@ def main():
     parser.add_argument('--no-headers', action='store_true',
                         help='Do not print headers between scrapes')
 
-    args = parser.parse_args()
+    if args is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(args)
 
-    kwds = dict(format=args.reader)
-    if args.regex:
-        kwds['regex'] = args.regex
-
-    docs = {}
-    for file_name in args.file:
-        docs[file_name] = scrape(file_name, **kwds)
-
-    documents = []
-    for (name, name_list) in docs.items():
-        if args.no_headers:
-            heading = None
-        else:
-            heading = 'Scraped from %s' % name
-        documents.append(_AS_TXT(name_list, sorted=True, heading=heading), )
-    print(os.linesep.join(documents))
+    return snscrape(args.file, with_headers=not args.no_headers,
+                    regex=args.regex, format=args.reader)
 
 
 if __name__ == '__main__':
-    main()
+    print(main())
