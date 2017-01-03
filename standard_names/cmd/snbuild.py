@@ -94,5 +94,5 @@ def main(args=None):
     return snbuild(args.file)
 
 
-if __name__ == '__main__':
+def run():
     print(main())

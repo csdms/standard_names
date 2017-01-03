@@ -117,8 +117,8 @@ def main():
     args = parser.parse_args()
 
     names = NamesRegistry(args.file)
-    print(as_sql_commands(names))
+    return as_sql_commands(names)
 
 
-if __name__ == '__main__':
-    main()
+def run():
+    print(main())

@@ -126,5 +126,5 @@ def main(args=None):
                     regex=args.regex, format=args.reader)
 
 
-if __name__ == '__main__':
+def run():
     print(main())
