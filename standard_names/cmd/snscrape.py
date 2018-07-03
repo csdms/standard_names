@@ -13,12 +13,12 @@ import os
 from ..utilities import FORMATTERS, SCRAPERS, scrape
 
 
-_AS_TXT = FORMATTERS['txt']
+_AS_TXT = FORMATTERS["txt"]
 
-_DEFAULT_SEARCH = r'\b[\w~-]+__[\w~-]+'
+_DEFAULT_SEARCH = r"\b[\w~-]+__[\w~-]+"
 
 
-def snscrape(files, with_headers=False, regex=None, format='url', newline=None):
+def snscrape(files, with_headers=False, regex=None, format="url", newline=None):
     """Scrape names from a URL.
 
     Parameters
@@ -58,7 +58,7 @@ def snscrape(files, with_headers=False, regex=None, format='url', newline=None):
     """
     newline = newline or os.linesep
     regex = regex or _DEFAULT_SEARCH
-    
+
     docs = {}
     for file_name in files:
         docs[file_name] = scrape(file_name, regex=regex, format=format)
@@ -66,10 +66,10 @@ def snscrape(files, with_headers=False, regex=None, format='url', newline=None):
     documents = []
     for (name, name_list) in docs.items():
         if with_headers:
-            heading = 'Scraped from %s' % name
+            heading = "Scraped from %s" % name
         else:
             heading = None
-        documents.append(_AS_TXT(name_list, sorted=True, heading=heading), )
+        documents.append(_AS_TXT(name_list, sorted=True, heading=heading))
 
     return newline.join(documents)
 
@@ -104,26 +104,31 @@ def main(args=None):
     """
     import argparse
 
-    parser = argparse.ArgumentParser(
-        "Scrape standard names from a file or URL")
-    parser.add_argument('file', nargs='+', metavar='FILE',
-                        help="URL or file to scrape")
-    parser.add_argument('--reader', choices=SCRAPERS.keys(),
-                        default='url',
-                        help="Name of reader")
-    parser.add_argument('--regex', default=_DEFAULT_SEARCH,
-                        help='Regular expression describing '
-                             'a standard name (%s)' % _DEFAULT_SEARCH)
-    parser.add_argument('--no-headers', action='store_true',
-                        help='Do not print headers between scrapes')
+    parser = argparse.ArgumentParser("Scrape standard names from a file or URL")
+    parser.add_argument("file", nargs="+", metavar="FILE", help="URL or file to scrape")
+    parser.add_argument(
+        "--reader", choices=SCRAPERS.keys(), default="url", help="Name of reader"
+    )
+    parser.add_argument(
+        "--regex",
+        default=_DEFAULT_SEARCH,
+        help="Regular expression describing " "a standard name (%s)" % _DEFAULT_SEARCH,
+    )
+    parser.add_argument(
+        "--no-headers", action="store_true", help="Do not print headers between scrapes"
+    )
 
     if args is None:
         args = parser.parse_args()
     else:
         args = parser.parse_args(args)
 
-    return snscrape(args.file, with_headers=not args.no_headers,
-                    regex=args.regex, format=args.reader)
+    return snscrape(
+        args.file,
+        with_headers=not args.no_headers,
+        regex=args.regex,
+        format=args.reader,
+    )
 
 
 def run():

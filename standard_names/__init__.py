@@ -5,9 +5,10 @@ from .registry import NamesRegistry
 from .error import BadNameError, BadRegistryError
 
 
-__version__ = '0.2.2'
+__version__ = "0.2.2"
 
 
 def check():
     from nose.core import run
-    run('standard_names')
+
+    run("standard_names")

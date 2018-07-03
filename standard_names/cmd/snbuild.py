@@ -57,22 +57,19 @@ def snbuild(file, newline=None):
     newline = newline or os.linesep
     names = NamesRegistry(file)
 
-    formatter = FORMATTERS['yaml']
+    formatter = FORMATTERS["yaml"]
 
     lines = [
-        '%YAML 1.2',
-        '---',
-        formatter(names.names, sorted=True, heading='names', newline=newline),
-        '---',
-        formatter(names.objects, sorted=True, heading='objects',
-                  newline=newline),
-        '---',
-        formatter(names.quantities, sorted=True, heading='quantities',
-                  newline=newline),
-        '---',
-        formatter(names.operators, sorted=True, heading='operators',
-                  newline=newline),
-        '...',
+        "%YAML 1.2",
+        "---",
+        formatter(names.names, sorted=True, heading="names", newline=newline),
+        "---",
+        formatter(names.objects, sorted=True, heading="objects", newline=newline),
+        "---",
+        formatter(names.quantities, sorted=True, heading="quantities", newline=newline),
+        "---",
+        formatter(names.operators, sorted=True, heading="operators", newline=newline),
+        "...",
     ]
     return newline.join(lines)
 
@@ -82,9 +79,14 @@ def main(args=None):
     import argparse
 
     parser = argparse.ArgumentParser(
-        'Scan a model description file for CSDMS standard names')
-    parser.add_argument('file', nargs='+', type=argparse.FileType('r'),
-                        help='YAML file describing model exchange items')
+        "Scan a model description file for CSDMS standard names"
+    )
+    parser.add_argument(
+        "file",
+        nargs="+",
+        type=argparse.FileType("r"),
+        help="YAML file describing model exchange items",
+    )
 
     if args is None:
         args = parser.parse_args()

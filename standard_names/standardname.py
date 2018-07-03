@@ -7,11 +7,9 @@ from six import string_types
 from .error import BadNameError
 
 
-_PREFIX_REGEX = '^[a-z]([a-zA-Z0-9~-]|_(?!_))*'
-_SUFFIX_REGEX = '[a-z0-9]([a-z0-9~-]|_(?!_))*[a-z0-9]$'
-STANDARD_NAME_REGEX = re.compile(
-    _PREFIX_REGEX + '(__)' + _SUFFIX_REGEX
-)
+_PREFIX_REGEX = "^[a-z]([a-zA-Z0-9~-]|_(?!_))*"
+_SUFFIX_REGEX = "[a-z0-9]([a-z0-9~-]|_(?!_))*[a-z0-9]$"
+STANDARD_NAME_REGEX = re.compile(_PREFIX_REGEX + "(__)" + _SUFFIX_REGEX)
 #    '^[a-z][a-z0-9_]*[a-z0-9](__)[a-z0-9][a-z0-9_]*[a-z0-9]$'
 
 
@@ -62,7 +60,7 @@ class StandardName(object):
     "StandardName('water__min_of_density')"
     """
 
-    re = _PREFIX_REGEX + '(__)' + _SUFFIX_REGEX
+    re = _PREFIX_REGEX + "(__)" + _SUFFIX_REGEX
 
     def __init__(self, name):
         """Create a standard name object from a string.
@@ -76,10 +74,10 @@ class StandardName(object):
             raise BadNameError(name)
 
         self._name = name
-        
-        (self._object,
-         self._quantity,
-         self._operators) = StandardName.decompose_name(name)
+
+        (self._object, self._quantity, self._operators) = StandardName.decompose_name(
+            name
+        )
 
     @staticmethod
     def decompose_name(name):
@@ -113,12 +111,11 @@ class StandardName(object):
         ...     pass
         """
         try:
-            (object_part, quantity_clause) = name.split('__')
+            (object_part, quantity_clause) = name.split("__")
         except ValueError:
             raise BadNameError(name)
 
-        (operators, quantity_part) = StandardName.decompose_quantity(
-            quantity_clause)
+        (operators, quantity_part) = StandardName.decompose_quantity(quantity_clause)
 
         return object_part, quantity_part, operators
 
@@ -150,11 +147,11 @@ class StandardName(object):
         >>> csn.StandardName.compose_name('air', 'temperature')
         'air__temperature'
         """
-        operator = '_of_'.join(operators)
+        operator = "_of_".join(operators)
         if len(operator) > 0:
-            quantity = '_of_'.join([operator, quantity])
+            quantity = "_of_".join([operator, quantity])
 
-        return '__'.join((object,  quantity))
+        return "__".join((object, quantity))
 
     @staticmethod
     def decompose_quantity(quantity_clause):
@@ -176,7 +173,7 @@ class StandardName(object):
         tuple of str
             The parts of the quantity as ``(operators, quantity)``.
         """
-        quantity_parts = quantity_clause.split('_of_')
+        quantity_parts = quantity_clause.split("_of_")
         quantity = quantity_parts[-1]
         operators = tuple(quantity_parts[:-1])
 
@@ -195,8 +192,9 @@ class StandardName(object):
     @object.setter
     def object(self, value):
         self._object = value
-        self._name = StandardName.compose_name(self.object, self.quantity,
-                                               self.operators)
+        self._name = StandardName.compose_name(
+            self.object, self.quantity, self.operators
+        )
 
     @property
     def quantity(self):
@@ -206,8 +204,9 @@ class StandardName(object):
     @quantity.setter
     def quantity(self, value):
         self._quantity = value
-        self._name = StandardName.compose_name(self.object, self.quantity,
-                                               self.operators)
+        self._name = StandardName.compose_name(
+            self.object, self.quantity, self.operators
+        )
 
     @property
     def operators(self):
@@ -217,13 +216,14 @@ class StandardName(object):
     @operators.setter
     def operators(self, value):
         if isinstance(value, string_types):
-            value = (value, )
+            value = (value,)
         self._operators = value
-        self._name = StandardName.compose_name(self.object, self.quantity,
-                                               self.operators)
+        self._name = StandardName.compose_name(
+            self.object, self.quantity, self.operators
+        )
 
     def __repr__(self):
-        return 'StandardName(%r)' % self.name
+        return "StandardName(%r)" % self.name
 
     def __str__(self):
         return self.name

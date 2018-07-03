@@ -10,8 +10,14 @@ import warnings
 from ..standardname import StandardName
 from ..registry import NamesRegistry
 from ..error import BadNameError
-from .decorators import (format_as_wiki, format_as_yaml, format_as_plain_text,
-                         google_doc, url, plain_text)
+from .decorators import (
+    format_as_wiki,
+    format_as_yaml,
+    format_as_plain_text,
+    google_doc,
+    url,
+    plain_text,
+)
 
 
 def _list_to_string(lines, **kwds):
@@ -45,8 +51,8 @@ def _list_to_string(lines, **kwds):
     bar
     foo
     """
-    newline = kwds.pop('newline', os.linesep)
-    if kwds.pop('sorted', False):
+    newline = kwds.pop("newline", os.linesep)
+    if kwds.pop("sorted", False):
         sorted_lines = list(lines)
         sorted_lines.sort()
         return newline.join(sorted_lines)
@@ -54,7 +60,7 @@ def _list_to_string(lines, **kwds):
         return newline.join(lines)
 
 
-def _scrape_stream(stream, regex=r'\b\w+__\w+'):
+def _scrape_stream(stream, regex=r"\b\w+__\w+"):
     """Scrape standard names from stream matching a regular expression.
 
     Parameters
@@ -92,17 +98,20 @@ def _scrape_stream(stream, regex=r'\b\w+__\w+'):
         try:
             names.add(word)
         except BadNameError as error:
-            print("{name}: matches pattern but not a valid name. "
-                  "Ignoring.".format(name=error.name), file=sys.stderr)
+            print(
+                "{name}: matches pattern but not a valid name. "
+                "Ignoring.".format(name=error.name),
+                file=sys.stderr,
+            )
 
     return names
 
 
 FORMATTERS = {
-    'plain': _list_to_string,
-    'wiki': format_as_wiki(_list_to_string),
-    'yaml': format_as_yaml(_list_to_string),
-    'txt': format_as_plain_text(_list_to_string),
+    "plain": _list_to_string,
+    "wiki": format_as_wiki(_list_to_string),
+    "yaml": format_as_yaml(_list_to_string),
+    "txt": format_as_plain_text(_list_to_string),
 }
 
 
@@ -111,7 +120,7 @@ for decorator in [google_doc, url, plain_text]:
     SCRAPERS[decorator.__name__] = decorator(_scrape_stream)
 
 
-_VALID_INTENTS = ['input', 'output']
+_VALID_INTENTS = ["input", "output"]
 
 
 def _find_unique_names(models):
@@ -129,15 +138,14 @@ def _find_unique_names(models):
     """
     names = NamesRegistry(None)
     for model in models:
-        if isinstance(model['exchange items'], dict):
+        if isinstance(model["exchange items"], dict):
             new_names = []
-            for intent in model['exchange items']:
+            for intent in model["exchange items"]:
                 if intent not in _VALID_INTENTS:
-                    raise ValueError(
-                        '{intent}: Bad intent'.format(intent=intent))
-                new_names.extend(model['exchange items'][intent])
+                    raise ValueError("{intent}: Bad intent".format(intent=intent))
+                new_names.extend(model["exchange items"][intent])
         else:
-            new_names = model['exchange items']
+            new_names = model["exchange items"]
 
         for new_name in new_names:
             names.add(new_name)
@@ -163,6 +171,7 @@ def from_model_file(stream):
         A collection of names for the model file.
     """
     import yaml
+
     models = yaml.load_all(stream)
     names = _find_unique_names(models)
     return names
@@ -196,8 +205,8 @@ def from_list_file(stream):
     """
     names = NamesRegistry(None)
     for line in stream:
-        if '#' in line:
-            line = line[:line.find('#')]
+        if "#" in line:
+            line = line[: line.find("#")]
         line = line.strip()
         if line:
             names.add(line)
@@ -221,6 +230,6 @@ def scrape(source, **kwds):
     NamesRegistry
         A collection of names read from the source.
     """
-    source_format = kwds.pop('format', 'url')
+    source_format = kwds.pop("format", "url")
 
     return SCRAPERS[source_format](source, **kwds)

@@ -9,17 +9,18 @@ from standard_names.utilities import from_model_file
 
 
 _SINGLE_MODEL_FILE_STREAM = StringIO(
-"""
+    """
 %YAML 1.2
 ---
 model name: topoflow
 exchange items:
   - air__density
   - air__emissivity
-...""")
+..."""
+)
 
 _MULTIPLE_MODEL_FILE_STREAM = StringIO(
-"""
+    """
 %YAML 1.2
 ---
 model name: topoflow
@@ -31,10 +32,11 @@ model name: sedflux
 exchange items:
   - air__density
   - water__temperature
-...""")
+..."""
+)
 
 _SINGLE_MODEL_FILE_STREAM_WITH_INTENT = StringIO(
-"""
+    """
 %YAML 1.2
 ---
 model name: topoflow
@@ -44,15 +46,16 @@ exchange items:
   output:
     - air__density
     - air__emissivity
-...""")
+..."""
+)
 
 
 def test_from_model_file():
     """Read from a YAML model file that contains one model."""
     names = from_model_file(_SINGLE_MODEL_FILE_STREAM)
 
-    assert_in('air__density', names)
-    assert_in('air__emissivity', names)
+    assert_in("air__density", names)
+    assert_in("air__emissivity", names)
     assert_equal(len(names), 2)
 
 
@@ -60,9 +63,9 @@ def test_from_multiple_model_file():
     """Read from a YAML model file that contains multiple models."""
     names = from_model_file(_MULTIPLE_MODEL_FILE_STREAM)
 
-    assert_in('air__density', names)
-    assert_in('air__emissivity', names)
-    assert_in('water__temperature', names)
+    assert_in("air__density", names)
+    assert_in("air__emissivity", names)
+    assert_in("water__temperature", names)
     assert_equal(len(names), 3)
 
 
@@ -73,6 +76,6 @@ def test_from_model_file_with_intent():
     """
     names = from_model_file(_SINGLE_MODEL_FILE_STREAM_WITH_INTENT)
 
-    assert_in('air__density', names)
-    assert_in('air__emissivity', names)
+    assert_in("air__density", names)
+    assert_in("air__emissivity", names)
     assert_equal(len(names), 2)
