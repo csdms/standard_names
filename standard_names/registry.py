@@ -95,10 +95,10 @@ def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
     >>> from standard_names.registry import _get_latest_names_file
 
     >>> fname, version = _get_latest_names_file()
-    >>> fname.replace('\\\\', '/') # doctest: +ELLIPSIS
-    '...standard_names/data/names-0.8.3.txt'
+    >>> os.path.basename(fname)
+    'names-0.8.5.txt'
     >>> version
-    '0.8.3'
+    '0.8.5'
 
     >>> _get_latest_names_file(prefix='garbage')
     (None, None)
