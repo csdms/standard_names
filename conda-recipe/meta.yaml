@@ -23,6 +23,11 @@ requirements:
 test:
   imports:
     - standard_names
+  requires:
+    - pytest
+  commands:
+    - pytest --pyargs standard_names --doctest-modules -o doctest_optionflags="NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ALLOW_UNICODE"
+
 
 build:
   number: 0
