@@ -84,7 +84,7 @@ def as_sql_commands(names, newline=None):
     from contextlib import closing
     from sqlite3 import connect
 
-    with closing(connect(':memory:')) as db:
+    with closing(connect(":memory:")) as db:
         db.cursor().executescript(_NAMES_SCHEMA)
 
         c = db.cursor()
@@ -111,9 +111,11 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description='Build an sqlite database from a list of names')
-    parser.add_argument('file', nargs='+', type=argparse.FileType('r'),
-                        help='List of names')
+        description="Build an sqlite database from a list of names"
+    )
+    parser.add_argument(
+        "file", nargs="+", type=argparse.FileType("r"), help="List of names"
+    )
     args = parser.parse_args()
 
     names = NamesRegistry(args.file)

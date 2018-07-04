@@ -16,7 +16,7 @@ from ..utilities import FORMATTERS
 _FORMATS = FORMATTERS.keys()
 
 
-def sndump(file=None, format='plain', sorted=True, keys=None, newline=None):
+def sndump(file=None, format="plain", sorted=True, keys=None, newline=None):
     """Dump a registry to different formats.
 
     Parameters
@@ -48,9 +48,9 @@ def sndump(file=None, format='plain', sorted=True, keys=None, newline=None):
     water__temperature
     """
     newline = newline or os.linesep
-    keys = keys or ('names', )
+    keys = keys or ("names",)
     if file:
-        args = (file, )
+        args = (file,)
     else:
         args = ()
 
@@ -60,20 +60,24 @@ def sndump(file=None, format='plain', sorted=True, keys=None, newline=None):
     formatter = FORMATTERS[format]
     for key in keys:
         list_to_print = getattr(names, key)
-        lines.append(formatter(list_to_print, sorted=sorted, heading=key,
-                               level=2, newline=newline))
+        lines.append(
+            formatter(
+                list_to_print, sorted=sorted, heading=key, level=2, newline=newline
+            )
+        )
 
     return newline.join(lines)
 
 
 class CustomAction(argparse.Action):
     """Keep track of the order of options are given on the command line."""
+
     def __call__(self, parser, namespace, values, option_string=None):
-        if not 'ordered_args' in namespace:
-            setattr(namespace, 'ordered_args', [])
+        if not "ordered_args" in namespace:
+            setattr(namespace, "ordered_args", [])
         previous = namespace.ordered_args
         previous.append(self.dest)
-        setattr(namespace, 'ordered_args', previous)
+        setattr(namespace, "ordered_args", previous)
 
 
 def main(args=None):
@@ -105,22 +109,40 @@ def main(args=None):
     """
     parser = argparse.ArgumentParser("Dump known standard names")
 
-    parser.add_argument('-n', nargs=0, dest='names',
-                        help='Print standard names', action=CustomAction)
-    parser.add_argument('-o', nargs=0, dest='objects',
-                        help='Print standard objects', action=CustomAction)
-    parser.add_argument('-q', nargs=0, dest='quantities',
-                        help='Print standard quantities',
-                        action=CustomAction)
-    parser.add_argument('-op', nargs=0, dest='operators',
-                        help='Print standard operators', action=CustomAction)
+    parser.add_argument(
+        "-n", nargs=0, dest="names", help="Print standard names", action=CustomAction
+    )
+    parser.add_argument(
+        "-o",
+        nargs=0,
+        dest="objects",
+        help="Print standard objects",
+        action=CustomAction,
+    )
+    parser.add_argument(
+        "-q",
+        nargs=0,
+        dest="quantities",
+        help="Print standard quantities",
+        action=CustomAction,
+    )
+    parser.add_argument(
+        "-op",
+        nargs=0,
+        dest="operators",
+        help="Print standard operators",
+        action=CustomAction,
+    )
 
-    parser.add_argument('file', type=argparse.FileType('r'), default=None,
-                        help='Read names from a file')
-    parser.add_argument('--unsorted', action='store_true',
-                        default=False, help='Do not sort names')
-    parser.add_argument('--format', choices=_FORMATS,
-                        default='plain', help='Output format')
+    parser.add_argument(
+        "file", type=argparse.FileType("r"), default=None, help="Read names from a file"
+    )
+    parser.add_argument(
+        "--unsorted", action="store_true", default=False, help="Do not sort names"
+    )
+    parser.add_argument(
+        "--format", choices=_FORMATS, default="plain", help="Output format"
+    )
 
     if args is None:
         args = parser.parse_args()
@@ -130,10 +152,11 @@ def main(args=None):
     try:
         keys = args.ordered_args
     except AttributeError:
-        keys = ['names']
+        keys = ["names"]
 
-    return sndump(file=args.file, format=args.format, sorted=not args.unsorted,
-                  keys=keys)
+    return sndump(
+        file=args.file, format=args.format, sorted=not args.unsorted, keys=keys
+    )
 
 
 def run():

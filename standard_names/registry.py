@@ -9,7 +9,7 @@ from .standardname import StandardName
 from .error import BadNameError, BadRegistryError
 
 
-def load_names_from_txt(file_like, onerror='raise'):
+def load_names_from_txt(file_like, onerror="raise"):
     """Load names from a text file.
 
     Parameters
@@ -37,8 +37,8 @@ def load_names_from_txt(file_like, onerror='raise'):
     >>> [name.name for name in set_of_names]
     ['air__temperature']
     """
-    if onerror not in ('pass', 'raise', 'warn'):
-        raise ValueError('value for onerror keyword not understood')
+    if onerror not in ("pass", "raise", "warn"):
+        raise ValueError("value for onerror keyword not understood")
 
     bad_names = set()
     names = set()
@@ -53,10 +53,10 @@ def load_names_from_txt(file_like, onerror='raise'):
                 names.add(csn)
 
     if bad_names:
-        if onerror == 'warn':
+        if onerror == "warn":
             for name in bad_names:
-                warnings.warn('{name}: not a valid name'.format(name=name))
-        elif onerror == 'raise':
+                warnings.warn("{name}: not a valid name".format(name=name))
+        elif onerror == "raise":
             raise BadRegistryError(bad_names)
 
     return names
@@ -68,11 +68,10 @@ def _strict_version_or_raise(version_str):
     if StrictVersion.version_re.match(version_str):
         return StrictVersion(version_str)
     else:
-        raise ValueError(
-            '{version}: Not a version string'.format(version=version_str))
+        raise ValueError("{version}: Not a version string".format(version=version_str))
 
 
-def _get_latest_names_file(path=None, prefix='names-', suffix='.txt'):
+def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
     """Get the most recent version of a names file.
 
     Parameters
@@ -96,10 +95,10 @@ def _get_latest_names_file(path=None, prefix='names-', suffix='.txt'):
     >>> from standard_names.registry import _get_latest_names_file
 
     >>> fname, version = _get_latest_names_file()
-    >>> fname.replace('\\\\', '/') # doctest: +ELLIPSIS
-    '...standard_names/data/names-0.8.3.txt'
+    >>> os.path.basename(fname)
+    'names-0.8.5.txt'
     >>> version
-    '0.8.3'
+    '0.8.5'
 
     >>> _get_latest_names_file(prefix='garbage')
     (None, None)
@@ -107,15 +106,15 @@ def _get_latest_names_file(path=None, prefix='names-', suffix='.txt'):
     >>> _get_latest_names_file(prefix='names-0.8.3')
     (None, None)
     """
-    data_dir = path or os.path.join(os.path.dirname(__file__), 'data')
+    data_dir = path or os.path.join(os.path.dirname(__file__), "data")
 
-    name_glob = '{prefix}*{suffix}'.format(prefix=prefix, suffix=suffix)
+    name_glob = "{prefix}*{suffix}".format(prefix=prefix, suffix=suffix)
     data_file_pattern = os.path.join(data_dir, name_glob)
     files = [os.path.basename(file_) for file_ in glob(data_file_pattern)]
 
     newest = None
     for file in files:
-        version_str = file[len(prefix): -len(suffix)]
+        version_str = file[len(prefix) : -len(suffix)]
         try:
             version = _strict_version_or_raise(version_str)
         except ValueError:
@@ -128,8 +127,10 @@ def _get_latest_names_file(path=None, prefix='names-', suffix='.txt'):
         version = str(newest)
         names_file = os.path.join(
             data_dir,
-            '{prefix}{version}{suffix}'.format(prefix=prefix, suffix=suffix,
-                                               version=version))
+            "{prefix}{version}{suffix}".format(
+                prefix=prefix, suffix=suffix, version=version
+            ),
+        )
         return names_file, version
     else:
         return None, None
@@ -215,12 +216,12 @@ class NamesRegistry(object):
         elif len(args) == 1:
             paths, version = args[0], None
         else:
-            raise ValueError('0 or 1 arguments expected')
+            raise ValueError("0 or 1 arguments expected")
 
         if paths is None:
             paths = []
 
-        if isinstance(paths, string_types) or hasattr(paths, 'readline'):
+        if isinstance(paths, string_types) or hasattr(paths, "readline"):
             paths = [paths]
 
         self._names = set()
@@ -228,16 +229,16 @@ class NamesRegistry(object):
         self._quantities = set()
         self._operators = set()
 
-        self._version = version or '0.0.0'
+        self._version = version or "0.0.0"
 
         for path in paths:
             if isinstance(path, string_types):
-                with open(path, 'r') as fp:
+                with open(path, "r") as fp:
                     self._load(fp)
             else:
                 self._load(path)
 
-    def _load(self, file_like, onerror='raise'):
+    def _load(self, file_like, onerror="raise"):
         for name in load_names_from_txt(file_like, onerror=onerror):
             self.add(name)
 
@@ -355,6 +356,7 @@ class NamesRegistry(object):
             Names that closely match the given name.
         """
         from difflib import get_close_matches
+
         return get_close_matches(name, self._names)
 
     def match(self, pattern):
@@ -371,6 +373,7 @@ class NamesRegistry(object):
             List of names matching the pattern.
         """
         import re, fnmatch
+
         p = re.compile(fnmatch.translate(pattern))
         names = []
         for name in self._names:
@@ -392,7 +395,7 @@ class NamesRegistry(object):
             Names from the registry that contains the given words.
         """
         if isinstance(parts, string_types):
-            parts = (parts, )
+            parts = (parts,)
 
         remaining_names = self._names
         for part in parts:

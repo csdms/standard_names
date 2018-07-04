@@ -39,8 +39,13 @@ def main(args=None):
     """
     parser = argparse.ArgumentParser("Validate a list of standard names")
 
-    parser.add_argument('file', type=argparse.FileType('r'), nargs='+',
-                        default=None, help='Read names from a file')
+    parser.add_argument(
+        "file",
+        type=argparse.FileType("r"),
+        nargs="+",
+        default=None,
+        help="Read names from a file",
+    )
 
     if args is None:
         args = parser.parse_args()

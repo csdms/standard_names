@@ -1,1 +1,3 @@
 include standard_names/data/*
+include versioneer.py
+include standard_names/_version.py

@@ -1,25 +1,37 @@
+language: generic
+os:
+- linux
+- osx
 env:
   matrix:
   - TRAVIS_PYTHON_VERSION="2.7"
   - TRAVIS_PYTHON_VERSION="3.5"
+  - TRAVIS_PYTHON_VERSION="3.6"
   global:
-    secure: fQDopgWxen7KDFRdI1vjZDUh2cV6+MOY1pqeht410uTq9HynLoWduzPN65FV7rxcGSN2uWV77GBU0OZKQTb7j1LP7A2o+Z/Usebc/aGAyG0ev9O54ff7ghaG+dfJ0UZ/Fjt1qgD0EVfIBbnc02MgUnkwR2cio0lUBlamel8rZzo=
-os:
-- linux
-- osx
+  - CONDA_PREFIX=$HOME/miniconda
+  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
 sudo: false
-install:
-- echo "Build on $TRAVIS_OS_NAME"
-- if [[ "$TRAVIS_TAG" == v* ]]; then export BUILD_STR=""; else export BUILD_STR="dev";
+before_install:
+- |
+  if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+    brew remove --force $(brew list)
+    brew cleanup -s
+    rm -rf $(brew --cache)
   fi
-- bash .ci/travis/install_python.sh
-- export PATH="$HOME/miniconda/bin:$PATH"
-- conda info -a
-- conda build -q conda-recipe
-- conda install -q standard_names --use-local
-- pip install coveralls
+install:
+- |
+  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    OS="MacOSX-x86_64"
+  else
+    OS="Linux-x86_64"
+  fi
+- curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
+- bash $HOME/minconda.sh -b -p $CONDA_PREFIX
+- export PATH="$CONDA_PREFIX/bin:$PATH"
+- hash -r
+- conda config --set always_yes yes --set changeps1 no
+- conda create -n _testing python=$TRAVIS_PYTHON_VERSION
+- source activate _testing
+- conda install -q conda-build anaconda-client coverage sphinx pytest
 script:
-- nosetests --with-doctest --with-coverage --cover-package=standard_names standard_names
-after_success:
-- coveralls --verbose
-- bash .ci/travis/deploy_to_anaconda.sh
+- conda build ./conda-recipe -c csdms-stack -c conda-forge
