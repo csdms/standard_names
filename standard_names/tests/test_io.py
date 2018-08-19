@@ -2,8 +2,6 @@
 """Unit tests for standard_names.io module."""
 from six.moves import StringIO
 
-from nose.tools import assert_equal, assert_in
-
 from standard_names import StandardName, BadNameError
 from standard_names.utilities import from_model_file
 
@@ -54,19 +52,19 @@ def test_from_model_file():
     """Read from a YAML model file that contains one model."""
     names = from_model_file(_SINGLE_MODEL_FILE_STREAM)
 
-    assert_in("air__density", names)
-    assert_in("air__emissivity", names)
-    assert_equal(len(names), 2)
+    assert "air__density" in names
+    assert "air__emissivity" in names
+    assert len(names) == 2
 
 
 def test_from_multiple_model_file():
     """Read from a YAML model file that contains multiple models."""
     names = from_model_file(_MULTIPLE_MODEL_FILE_STREAM)
 
-    assert_in("air__density", names)
-    assert_in("air__emissivity", names)
-    assert_in("water__temperature", names)
-    assert_equal(len(names), 3)
+    assert "air__density" in names
+    assert "air__emissivity" in names
+    assert "water__temperature" in names
+    assert len(names) == 3
 
 
 def test_from_model_file_with_intent():
@@ -76,6 +74,6 @@ def test_from_model_file_with_intent():
     """
     names = from_model_file(_SINGLE_MODEL_FILE_STREAM_WITH_INTENT)
 
-    assert_in("air__density", names)
-    assert_in("air__emissivity", names)
-    assert_equal(len(names), 2)
+    assert "air__density" in names
+    assert "air__emissivity" in names
+    assert len(names) == 2
