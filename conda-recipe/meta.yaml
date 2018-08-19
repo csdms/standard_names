@@ -10,14 +10,11 @@ source:
 
 requirements:
   build:
-    - setuptools
     - python
-    - pyyaml
-    - six
+    - pip
   run:
     - python
     - pyyaml
-    - nose
     - six
 
 test:
@@ -26,12 +23,23 @@ test:
   requires:
     - pytest
   commands:
+    - snbuild --help
+    - sndump --help
+    - snscrape --help
+    - snsql --help
+    - snvalidate --help
     - pytest --pyargs standard_names --doctest-modules -o doctest_optionflags="NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ALLOW_UNICODE"
 
-
 build:
+  noarch: python
   number: 0
-  script: python setup.py install --single-version-externally-managed --record record.txt
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  entry_points:
+    - snbuild = standard_names.cmd.snbuild:run
+    - sndump = standard_names.cmd.sndump:run
+    - snscrape = standard_names.cmd.snscrape:run
+    - snsql = standard_names.cmd.snsql:run
+    - snvalidate = standard_names.cmd.snvalidate:run
 
 about:
   home: https://github.com/csdms/standard_names
