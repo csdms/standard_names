@@ -34,6 +34,12 @@ build:
   noarch: python
   number: 0
   script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  entry_points:
+    - snbuild = standard_names.cmd.snbuild:run
+    - sndump = standard_names.cmd.sndump:run
+    - snscrape = standard_names.cmd.snscrape:run
+    - snsql = standard_names.cmd.snsql:run
+    - snvalidate = standard_names.cmd.snvalidate:run
 
 about:
   home: https://github.com/csdms/standard_names
