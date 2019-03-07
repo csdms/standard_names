@@ -13,7 +13,7 @@ setup(
     author="Eric Hutton",
     author_email="eric.hutton@colorado.edu",
     url="https://csdms.colorado.edu",
-    install_requires=["pyyaml"],
+    install_requires=["pyyaml", "six"],
     packages=[
         "standard_names",
         "standard_names.cmd",
