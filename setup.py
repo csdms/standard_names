@@ -29,7 +29,7 @@ setup(
         "six",
         "packaging",
         "jinja2",
-        "scripting",
+        "py-scripting",
         "binaryornot",
     ],
     packages=[
