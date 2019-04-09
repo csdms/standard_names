@@ -147,7 +147,7 @@ class NamesRegistry(object):
         use a default database. If ``None``, create an empty registry.
     version : str, optional
         The version of the names registry.
-    
+
     Attributes
     ----------
     version
@@ -245,7 +245,7 @@ class NamesRegistry(object):
     @property
     def version(self):
         """The version of the names database.
-        
+
         Returns
         -------
         str
@@ -256,7 +256,7 @@ class NamesRegistry(object):
     @property
     def names(self):
         """All names in the registry.
-        
+
         Returns
         -------
         tuple of str
@@ -267,7 +267,7 @@ class NamesRegistry(object):
     @property
     def objects(self):
         """All objects in the registry.
-        
+
         Returns
         -------
         tuple of str
@@ -278,7 +278,7 @@ class NamesRegistry(object):
     @property
     def quantities(self):
         """All quantities in the registry.
-        
+
         Returns
         -------
         tuple of str
@@ -289,7 +289,7 @@ class NamesRegistry(object):
     @property
     def operators(self):
         """All operators in the registry.
-        
+
         Returns
         -------
         tuple of str

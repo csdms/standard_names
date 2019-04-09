@@ -64,7 +64,7 @@ class StandardName(object):
 
     def __init__(self, name):
         """Create a standard name object from a string.
-        
+
         Parameters
         ----------
         name : str
