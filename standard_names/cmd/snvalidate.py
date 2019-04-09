@@ -53,7 +53,7 @@ def main(args=None):
         args = parser.parse_args(args)
 
     try:
-        names = NamesRegistry(args.file)
+        NamesRegistry(args.file)
     except BadRegistryError as err:
         print(os.linesep.join(err.names), file=sys.stderr)
         return len(err.names)
