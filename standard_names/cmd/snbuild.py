@@ -7,8 +7,9 @@ Example usage:
 from __future__ import print_function
 
 import os
-from ..utilities.io import FORMATTERS
+
 from ..registry import NamesRegistry
+from ..utilities.io import FORMATTERS
 
 
 def snbuild(file, newline=None):

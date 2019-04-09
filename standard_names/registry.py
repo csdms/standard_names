@@ -5,8 +5,8 @@ from glob import glob
 
 from six import string_types
 
-from .standardname import StandardName
 from .error import BadNameError, BadRegistryError
+from .standardname import StandardName
 
 
 def load_names_from_txt(file_like, onerror="raise"):
@@ -147,7 +147,7 @@ class NamesRegistry(object):
         use a default database. If ``None``, create an empty registry.
     version : str, optional
         The version of the names registry.
-    
+
     Attributes
     ----------
     version
@@ -245,7 +245,7 @@ class NamesRegistry(object):
     @property
     def version(self):
         """The version of the names database.
-        
+
         Returns
         -------
         str
@@ -256,7 +256,7 @@ class NamesRegistry(object):
     @property
     def names(self):
         """All names in the registry.
-        
+
         Returns
         -------
         tuple of str
@@ -267,7 +267,7 @@ class NamesRegistry(object):
     @property
     def objects(self):
         """All objects in the registry.
-        
+
         Returns
         -------
         tuple of str
@@ -278,7 +278,7 @@ class NamesRegistry(object):
     @property
     def quantities(self):
         """All quantities in the registry.
-        
+
         Returns
         -------
         tuple of str
@@ -289,7 +289,7 @@ class NamesRegistry(object):
     @property
     def operators(self):
         """All operators in the registry.
-        
+
         Returns
         -------
         tuple of str
@@ -372,7 +372,8 @@ class NamesRegistry(object):
         list of str
             List of names matching the pattern.
         """
-        import re, fnmatch
+        import fnmatch
+        import re
 
         p = re.compile(fnmatch.translate(pattern))
         names = []

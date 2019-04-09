@@ -3,9 +3,7 @@ from __future__ import print_function
 
 import os
 
-from ..utilities import FORMATTERS
 from ..registry import NamesRegistry
-
 
 _NAMES_SCHEMA = """
 create table names (

@@ -3,20 +3,18 @@
 from __future__ import print_function
 
 import os
-import sys
 import re
-import warnings
+import sys
 
-from ..standardname import StandardName
-from ..registry import NamesRegistry
 from ..error import BadNameError
+from ..registry import NamesRegistry
 from .decorators import (
+    format_as_plain_text,
     format_as_wiki,
     format_as_yaml,
-    format_as_plain_text,
     google_doc,
-    url,
     plain_text,
+    url,
 )
 
 

@@ -2,12 +2,12 @@
 """Validate a list of names."""
 from __future__ import print_function
 
+import argparse
 import os
 import sys
-import argparse
 
-from ..registry import NamesRegistry
 from ..error import BadRegistryError
+from ..registry import NamesRegistry
 
 
 def main(args=None):
@@ -53,7 +53,7 @@ def main(args=None):
         args = parser.parse_args(args)
 
     try:
-        names = NamesRegistry(args.file)
+        NamesRegistry(args.file)
     except BadRegistryError as err:
         print(os.linesep.join(err.names), file=sys.stderr)
         return len(err.names)
