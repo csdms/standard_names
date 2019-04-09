@@ -4,7 +4,7 @@ import pytest
 from six import string_types
 from six.moves import StringIO
 
-from standard_names import NamesRegistry, StandardName, BadNameError, BadRegistryError
+from standard_names import BadNameError, BadRegistryError, NamesRegistry, StandardName
 from standard_names.registry import load_names_from_txt
 
 

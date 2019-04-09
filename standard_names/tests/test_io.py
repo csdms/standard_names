@@ -2,9 +2,8 @@
 """Unit tests for standard_names.io module."""
 from six.moves import StringIO
 
-from standard_names import StandardName, BadNameError
+from standard_names import BadNameError, StandardName
 from standard_names.utilities import from_model_file
-
 
 _SINGLE_MODEL_FILE_STREAM = StringIO(
     """

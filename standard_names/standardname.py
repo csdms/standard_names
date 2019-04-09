@@ -6,7 +6,6 @@ from six import string_types
 
 from .error import BadNameError
 
-
 _PREFIX_REGEX = "^[a-z]([a-zA-Z0-9~-]|_(?!_))*"
 _SUFFIX_REGEX = "[a-z0-9]([a-z0-9~-]|_(?!_))*[a-z0-9]$"
 STANDARD_NAME_REGEX = re.compile(_PREFIX_REGEX + "(__)" + _SUFFIX_REGEX)

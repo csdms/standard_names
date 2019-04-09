@@ -2,12 +2,12 @@
 """Validate a list of names."""
 from __future__ import print_function
 
+import argparse
 import os
 import sys
-import argparse
 
-from ..registry import NamesRegistry
 from ..error import BadRegistryError
+from ..registry import NamesRegistry
 
 
 def main(args=None):

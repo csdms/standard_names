@@ -5,8 +5,8 @@ from glob import glob
 
 from six import string_types
 
-from .standardname import StandardName
 from .error import BadNameError, BadRegistryError
+from .standardname import StandardName
 
 
 def load_names_from_txt(file_like, onerror="raise"):

@@ -5,13 +5,12 @@ Example usage:
 """
 from __future__ import print_function
 
+import argparse
 import os
 import sys
-import argparse
 
 from ..registry import NamesRegistry
 from ..utilities import FORMATTERS
-
 
 _FORMATS = FORMATTERS.keys()
 
