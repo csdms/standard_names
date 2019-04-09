@@ -7,7 +7,6 @@ from __future__ import print_function
 
 import argparse
 import os
-import sys
 
 from ..registry import NamesRegistry
 from ..utilities import FORMATTERS

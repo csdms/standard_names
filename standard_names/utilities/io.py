@@ -5,11 +5,9 @@ from __future__ import print_function
 import os
 import re
 import sys
-import warnings
 
 from ..error import BadNameError
 from ..registry import NamesRegistry
-from ..standardname import StandardName
 from .decorators import (
     format_as_plain_text,
     format_as_wiki,
