@@ -1,54 +1,37 @@
 environment:
 
-  global:
-    WITH_COMPILER: "cmd /E:ON /V:ON /C .\\.ci\\appveyor\\run_with_env.cmd"
-    ANACONDA_TOKEN:
-      secure: zCRzslOrbeC7LtC9Z7qHe4PnG3oUhSo5CHI7V9KShfMO/ZGZrWLbk1U7y7HM+09Y
-    BUILD_STR: "dev"
-
   matrix:
-    - PYTHON: "C:\\Python27"
-      DISTUTILS_USE_SDK: "1"
-      PYTHON_VERSION: "2.7"
-    - PYTHON: "C:\\Python35"
-      PYTHON_VERSION: "3.5"
+    - TARGET_ARCH: x64
+      CONDA_INSTALL_LOCN: C:\\Miniconda37-x64
+      CONDA_ENV: py37-windows
+
+    - TARGET_ARCH: x64
+      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
+      CONDA_ENV: py36-windows
 
 platform:
   - x64
-  - x86
+
+os: Previous Visual Studio 2015
 
 init:
-  - "ECHO %PYTHON% %PYTHON_VERSION% %HOME% %PLATFORM%"
+  - "ECHO %CONDA_INSTALL_LOCN% %CONDA_PY% %HOME% %PLATFORM%"
   - "ECHO %APPVEYOR_REPO_BRANCH%"
 
 install:
-  - powershell .ci/appveyor/install.ps1
-  - if "%APPVEYOR_REPO_TAG%"=="true" if "%APPVEYOR_REPO_TAG_NAME:~0,1%"=="v" set BUILD_STR=""
-  - IF "%PLATFORM%"=="x64" (SET SUFFIX="_64") ELSE (SET SUFFIX="_32")
-  - "set PATH=%PYTHON%%SUFFIX%;%PYTHON%%SUFFIX%/Scripts;%PYTHON%%SUFFIX%/Library/bin;%PATH%"
-  - conda info
-  - conda config --set always_yes yes
-  - conda install -q --force --no-deps conda psutil ruamel_yaml requests
-  - conda install -q python=%PYTHON_VERSION%
-  - conda install -q conda-build
-  - conda install -q anaconda-client
-  - conda install -q pytest
-  - pip install twine
-  - "%WITH_COMPILER% conda build -q conda-recipe"
-  - "%WITH_COMPILER% conda install -q standard_names --use-local"
-  - "conda list"
+  - cmd: call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
+  - cmd: conda update --yes --quiet conda
+  - cmd: set PYTHONUNBUFFERED=1
+  - cmd: conda config --set always_yes yes
+  - cmd: conda update conda
+  - cmd: conda config --append channels conda-forge
+  - cmd: conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
+  - cmd: conda activate test_env
+  - cmd: python --version
+  - cmd: pip install .
+
+
 build: false
 
 test_script:
-  - "%WITH_COMPILER% pytest"
-
-after_test:
-  - "%WITH_COMPILER% python setup.py bdist_wheel"
-
-artifacts:
-  # Archive the generated conda package in the ci.appveyor.com build report.
-  - path: 'dist\*'
-
-deploy_script:
-  - "python .ci/appveyor/anaconda_upload.py"
-#   - "python .ci/appveyor/pypi_upload.py"
+  - pytest
