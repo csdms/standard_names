@@ -372,7 +372,8 @@ class NamesRegistry(object):
         list of str
             List of names matching the pattern.
         """
-        import re, fnmatch
+        import fnmatch
+        import re
 
         p = re.compile(fnmatch.translate(pattern))
         names = []
