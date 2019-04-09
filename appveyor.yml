@@ -28,7 +28,7 @@ install:
   - cmd: conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
   - cmd: conda activate test_env
   - cmd: python --version
-  - cmd: pip install .
+  - cmd: pip install . -r requirements.txt
 
 
 build: false
