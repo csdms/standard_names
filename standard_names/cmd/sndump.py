@@ -71,7 +71,7 @@ class CustomAction(argparse.Action):
     """Keep track of the order of options are given on the command line."""
 
     def __call__(self, parser, namespace, values, option_string=None):
-        if not "ordered_args" in namespace:
+        if "ordered_args" not in namespace:
             setattr(namespace, "ordered_args", [])
         previous = namespace.ordered_args
         previous.append(self.dest)
