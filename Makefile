@@ -51,11 +51,11 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 model_metadata tests
+	flake8 standard_names tests
 
 pretty: ## reformat files to make them look pretty
-	find model_metadata -name '*.py' | xargs isort
-	black setup.py model_metadata
+	find standard_names -name '*.py' | xargs isort
+	black setup.py standard_names
 
 test: ## run tests quickly with the default Python
 	py.test
@@ -64,13 +64,13 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	pytest --cov=model_metadata --cov-report= --cov-report=html --cov-config=setup.cfg
+	pytest --cov=standard_names --cov-report= --cov-report=html --cov-config=setup.cfg
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/api/model_metadata.rst
+	rm -f docs/api/standard_names.rst
 	rm -f docs/api/modules.rst
-	sphinx-apidoc --force -o docs/api model_metadata *tests
+	sphinx-apidoc --force -o docs/api standard_names *tests
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
