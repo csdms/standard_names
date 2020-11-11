@@ -10,7 +10,12 @@
 standard_names
 ==============
 
-Python utilities for working with CSDMS standard names.
+Python utilities for working with CSDMS Standard Names.
+
+CSDMS Standard Names is an element of the [CSDMS Workbench](https://csdms.colorado.edu/wiki/Workbench),
+an integrated system of software tools, technologies, and standards
+for building and coupling models.
+
 
 Links
 -----
