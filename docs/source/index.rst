@@ -28,6 +28,13 @@ continually tested on Mac, Linux, and Windows. It is distributed both
 as source code [StandardNamesGitHub]_ and as Anaconda packages from
 Anaconda Cloud.
 
+Standard Names is an element of the `CSDMS Workbench`_,
+an integrated system of software tools, technologies, and standards
+for building and coupling models.
+
+.. _CSDMS Workbench: https://csdms.colorado.edu/wiki/Workbench
+
+
 Quickstart
 ----------
 
