@@ -6,8 +6,8 @@ environment:
       CONDA_ENV: py37-windows
 
     - TARGET_ARCH: x64
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      CONDA_ENV: py36-windows
+      CONDA_INSTALL_LOCN: C:\\Miniconda38-x64
+      CONDA_ENV: py38-windows
 
 platform:
   - x64
