@@ -51,7 +51,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 standard_names tests
+	flake8 standard_names standard_names/tests
 
 pretty: ## reformat files to make them look pretty
 	find standard_names -name '*.py' | xargs isort
