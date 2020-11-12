@@ -4,8 +4,8 @@ os:
 - osx
 env:
   matrix:
-  - CONDA_ENV=py36
   - CONDA_ENV=py37
+  - CONDA_ENV=py38
   - CONDA_ENV=lint
 matrix:
   exclude:
