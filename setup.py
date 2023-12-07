@@ -1,14 +1,10 @@
 #!/usr/bin/env python
-
-
 from setuptools import setup
-
-import versioneer
 
 
 setup(
     name="standard_names",
-    version=versioneer.get_version(),
+    version="0.2.6.dev0",
     description="CSDMS standard names",
     author="Eric Hutton",
     author_email="eric.hutton@colorado.edu",
@@ -38,7 +34,6 @@ setup(
         "standard_names.utilities",
         "standard_names.tests",
     ],
-    cmdclass=versioneer.get_cmdclass(),
     entry_points={
         "console_scripts": [
             "snbuild = standard_names.cmd.snbuild:run",
