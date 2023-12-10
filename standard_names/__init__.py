@@ -1,10 +1,10 @@
 """The CSDMS Standard Names"""
-import pkg_resources
+from importlib.metadata import version
 from .error import BadNameError, BadRegistryError
 from .registry import NamesRegistry
 from .standardname import StandardName, is_valid_name
 
-__version__ = pkg_resources.get_distribution("standard-names").version
+__version__ = version("standard-names")
 __all__ = [
     "StandardName",
     "is_valid_name",
