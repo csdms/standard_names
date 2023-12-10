@@ -63,11 +63,11 @@ def load_names_from_txt(file_like, onerror="raise"):
 
 
 def _strict_version_or_raise(version_str):
-    from distutils.version import StrictVersion
+    from packaging.version import Version, InvalidVersion
 
-    if StrictVersion.version_re.match(version_str):
-        return StrictVersion(version_str)
-    else:
+    try:
+        return Version(version_str)
+    except InvalidVersion:
         raise ValueError("{version}: Not a version string".format(version=version_str))
 
 
