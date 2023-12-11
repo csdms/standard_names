@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="standard_names",
-    version="0.2.6.dev0",
+    version="0.2.6",
     description="CSDMS standard names",
     author="Eric Hutton",
     author_email="eric.hutton@colorado.edu",
