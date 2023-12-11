@@ -170,7 +170,7 @@ def from_model_file(stream):
     """
     import yaml
 
-    models = yaml.load_all(stream)
+    models = yaml.safe_load_all(stream)
     names = _find_unique_names(models)
     return names
 
