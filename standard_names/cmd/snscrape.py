@@ -63,7 +63,7 @@ def snscrape(files, with_headers=False, regex=None, format="url", newline=None):
         docs[file_name] = scrape(file_name, regex=regex, format=format)
 
     documents = []
-    for (name, name_list) in docs.items():
+    for name, name_list in docs.items():
         if with_headers:
             heading = "Scraped from %s" % name
         else:
