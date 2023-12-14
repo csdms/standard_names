@@ -1,10 +1,8 @@
-[![Build Status](https://travis-ci.org/csdms/standard_names.svg?branch=master)](https://travis-ci.org/csdms/standard_names)
-[![Build status](https://ci.appveyor.com/api/projects/status/xb4lalkn0603ac1o/branch/master?svg=true)](https://ci.appveyor.com/project/mcflugen/standard-names/branch/master)
+[![Test](https://github.com/csdms/standard_names/actions/workflows/test.yml/badge.svg)](https://github.com/csdms/standard_names/actions/workflows/test.yml)
 [![Documentation Status](https://readthedocs.org/projects/standard-names/badge/?version=latest)](http://standard-names.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/csdms/standard_names/badge.svg?branch=master)](https://coveralls.io/github/csdms/standard_names?branch=master)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/standard_names/badges/version.svg)](https://anaconda.org/conda-forge/standard_names)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/standard_names/badges/installer/conda.svg)](https://conda.anaconda.org/conda-forge)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/standard_names/badges/downloads.svg)](https://anaconda.org/conda-forge/standard_names)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/standard_names.svg)](https://anaconda.org/conda-forge/standard_names)
+[![PyPI](https://img.shields.io/pypi/v/standard_names)](https://pypi.org/project/standard_names)
 
 
 standard_names
