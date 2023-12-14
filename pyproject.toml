@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "standard_names"
 description = "Python utilities for working with CSDMS Standard Names"
-version = "0.2.7"
+version = "0.2.8.dev0"
 authors = [
   {name = "Eric Hutton"},
   {email = "eric.hutton@colorado.edu"},
