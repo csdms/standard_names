@@ -1,5 +1,6 @@
 """The CSDMS Standard Names"""
 from importlib.metadata import version
+
 from .error import BadNameError, BadRegistryError
 from .registry import NamesRegistry
 from .standardname import StandardName, is_valid_name

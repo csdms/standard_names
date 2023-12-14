@@ -63,7 +63,7 @@ def load_names_from_txt(file_like, onerror="raise"):
 
 
 def _strict_version_or_raise(version_str):
-    from packaging.version import Version, InvalidVersion
+    from packaging.version import InvalidVersion, Version
 
     try:
         return Version(version_str)

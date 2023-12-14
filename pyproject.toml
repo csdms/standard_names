@@ -1,0 +1,115 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "standard_names"
+description = "Python utilities for working with CSDMS Standard Names"
+version = "0.2.7.dev0"
+authors = [
+  {name = "Eric Hutton"},
+  {email = "eric.hutton@colorado.edu"},
+]
+maintainers = [
+  {name = "Eric Hutton"},
+  {email = "eric.hutton@colorado.edu"},
+  {name = "Mark Piper"},
+  {email = "mark.piper@colorado.edu"},
+  {name = "The CSDMS team"},
+  {email = "csdms@colorado.edu"},
+]
+readme = "README.md"
+keywords = [
+  "python",
+  "utilities",
+  "csdms",
+  "standard names",
+]
+license = {text = "MIT License"}
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Education",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">=3.9"
+dependencies = [
+  "pyyaml",
+  "six",
+  "packaging",
+  "jinja2",
+  "py-scripting",
+  "binaryornot",
+]
+
+[project.urls]
+Homepage = "https://csdms.colorado.edu"
+Documentation = "https://standard-names.readthedocs.io/"
+Repository = "https://github.com/csdms/standard_names"
+Issues = "https://github.com/csdms/standard_names/issues"
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "isort",
+  "flake8",
+  "zest.releaser",
+]
+build = [
+  "build",
+  "twine",
+]
+test = [
+  "pytest",
+  "pytest-cov",
+  "coverage",
+]
+docs = [
+  "sphinx",
+]
+
+[project.scripts]
+snbuild = "standard_names.cmd.snbuild:run"
+sndump = "standard_names.cmd.sndump:run"
+snscrape = "standard_names.cmd.snscrape:run"
+snsql = "standard_names.cmd.snsql:run"
+snvalidate = "standard_names.cmd.snvalidate:run"
+
+[tool.setuptools.packages.find]
+where = ["."]
+namespaces = true
+include = ["standard_names*"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["standard_names"]
+norecursedirs = [".*", "*.egg*", "build", "dist"]
+addopts = """
+  --tb native
+  --strict-markers
+  --durations 16
+  --doctest-modules
+  -vvv
+"""
+doctest_optionflags = [
+  "NORMALIZE_WHITESPACE",
+  "IGNORE_EXCEPTION_DETAIL",
+  "ALLOW_UNICODE"
+]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+combine_as_imports = true
+line_length = 88
+
+[tool.zest-releaser]
+tag-format = "v{version}"

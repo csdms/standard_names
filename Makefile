@@ -51,14 +51,14 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 standard_names standard_names/tests
+	flake8 .
 
 pretty: ## reformat files to make them look pretty
 	find standard_names -name '*.py' | xargs isort
-	black setup.py standard_names
+	black .
 
 test: ## run tests quickly with the default Python
-	py.test
+	pytest -vvv
 
 test-all: ## run tests on every Python version with tox
 	tox
@@ -73,7 +73,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	sphinx-apidoc --force -o docs/api standard_names *tests
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
+	$(BROWSER) docs/build/html/index.html
 
 changelog:
 	changelog --force --batch
@@ -85,9 +85,9 @@ release: dist ## package and upload a release
 	twine upload dist/*
 
 dist: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
+	python -m build
 	ls -l dist
+	twine check dist/*
 
 install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+	pip install -e .
