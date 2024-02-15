@@ -6,11 +6,12 @@ Example usage:
              http://csdms.colorado.edu/wiki/CSN_Operation_Templates \
             > data/scraped.yaml
 """
-from __future__ import print_function
 
 import os
 
-from ..utilities import FORMATTERS, SCRAPERS, scrape
+from ..utilities import FORMATTERS
+from ..utilities import SCRAPERS
+from ..utilities import scrape
 
 _AS_TXT = FORMATTERS["txt"]
 
@@ -41,7 +42,7 @@ def snscrape(files, with_headers=False, regex=None, format="url", newline=None):
     Examples
     --------
     >>> from __future__ import print_function
-    >>> from six.moves import StringIO
+    >>> from io import StringIO
     >>> import standard_names as csn
 
     >>> file1 = StringIO(\"\"\"

@@ -3,7 +3,6 @@
 Example usage:
     sndump -n -o -q -op --format=wiki > standard_names.wiki
 """
-from __future__ import print_function
 
 import argparse
 import os
@@ -34,7 +33,7 @@ def sndump(file=None, format="plain", sorted=True, keys=None, newline=None):
     --------
     >>> from __future__ import print_function
     >>> import os
-    >>> from six.moves import StringIO
+    >>> from io import StringIO
     >>> import standard_names as csn
 
     >>> lines = os.linesep.join(['air__temperature', 'water__temperature'])
@@ -72,10 +71,10 @@ class CustomAction(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         if "ordered_args" not in namespace:
-            setattr(namespace, "ordered_args", [])
+            namespace.ordered_args = []
         previous = namespace.ordered_args
         previous.append(self.dest)
-        setattr(namespace, "ordered_args", previous)
+        namespace.ordered_args = previous
 
 
 def main(args=None):

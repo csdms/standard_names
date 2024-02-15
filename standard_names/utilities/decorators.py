@@ -3,8 +3,6 @@
 
 import os
 
-from six import string_types
-
 
 def format_as_wiki(func):
     """
@@ -52,7 +50,7 @@ def format_as_wiki(func):
 
         if heading:
             pre = "=" * heading_level
-            wiki_lines.insert(0, "%s %s %s" % (pre, heading.title(), pre))
+            wiki_lines.insert(0, f"{pre} {heading.title()} {pre}")
 
         return newline.join(wiki_lines)
 
@@ -114,7 +112,7 @@ def format_as_yaml(func):
         items = [line for line in lines if line]
         if items:
             for line in items:
-                yaml_lines.append("%s- %s" % (" " * indent, line))
+                yaml_lines.append("{}- {}".format(" " * indent, line))
         else:
             yaml_lines.append("%s[]" % (" " * indent))
 
@@ -176,8 +174,8 @@ def plain_text(func):
         name : str
             Name of the file as a string.
         """
-        if isinstance(name, string_types):
-            with open(name, "r") as file_like:
+        if isinstance(name, str):
+            with open(name) as file_like:
                 rtn = func(file_like, **kwds)
         else:
             rtn = func(name, **kwds)
@@ -233,7 +231,7 @@ def google_doc(func):
         except subprocess.CalledProcessError:
             raise
         else:
-            with open(tfile, "r") as file_like:
+            with open(tfile) as file_like:
                 rtn = func(file_like, **kwds)
         finally:
             os.remove(tfile)

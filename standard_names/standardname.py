@@ -2,8 +2,6 @@
 """A CSDMS standard name."""
 import re
 
-from six import string_types
-
 from .error import BadNameError
 
 _PREFIX_REGEX = "^[a-z]([a-zA-Z0-9~-]|_(?!_))*"
@@ -28,7 +26,7 @@ def is_valid_name(name):
     return bool(STANDARD_NAME_REGEX.match(name))
 
 
-class StandardName(object):
+class StandardName:
 
     """A CSDMS standard name.
 
@@ -111,8 +109,8 @@ class StandardName(object):
         """
         try:
             (object_part, quantity_clause) = name.split("__")
-        except ValueError:
-            raise BadNameError(name)
+        except ValueError as error:
+            raise BadNameError(name) from error
 
         (operators, quantity_part) = StandardName.decompose_quantity(quantity_clause)
 
@@ -214,7 +212,7 @@ class StandardName(object):
 
     @operators.setter
     def operators(self, value):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             value = (value,)
         self._operators = value
         self._name = StandardName.compose_name(

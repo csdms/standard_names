@@ -1,11 +1,9 @@
-#! /usr/bin/env python
 import os
 import warnings
 from glob import glob
 
-from six import string_types
-
-from .error import BadNameError, BadRegistryError
+from .error import BadNameError
+from .error import BadRegistryError
 from .standardname import StandardName
 
 
@@ -27,7 +25,7 @@ def load_names_from_txt(file_like, onerror="raise"):
 
     Examples
     --------
-    >>> from six.moves import StringIO
+    >>> from io import StringIO
     >>> import standard_names as csn
     >>> names = StringIO(\"\"\"
     ... air__temperature
@@ -55,7 +53,7 @@ def load_names_from_txt(file_like, onerror="raise"):
     if bad_names:
         if onerror == "warn":
             for name in bad_names:
-                warnings.warn("{name}: not a valid name".format(name=name))
+                warnings.warn(f"{name}: not a valid name", stacklevel=2)
         elif onerror == "raise":
             raise BadRegistryError(bad_names)
 
@@ -63,12 +61,13 @@ def load_names_from_txt(file_like, onerror="raise"):
 
 
 def _strict_version_or_raise(version_str):
-    from packaging.version import InvalidVersion, Version
+    from packaging.version import InvalidVersion
+    from packaging.version import Version
 
     try:
         return Version(version_str)
-    except InvalidVersion:
-        raise ValueError("{version}: Not a version string".format(version=version_str))
+    except InvalidVersion as error:
+        raise ValueError(f"{version_str}: Not a version string") from error
 
 
 def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
@@ -108,7 +107,7 @@ def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
     """
     data_dir = path or os.path.join(os.path.dirname(__file__), "data")
 
-    name_glob = "{prefix}*{suffix}".format(prefix=prefix, suffix=suffix)
+    name_glob = f"{prefix}*{suffix}"
     data_file_pattern = os.path.join(data_dir, name_glob)
     files = [os.path.basename(file_) for file_ in glob(data_file_pattern)]
 
@@ -136,7 +135,7 @@ def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
         return None, None
 
 
-class NamesRegistry(object):
+class NamesRegistry:
 
     """A registry of CSDMS Standard Names.
 
@@ -221,7 +220,7 @@ class NamesRegistry(object):
         if paths is None:
             paths = []
 
-        if isinstance(paths, string_types) or hasattr(paths, "readline"):
+        if isinstance(paths, str) or hasattr(paths, "readline"):
             paths = [paths]
 
         self._names = set()
@@ -232,8 +231,8 @@ class NamesRegistry(object):
         self._version = version or "0.0.0"
 
         for path in paths:
-            if isinstance(path, string_types):
-                with open(path, "r") as fp:
+            if isinstance(path, str):
+                with open(path) as fp:
                     self._load(fp)
             else:
                 self._load(path)
@@ -339,8 +338,7 @@ class NamesRegistry(object):
         return len(self._names)
 
     def __iter__(self):
-        for name in self._names:
-            yield name
+        yield from self._names
 
     def search(self, name):
         """Search the registry for a name.
@@ -395,7 +393,7 @@ class NamesRegistry(object):
         tuple of str
             Names from the registry that contains the given words.
         """
-        if isinstance(parts, string_types):
+        if isinstance(parts, str):
             parts = (parts,)
 
         remaining_names = self._names

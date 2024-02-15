@@ -3,7 +3,6 @@
 from io import StringIO
 
 import pytest
-from six import string_types
 
 from standard_names import BadNameError
 from standard_names import BadRegistryError

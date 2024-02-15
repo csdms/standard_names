@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 """Validate a list of names."""
-from __future__ import print_function
 
 import argparse
 import os

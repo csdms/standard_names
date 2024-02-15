@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 """Some IO functions for standard_names package."""
-from __future__ import print_function
 
 import os
 import re
@@ -8,14 +7,12 @@ import sys
 
 from ..error import BadNameError
 from ..registry import NamesRegistry
-from .decorators import (
-    format_as_plain_text,
-    format_as_wiki,
-    format_as_yaml,
-    google_doc,
-    plain_text,
-    url,
-)
+from .decorators import format_as_plain_text
+from .decorators import format_as_wiki
+from .decorators import format_as_yaml
+from .decorators import google_doc
+from .decorators import plain_text
+from .decorators import url
 
 
 def _list_to_string(lines, **kwds):
@@ -77,7 +74,7 @@ def _scrape_stream(stream, regex=r"\b\w+__\w+"):
     Examples
     --------
     >>> import standard_names as csn
-    >>> from six.moves import StringIO
+    >>> from io import StringIO
     >>> stream = StringIO(\"\"\"
     ... Some text with a standard name (air__temperature) in it.
     ... More words with more names: water__temperature. If a word matches
@@ -113,7 +110,7 @@ FORMATTERS = {
 }
 
 
-SCRAPERS = dict()
+SCRAPERS = {}
 for decorator in [google_doc, url, plain_text]:
     SCRAPERS[decorator.__name__] = decorator(_scrape_stream)
 
@@ -140,7 +137,7 @@ def _find_unique_names(models):
             new_names = []
             for intent in model["exchange items"]:
                 if intent not in _VALID_INTENTS:
-                    raise ValueError("{intent}: Bad intent".format(intent=intent))
+                    raise ValueError(f"{intent}: Bad intent")
                 new_names.extend(model["exchange items"][intent])
         else:
             new_names = model["exchange items"]
@@ -191,7 +188,7 @@ def from_list_file(stream):
     Examples
     --------
     >>> import standard_names as csn
-    >>> from six.moves import StringIO
+    >>> from io import StringIO
     >>> stream = StringIO(\"\"\"
     ... air__temperature
     ... # A comment

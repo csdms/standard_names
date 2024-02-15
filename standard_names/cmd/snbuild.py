@@ -4,7 +4,6 @@ Example usage:
     snbuild data/models.yaml data/scraped.yaml \
             > standard_names/data/standard_names.yaml
 """
-from __future__ import print_function
 
 import os
 
@@ -31,7 +30,7 @@ def snbuild(file, newline=None):
     --------
     >>> from __future__ import print_function
     >>> import os
-    >>> from six.moves import StringIO
+    >>> from io import StringIO
     >>> import standard_names as csn
 
     >>> lines = os.linesep.join(['air__temperature', 'water__temperature'])

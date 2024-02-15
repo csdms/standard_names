@@ -13,7 +13,7 @@ class BadNameError(Error):
     """Error to indicate a poorly-formed standard name."""
 
     def __init__(self, name):
-        super(BadNameError, self).__init__()
+        super().__init__()
         self._name = name
 
     def __str__(self):
@@ -29,7 +29,7 @@ class BadRegistryError(Error):
     """Error to indicate a bad NamesRegistry."""
 
     def __init__(self, names):
-        super(BadRegistryError, self).__init__()
+        super().__init__()
         self._names = tuple(sorted(names))
 
     def __str__(self):

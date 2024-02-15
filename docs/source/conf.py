@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # standard_names documentation build configuration file, created by
 # sphinx-quickstart on Fri Jul 22 11:31:51 2016.
@@ -12,9 +11,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
-import shlex
+import sys
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
@@ -217,14 +215,14 @@ htmlhelp_basename = "standard_namesdoc"
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #'papersize': 'letterpaper',
-    # The font size ('10pt', '11pt' or '12pt').
-    #'pointsize': '10pt',
-    # Additional stuff for the LaTeX preamble.
-    #'preamble': '',
-    # Latex figure (float) alignment
-    #'figure_align': 'htbp',
+    #  The paper size ('letterpaper' or 'a4paper').
+    # 'papersize': 'letterpaper',
+    #  The font size ('10pt', '11pt' or '12pt').
+    # 'pointsize': '10pt',
+    #  Additional stuff for the LaTeX preamble.
+    # 'preamble': '',
+    #  Latex figure (float) alignment
+    # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
