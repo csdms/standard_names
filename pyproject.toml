@@ -82,7 +82,7 @@ file = "README.md"
 content-type = "text/markdown"
 
 [tool.setuptools.dynamic.version]
-attr = "gimli._version.__version__"
+attr = "standard_names._version.__version__"
 
 [tool.setuptools.packages.find]
 where = [
