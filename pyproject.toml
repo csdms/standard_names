@@ -42,11 +42,7 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
   "pyyaml",
-  "six",
   "packaging",
-  "jinja2",
-  "py-scripting",
-  "binaryornot",
 ]
 
 [project.urls]
