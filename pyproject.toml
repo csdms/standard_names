@@ -32,7 +32,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Physics",
 ]
-version = "0.2.8.dev0"
 dynamic = [
     "readme",
     "version",
