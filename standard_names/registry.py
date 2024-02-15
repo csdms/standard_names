@@ -2,9 +2,9 @@ import os
 import warnings
 from glob import glob
 
-from .error import BadNameError
-from .error import BadRegistryError
-from .standardname import StandardName
+from standard_names.error import BadNameError
+from standard_names.error import BadRegistryError
+from standard_names.standardname import StandardName
 
 
 def load_names_from_txt(file_like, onerror="raise"):

@@ -7,8 +7,8 @@ Example usage:
 import argparse
 import os
 
-from ..registry import NamesRegistry
-from ..utilities import FORMATTERS
+from standard_names.registry import NamesRegistry
+from standard_names.utilities import FORMATTERS
 
 _FORMATS = FORMATTERS.keys()
 

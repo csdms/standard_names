@@ -9,9 +9,9 @@ Example usage:
 
 import os
 
-from ..utilities import FORMATTERS
-from ..utilities import SCRAPERS
-from ..utilities import scrape
+from standard_names.utilities import FORMATTERS
+from standard_names.utilities import SCRAPERS
+from standard_names.utilities import scrape
 
 _AS_TXT = FORMATTERS["txt"]
 

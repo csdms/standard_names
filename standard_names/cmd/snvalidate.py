@@ -5,8 +5,8 @@ import argparse
 import os
 import sys
 
-from ..error import BadRegistryError
-from ..registry import NamesRegistry
+from standard_names.error import BadRegistryError
+from standard_names.registry import NamesRegistry
 
 
 def main(args=None):

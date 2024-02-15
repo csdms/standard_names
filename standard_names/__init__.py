@@ -1,17 +1,12 @@
 """The CSDMS Standard Names"""
-from importlib.metadata import version
+from standard_names._version import __version__
+from standard_names.registry import NamesRegistry
+from standard_names.standardname import StandardName
+from standard_names.standardname import is_valid_name
 
-from .error import BadNameError
-from .error import BadRegistryError
-from .registry import NamesRegistry
-from .standardname import StandardName
-from .standardname import is_valid_name
-
-__version__ = version("standard-names")
 __all__ = [
+    "__version__",
     "StandardName",
     "is_valid_name",
     "NamesRegistry",
-    "BadNameError",
-    "BadRegistryError",
 ]

@@ -7,8 +7,8 @@ Example usage:
 
 import os
 
-from ..registry import NamesRegistry
-from ..utilities.io import FORMATTERS
+from standard_names.registry import NamesRegistry
+from standard_names.utilities.io import FORMATTERS
 
 
 def snbuild(file, newline=None):

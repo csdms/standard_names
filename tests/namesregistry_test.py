@@ -4,10 +4,10 @@ from io import StringIO
 
 import pytest
 
-from standard_names import BadNameError
-from standard_names import BadRegistryError
-from standard_names import NamesRegistry
-from standard_names import StandardName
+from standard_names.error import BadNameError
+from standard_names.error import BadRegistryError
+from standard_names.registry import NamesRegistry
+from standard_names.standardname import StandardName
 from standard_names.registry import load_names_from_txt
 
 

@@ -2,7 +2,7 @@
 
 import os
 
-from ..registry import NamesRegistry
+from standard_names.registry import NamesRegistry
 
 _NAMES_SCHEMA = """
 create table names (
