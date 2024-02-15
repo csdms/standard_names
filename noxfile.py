@@ -46,8 +46,6 @@ def build(session: nox.Session) -> None:
 def build_docs(session: nox.Session) -> None:
     """Build the docs."""
 
-    build_generated_docs(session)
-
     session.install(
         *("-r", "requirements-docs.in"),
         *("-r", "requirements.in"),
