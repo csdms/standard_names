@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 """Unit tests for standard_names.NamesRegistry."""
+from io import StringIO
+
 import pytest
 from six import string_types
-from six.moves import StringIO
 
-from standard_names import BadNameError, BadRegistryError, NamesRegistry, StandardName
+from standard_names import BadNameError
+from standard_names import BadRegistryError
+from standard_names import NamesRegistry
+from standard_names import StandardName
 from standard_names.registry import load_names_from_txt
 
 
@@ -96,7 +100,7 @@ def test_collection_contains_names():
     nreg.add("water__temperature")
 
     for name in nreg:
-        assert isinstance(name, string_types)
+        assert isinstance(name, str)
 
 
 def test_add_name():

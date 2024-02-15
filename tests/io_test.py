@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Unit tests for standard_names.io module."""
-from six.moves import StringIO
+from io import StringIO
 
 from standard_names.utilities import from_model_file
 
