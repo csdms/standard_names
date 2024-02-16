@@ -401,7 +401,6 @@ class NamesRegistry:
         return {name for name in self._names if all(part in name for part in parts)}
 
 
-
 REGISTRY = NamesRegistry()
 
 NAMES = REGISTRY.names
