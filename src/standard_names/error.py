@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+from collections.abc import Iterable
 
 
 class Error(Exception):
@@ -12,15 +12,15 @@ class BadNameError(Error):
 
     """Error to indicate a poorly-formed standard name."""
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         super().__init__()
         self._name = name
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._name
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
 
@@ -28,13 +28,13 @@ class BadRegistryError(Error):
 
     """Error to indicate a bad NamesRegistry."""
 
-    def __init__(self, names):
+    def __init__(self, names: Iterable[str]):
         super().__init__()
         self._names = tuple(sorted(names))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Registry contains invalid names"
 
     @property
-    def names(self):
+    def names(self) -> tuple[str, ...]:
         return self._names
