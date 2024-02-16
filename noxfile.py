@@ -109,11 +109,11 @@ def clean(session):
 
             shutil.rmtree("build", ignore_errors=True)
             shutil.rmtree("dist", ignore_errors=True)
-            shutil.rmtree(f"{PROJECT}.egg-info", ignore_errors=True)
+            shutil.rmtree(f"src/{PROJECT}.egg-info", ignore_errors=True)
             shutil.rmtree(".pytest_cache", ignore_errors=True)
             shutil.rmtree(".venv", ignore_errors=True)
 
-            for d in ("standard_names", "tests"):
+            for d in ("src", "tests"):
                 with session.chdir(d):
                     for pattern in ["*.py[co]", "__pycache__", "*.c", "*.so"]:
                         _clean_rglob(pattern)

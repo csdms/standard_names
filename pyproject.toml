@@ -84,26 +84,23 @@ content-type = "text/markdown"
 [tool.setuptools.dynamic.version]
 attr = "standard_names._version.__version__"
 
+[tool.setuptools.package-data]
+standard_names = [
+    "data/*.txt",
+]
+
 [tool.setuptools.packages.find]
 where = [
-    ".",
-]
-namespaces = true
-include = [
-    "standard_names*",
+    "src",
 ]
 
 [tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-combine_as_imports = true
-line_length = 88
+profile = "black"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = [
-    "standard_names",
+    "src/standard_names",
     "tests",
 ]
 norecursedirs = [
@@ -127,4 +124,4 @@ doctest_optionflags = [
 
 [tool.zest-releaser]
 tag-format = "v{version}"
-python-file-with-version = "standard_names/_version.py"
+python-file-with-version = "src/standard_names/_version.py"
