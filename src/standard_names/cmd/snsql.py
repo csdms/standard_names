@@ -28,7 +28,7 @@ create table operators (
 """.strip()
 
 
-def as_sql_commands(names, newline=None):
+def as_sql_commands(names: NamesRegistry, newline: str = os.linesep) -> str:
     """Create an sql database from a NamesRegistry.
 
     Parameters
@@ -45,10 +45,12 @@ def as_sql_commands(names, newline=None):
 
     Examples
     --------
-    >>> import standard_names as csn
-    >>> names = csn.NamesRegistry(None)
-    >>> names.add('air__temperature')
-    >>> print(csn.cmd.snsql.as_sql_commands(names, newline='\\n'))
+    >>> from standard_names.registry import NamesRegistry
+    >>> from standard_names.cmd.snsql import as_sql_commands
+
+    >>> names = NamesRegistry()
+    >>> names.add("air__temperature")
+    >>> print(as_sql_commands(names, newline="\\n"))
     ...     # doctest: +REPORT_UDIFF
     BEGIN TRANSACTION;
     CREATE TABLE names (
@@ -76,8 +78,6 @@ def as_sql_commands(names, newline=None):
     INSERT INTO "quantities" VALUES(1,'temperature');
     COMMIT;
     """
-    newline = newline or os.linesep
-
     from contextlib import closing
     from sqlite3 import connect
 
@@ -101,7 +101,7 @@ def as_sql_commands(names, newline=None):
     return commands
 
 
-def main():
+def main() -> str:
     """
     Build a database of CSDMS standard names from a list.
     """
@@ -119,5 +119,5 @@ def main():
     return as_sql_commands(names)
 
 
-def run():
+def run() -> None:
     print(main())

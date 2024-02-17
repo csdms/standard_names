@@ -11,7 +11,7 @@ from standard_names.registry import NamesRegistry
 from standard_names.utilities.io import FORMATTERS
 
 
-def snbuild(file, newline=None):
+def snbuild(file: str, newline: str | None = None) -> str:
     """Build a YAML-formatted database of names.
 
     Parameters
@@ -28,15 +28,14 @@ def snbuild(file, newline=None):
 
     Examples
     --------
-    >>> from __future__ import print_function
     >>> import os
     >>> from io import StringIO
-    >>> import standard_names as csn
+    >>> from standard_names.cmd.snbuild import snbuild
 
     >>> lines = os.linesep.join(['air__temperature', 'water__temperature'])
     >>> names = StringIO(lines)
 
-    >>> print(csn.cmd.snbuild.snbuild(names, newline='\\n'))
+    >>> print(snbuild(names, newline='\\n'))
     %YAML 1.2
     ---
     names:
@@ -55,7 +54,10 @@ def snbuild(file, newline=None):
     ...
     """
     newline = newline or os.linesep
-    names = NamesRegistry(file)
+    if isinstance(file, str) and os.path.isfile(file):
+        names = NamesRegistry.from_path(file)
+    else:
+        names = NamesRegistry(file)
 
     formatter = FORMATTERS["yaml"]
 
@@ -74,7 +76,7 @@ def snbuild(file, newline=None):
     return newline.join(lines)
 
 
-def main(args=None):
+def main(argv: tuple[str] | None = None) -> str:
     """Build a list of CSDMS standard names for YAML description files."""
     import argparse
 
@@ -88,13 +90,13 @@ def main(args=None):
         help="YAML file describing model exchange items",
     )
 
-    if args is None:
+    if argv is None:
         args = parser.parse_args()
     else:
-        args = parser.parse_args(args)
+        args = parser.parse_args(argv)
 
     return snbuild(args.file)
 
 
-def run():
+def run() -> None:
     print(main())

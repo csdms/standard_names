@@ -9,17 +9,17 @@ from standard_names.error import BadRegistryError
 from standard_names.registry import NamesRegistry
 
 
-def main(args=None):
+def main(argv: tuple[str] | None = None) -> int:
     """Validate a list of names.
 
     Examples
     --------
-    >>> from __future__ import print_function
     >>> import os
-    >>> import standard_names as csn
+    >>> from standard_names.registry import _get_latest_names_file
+    >>> from standard_names.cmd.snvalidate import main
 
-    >>> (fname, _) = csn.registry._get_latest_names_file()
-    >>> csn.cmd.snvalidate.main([fname])
+    >>> (fname, _) = _get_latest_names_file()
+    >>> main([fname])
     0
 
     >>> import tempfile
@@ -31,7 +31,7 @@ def main(args=None):
     ...     print('Water__temperature', file=fp)
     ...     print('water_temperature', file=fp)
 
-    >>> csn.cmd.snvalidate.main([fp.name])
+    >>> main([fp.name])
     2
 
     >>> os.remove(fname)
@@ -46,19 +46,20 @@ def main(args=None):
         help="Read names from a file",
     )
 
-    if args is None:
+    if argv is None:
         args = parser.parse_args()
     else:
-        args = parser.parse_args(args)
+        args = parser.parse_args(argv)
 
-    try:
-        NamesRegistry(args.file)
-    except BadRegistryError as err:
-        print(os.linesep.join(err.names), file=sys.stderr)
-        return len(err.names)
-    else:
-        return 0
+    error_count = 0
+    for file in args.file:
+        try:
+            NamesRegistry(file)
+        except BadRegistryError as err:
+            print(os.linesep.join(err.names), file=sys.stderr)
+            error_count += len(err.names)
+    return error_count
 
 
-def run():
+def run() -> None:
     sys.exit(main())

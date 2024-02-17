@@ -1,6 +1,8 @@
-#! /usr/bin/env python
 """A CSDMS standard name."""
+from __future__ import annotations
+
 import re
+from typing import Any
 
 from standard_names.error import BadNameError
 
@@ -189,7 +191,7 @@ class StandardName:
         return self._object
 
     @object.setter
-    def object(self, value: str):
+    def object(self, value: str) -> None:
         self._object = value
         self._name = StandardName.compose_name(
             self.object, self.quantity, self.operators
@@ -201,7 +203,7 @@ class StandardName:
         return self._quantity
 
     @quantity.setter
-    def quantity(self, value: str):
+    def quantity(self, value: str) -> None:
         self._quantity = value
         self._name = StandardName.compose_name(
             self.object, self.quantity, self.operators
@@ -213,7 +215,7 @@ class StandardName:
         return self._operators
 
     @operators.setter
-    def operators(self, value: str | tuple[str, ...]):
+    def operators(self, value: str | tuple[str, ...]) -> None:
         if isinstance(value, str):
             value = (value,)
         self._operators = value
@@ -227,20 +229,20 @@ class StandardName:
     def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, that) -> bool:
+    def __eq__(self, that: Any) -> bool:
         return self.name == str(that)
 
-    def __ne__(self, that) -> bool:
+    def __ne__(self, that: Any) -> bool:
         return self.name != str(that)
 
-    def __lt__(self, that) -> bool:
+    def __lt__(self, that: Any) -> bool:
         return self.name < str(that)
 
-    def __gt__(self, that) -> bool:
+    def __gt__(self, that: Any) -> bool:
         return self.name > str(that)
 
-    def __cmp__(self, that) -> bool:
+    def __cmp__(self, that: Any) -> bool:
         return self.name == str(that)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.name)
