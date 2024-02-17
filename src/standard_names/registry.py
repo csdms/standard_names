@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import warnings
+from collections.abc import Generator
 from collections.abc import Iterable
 from glob import glob
 
@@ -13,7 +14,9 @@ from standard_names.error import BadRegistryError
 from standard_names.standardname import StandardName
 
 
-def load_names_from_txt(file_like, onerror: str = "raise") -> set[StandardName]:
+def load_names_from_txt(
+    file_like: Iterable[str], onerror: str = "raise"
+) -> set[StandardName]:
     """Load names from a text file.
 
     Parameters
@@ -146,9 +149,8 @@ class NamesRegistry:
 
     Parameters
     ----------
-    paths : str or iterable of str, optional
-        Name(s) of the data file(s) from which to read. If not given,
-        use a default database. If ``None``, create an empty registry.
+    names : str or iterable of str, optional
+        Name(s) to add to the registry.
     version : str, optional
         The version of the names registry.
 
@@ -166,13 +168,13 @@ class NamesRegistry:
 
     Get the default set of names.
 
-    >>> registry = NamesRegistry()
+    >>> registry = NamesRegistry.from_latest()
     >>> len(registry) > 0
     True
 
     Create an empty registry and add a name to it.
 
-    >>> registry = NamesRegistry(None)
+    >>> registry = NamesRegistry()
     >>> len(registry)
     0
     >>> registry.add('air__temperature')
@@ -214,35 +216,20 @@ class NamesRegistry:
     {'air__temperature'}
     """
 
-    def __init__(self, *args, **kwds):
-        if len(args) == 0:
-            paths, version = _get_latest_names_file()
-        elif len(args) == 1:
-            paths, version = args[0], None
-        else:
-            raise ValueError("0 or 1 arguments expected")
-
-        if paths is None:
-            paths = []
-
-        if isinstance(paths, str) or hasattr(paths, "readline"):
-            paths = [paths]
-
-        self._names = set()
-        self._objects = set()
-        self._quantities = set()
-        self._operators = set()
+    def __init__(self, names: str | Iterable[str] = (), version: str | None = None):
+        if isinstance(names, str):
+            names = [names]
 
         self._version = version or "0.0.0"
 
-        for path in paths:
-            if isinstance(path, str):
-                with open(path) as fp:
-                    self._load(fp)
-            else:
-                self._load(path)
+        self._names: set[str] = set()
+        self._objects: set[str] = set()
+        self._quantities: set[str] = set()
+        self._operators: set[str] = set()
 
-    def _load(self, file_like, onerror: str = "raise") -> None:
+        self._load(names, onerror="raise")
+
+    def _load(self, file_like: Iterable[str], onerror: str = "raise") -> None:
         for name in load_names_from_txt(file_like, onerror=onerror):
             self.add(name)
 
@@ -302,7 +289,9 @@ class NamesRegistry:
         return tuple(self._operators)
 
     @classmethod
-    def from_path(cls, path: str) -> NamesRegistry:
+    def from_path(
+        cls, paths: str | Iterable[str], version: str | None = None
+    ) -> NamesRegistry:
         """Create a new registry from a text file.
 
         Parameters
@@ -315,7 +304,22 @@ class NamesRegistry:
         NamesRegistry
             A newly-created registry filled with names from the file.
         """
-        return cls(path)
+        if isinstance(paths, str):
+            paths = [paths]
+
+        names = []
+        for path in paths:
+            with open(path) as fp:
+                names += [name.strip() for name in fp]
+
+        return cls(names, version=version)
+
+    @classmethod
+    def from_latest(cls) -> NamesRegistry:
+        names_file, version = _get_latest_names_file()
+        if names_file is None:
+            raise RuntimeError("unable to find a names file.")
+        return cls.from_path(names_file, version=version)
 
     def add(self, name: str | StandardName) -> None:
         """Add a name to the registry.
@@ -325,7 +329,6 @@ class NamesRegistry:
         name : str
             A Standard Name.
         """
-        # if not isinstance(name, StandardName):
         if isinstance(name, str):
             name = StandardName(name)
 
@@ -343,7 +346,7 @@ class NamesRegistry:
     def __len__(self) -> int:
         return len(self._names)
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[str, None, None]:
         yield from self._names
 
     def search(self, name: str) -> set[str]:
@@ -401,8 +404,7 @@ class NamesRegistry:
         return {name for name in self._names if all(part in name for part in parts)}
 
 
-
-REGISTRY = NamesRegistry()
+REGISTRY = NamesRegistry.from_latest()
 
 NAMES = REGISTRY.names
 OBJECTS = REGISTRY.objects
