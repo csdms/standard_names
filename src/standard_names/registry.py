@@ -1,15 +1,22 @@
-#! /usr/bin/env python
+from __future__ import annotations
+
 import os
 import warnings
+from collections.abc import Generator
+from collections.abc import Iterable
 from glob import glob
 
-from six import string_types
+from packaging.version import InvalidVersion
+from packaging.version import Version
 
-from .error import BadNameError, BadRegistryError
-from .standardname import StandardName
+from standard_names.error import BadNameError
+from standard_names.error import BadRegistryError
+from standard_names.standardname import StandardName
 
 
-def load_names_from_txt(file_like, onerror="raise"):
+def load_names_from_txt(
+    file_like: Iterable[str], onerror: str = "raise"
+) -> set[StandardName]:
     """Load names from a text file.
 
     Parameters
@@ -27,7 +34,7 @@ def load_names_from_txt(file_like, onerror="raise"):
 
     Examples
     --------
-    >>> from six.moves import StringIO
+    >>> from io import StringIO
     >>> import standard_names as csn
     >>> names = StringIO(\"\"\"
     ... air__temperature
@@ -55,23 +62,23 @@ def load_names_from_txt(file_like, onerror="raise"):
     if bad_names:
         if onerror == "warn":
             for name in bad_names:
-                warnings.warn("{name}: not a valid name".format(name=name))
+                warnings.warn(f"{name}: not a valid name", stacklevel=2)
         elif onerror == "raise":
             raise BadRegistryError(bad_names)
 
     return names
 
 
-def _strict_version_or_raise(version_str):
-    from packaging.version import InvalidVersion, Version
-
+def _strict_version_or_raise(version_str: str) -> Version:
     try:
         return Version(version_str)
-    except InvalidVersion:
-        raise ValueError("{version}: Not a version string".format(version=version_str))
+    except InvalidVersion as error:
+        raise ValueError(f"{version_str}: Not a version string") from error
 
 
-def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
+def _get_latest_names_file(
+    path: str | None = None, prefix: str = "names-", suffix: str = ".txt"
+) -> tuple[str | None, str | None]:
     """Get the most recent version of a names file.
 
     Parameters
@@ -108,7 +115,7 @@ def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
     """
     data_dir = path or os.path.join(os.path.dirname(__file__), "data")
 
-    name_glob = "{prefix}*{suffix}".format(prefix=prefix, suffix=suffix)
+    name_glob = f"{prefix}*{suffix}"
     data_file_pattern = os.path.join(data_dir, name_glob)
     files = [os.path.basename(file_) for file_ in glob(data_file_pattern)]
 
@@ -136,15 +143,14 @@ def _get_latest_names_file(path=None, prefix="names-", suffix=".txt"):
         return None, None
 
 
-class NamesRegistry(object):
+class NamesRegistry:
 
     """A registry of CSDMS Standard Names.
 
     Parameters
     ----------
-    paths : str or iterable of str, optional
-        Name(s) of the data file(s) from which to read. If not given,
-        use a default database. If ``None``, create an empty registry.
+    names : str or iterable of str, optional
+        Name(s) to add to the registry.
     version : str, optional
         The version of the names registry.
 
@@ -162,13 +168,13 @@ class NamesRegistry(object):
 
     Get the default set of names.
 
-    >>> registry = NamesRegistry()
+    >>> registry = NamesRegistry.from_latest()
     >>> len(registry) > 0
     True
 
     Create an empty registry and add a name to it.
 
-    >>> registry = NamesRegistry(None)
+    >>> registry = NamesRegistry()
     >>> len(registry)
     0
     >>> registry.add('air__temperature')
@@ -197,53 +203,38 @@ class NamesRegistry(object):
     >>> sorted(registry.names_with('temperature'))
     ['air__temperature', 'water__temperature']
     >>> registry.names_with(['temperature', 'air'])
-    ['air__temperature']
+    {'air__temperature'}
 
     Use ``match`` to match names using a glob-style pattern.
 
     >>> registry.match('air*')
-    ['air__temperature']
+    {'air__temperature'}
 
     Use ``search`` to do a fuzzy search of the list.
 
     >>> registry.search('air__temp')
-    ['air__temperature']
+    {'air__temperature'}
     """
 
-    def __init__(self, *args, **kwds):
-        if len(args) == 0:
-            paths, version = _get_latest_names_file()
-        elif len(args) == 1:
-            paths, version = args[0], None
-        else:
-            raise ValueError("0 or 1 arguments expected")
-
-        if paths is None:
-            paths = []
-
-        if isinstance(paths, string_types) or hasattr(paths, "readline"):
-            paths = [paths]
-
-        self._names = set()
-        self._objects = set()
-        self._quantities = set()
-        self._operators = set()
+    def __init__(self, names: str | Iterable[str] = (), version: str | None = None):
+        if isinstance(names, str):
+            names = [names]
 
         self._version = version or "0.0.0"
 
-        for path in paths:
-            if isinstance(path, string_types):
-                with open(path, "r") as fp:
-                    self._load(fp)
-            else:
-                self._load(path)
+        self._names: set[str] = set()
+        self._objects: set[str] = set()
+        self._quantities: set[str] = set()
+        self._operators: set[str] = set()
 
-    def _load(self, file_like, onerror="raise"):
+        self._load(names, onerror="raise")
+
+    def _load(self, file_like: Iterable[str], onerror: str = "raise") -> None:
         for name in load_names_from_txt(file_like, onerror=onerror):
             self.add(name)
 
     @property
-    def version(self):
+    def version(self) -> str:
         """The version of the names database.
 
         Returns
@@ -254,7 +245,7 @@ class NamesRegistry(object):
         return self._version
 
     @property
-    def names(self):
+    def names(self) -> tuple[str, ...]:
         """All names in the registry.
 
         Returns
@@ -265,7 +256,7 @@ class NamesRegistry(object):
         return tuple(self._names)
 
     @property
-    def objects(self):
+    def objects(self) -> tuple[str, ...]:
         """All objects in the registry.
 
         Returns
@@ -276,7 +267,7 @@ class NamesRegistry(object):
         return tuple(self._objects)
 
     @property
-    def quantities(self):
+    def quantities(self) -> tuple[str, ...]:
         """All quantities in the registry.
 
         Returns
@@ -287,7 +278,7 @@ class NamesRegistry(object):
         return tuple(self._quantities)
 
     @property
-    def operators(self):
+    def operators(self) -> tuple[str, ...]:
         """All operators in the registry.
 
         Returns
@@ -298,7 +289,9 @@ class NamesRegistry(object):
         return tuple(self._operators)
 
     @classmethod
-    def from_path(cls, path):
+    def from_path(
+        cls, paths: str | Iterable[str], version: str | None = None
+    ) -> NamesRegistry:
         """Create a new registry from a text file.
 
         Parameters
@@ -311,9 +304,24 @@ class NamesRegistry(object):
         NamesRegistry
             A newly-created registry filled with names from the file.
         """
-        return cls(path)
+        if isinstance(paths, str):
+            paths = [paths]
 
-    def add(self, name):
+        names = []
+        for path in paths:
+            with open(path) as fp:
+                names += [name.strip() for name in fp]
+
+        return cls(names, version=version)
+
+    @classmethod
+    def from_latest(cls) -> NamesRegistry:
+        names_file, version = _get_latest_names_file()
+        if names_file is None:
+            raise RuntimeError("unable to find a names file.")
+        return cls.from_path(names_file, version=version)
+
+    def add(self, name: str | StandardName) -> None:
         """Add a name to the registry.
 
         Parameters
@@ -321,7 +329,7 @@ class NamesRegistry(object):
         name : str
             A Standard Name.
         """
-        if not isinstance(name, StandardName):
+        if isinstance(name, str):
             name = StandardName(name)
 
         self._names.add(name.name)
@@ -330,19 +338,18 @@ class NamesRegistry(object):
         for op in name.operators:
             self._operators.add(op)
 
-    def __contains__(self, name):
+    def __contains__(self, name: str) -> bool:
         if isinstance(name, StandardName):
             name = name.name
         return name in self._names
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._names)
 
-    def __iter__(self):
-        for name in self._names:
-            yield name
+    def __iter__(self) -> Generator[str, None, None]:
+        yield from self._names
 
-    def search(self, name):
+    def search(self, name: str) -> set[str]:
         """Search the registry for a name.
 
         Parameters
@@ -357,9 +364,9 @@ class NamesRegistry(object):
         """
         from difflib import get_close_matches
 
-        return get_close_matches(name, self._names)
+        return set(get_close_matches(name, self._names))
 
-    def match(self, pattern):
+    def match(self, pattern: str) -> set[str]:
         """Search the registry for names that match a pattern.
 
         Parameters
@@ -376,13 +383,9 @@ class NamesRegistry(object):
         import re
 
         p = re.compile(fnmatch.translate(pattern))
-        names = []
-        for name in self._names:
-            if p.match(name):
-                names.append(name)
-        return names
+        return {name for name in self._names if p.match(name)}
 
-    def names_with(self, parts):
+    def names_with(self, parts: str | Iterable[str]) -> set[str]:
         """Search the registry for names containing words.
 
         Parameters
@@ -395,20 +398,13 @@ class NamesRegistry(object):
         tuple of str
             Names from the registry that contains the given words.
         """
-        if isinstance(parts, string_types):
+        if isinstance(parts, str):
             parts = (parts,)
 
-        remaining_names = self._names
-        for part in parts:
-            names = []
-            for name in remaining_names:
-                if part in name:
-                    names.append(name)
-            remaining_names = names
-        return names
+        return {name for name in self._names if all(part in name for part in parts)}
 
 
-REGISTRY = NamesRegistry()
+REGISTRY = NamesRegistry.from_latest()
 
 NAMES = REGISTRY.names
 OBJECTS = REGISTRY.objects

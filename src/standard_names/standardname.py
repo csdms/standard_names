@@ -1,10 +1,10 @@
-#! /usr/bin/env python
 """A CSDMS standard name."""
+from __future__ import annotations
+
 import re
+from typing import Any
 
-from six import string_types
-
-from .error import BadNameError
+from standard_names.error import BadNameError
 
 _PREFIX_REGEX = "^[a-z]([a-zA-Z0-9~-]|_(?!_))*"
 _SUFFIX_REGEX = "[a-z0-9]([a-z0-9~-]|_(?!_))*[a-z0-9]$"
@@ -12,7 +12,7 @@ STANDARD_NAME_REGEX = re.compile(_PREFIX_REGEX + "(__)" + _SUFFIX_REGEX)
 #    '^[a-z][a-z0-9_]*[a-z0-9](__)[a-z0-9][a-z0-9_]*[a-z0-9]$'
 
 
-def is_valid_name(name):
+def is_valid_name(name: str) -> bool:
     """Check if a string is a valid standard name.
 
     Parameters
@@ -28,7 +28,7 @@ def is_valid_name(name):
     return bool(STANDARD_NAME_REGEX.match(name))
 
 
-class StandardName(object):
+class StandardName:
 
     """A CSDMS standard name.
 
@@ -61,7 +61,7 @@ class StandardName(object):
 
     re = _PREFIX_REGEX + "(__)" + _SUFFIX_REGEX
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         """Create a standard name object from a string.
 
         Parameters
@@ -79,7 +79,7 @@ class StandardName(object):
         )
 
     @staticmethod
-    def decompose_name(name):
+    def decompose_name(name: str) -> tuple[str, str, tuple[str, ...]]:
         """Decompose a name into its parts.
 
         Decompose the *name* standard name string into it's constituent
@@ -111,15 +111,17 @@ class StandardName(object):
         """
         try:
             (object_part, quantity_clause) = name.split("__")
-        except ValueError:
-            raise BadNameError(name)
+        except ValueError as error:
+            raise BadNameError(name) from error
 
         (operators, quantity_part) = StandardName.decompose_quantity(quantity_clause)
 
         return object_part, quantity_part, operators
 
     @staticmethod
-    def compose_name(object, quantity, operators=()):
+    def compose_name(
+        object: str, quantity: str, operators: tuple[()] | tuple[str, ...] = ()
+    ) -> str:
         """Create a string from the parts of StandardName.
 
         Parameters
@@ -153,7 +155,7 @@ class StandardName(object):
         return "__".join((object, quantity))
 
     @staticmethod
-    def decompose_quantity(quantity_clause):
+    def decompose_quantity(quantity_clause: str) -> tuple[tuple[str, ...], str]:
         """Decompose a quantity into operators and quantities.
 
         Decompose the *quantity_clause* string into operator and base
@@ -179,68 +181,68 @@ class StandardName(object):
         return operators, quantity
 
     @property
-    def name(self):
+    def name(self) -> str:
         """The full standard name as a string."""
         return self._name
 
     @property
-    def object(self):
+    def object(self) -> str:
         """The object part of the standard name."""
         return self._object
 
     @object.setter
-    def object(self, value):
+    def object(self, value: str) -> None:
         self._object = value
         self._name = StandardName.compose_name(
             self.object, self.quantity, self.operators
         )
 
     @property
-    def quantity(self):
+    def quantity(self) -> str:
         """The quantity part of the standard name."""
         return self._quantity
 
     @quantity.setter
-    def quantity(self, value):
+    def quantity(self, value: str) -> None:
         self._quantity = value
         self._name = StandardName.compose_name(
             self.object, self.quantity, self.operators
         )
 
     @property
-    def operators(self):
+    def operators(self) -> tuple[str, ...]:
         """The operator part of the standard name."""
         return self._operators
 
     @operators.setter
-    def operators(self, value):
-        if isinstance(value, string_types):
+    def operators(self, value: str | tuple[str, ...]) -> None:
+        if isinstance(value, str):
             value = (value,)
         self._operators = value
         self._name = StandardName.compose_name(
             self.object, self.quantity, self.operators
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "StandardName(%r)" % self.name
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, that):
+    def __eq__(self, that: Any) -> bool:
         return self.name == str(that)
 
-    def __ne__(self, that):
+    def __ne__(self, that: Any) -> bool:
         return self.name != str(that)
 
-    def __lt__(self, that):
+    def __lt__(self, that: Any) -> bool:
         return self.name < str(that)
 
-    def __gt__(self, that):
+    def __gt__(self, that: Any) -> bool:
         return self.name > str(that)
 
-    def __cmp__(self, that):
+    def __cmp__(self, that: Any) -> bool:
         return self.name == str(that)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.name)

@@ -2,11 +2,14 @@
 """Some decorators for the CmtStandardNames package."""
 
 import os
+from collections.abc import Callable
+from collections.abc import Iterator
+from typing import Any
 
-from six import string_types
+from standard_names.registry import NamesRegistry
 
 
-def format_as_wiki(func):
+def format_as_wiki(func: Callable[..., str]) -> Callable[..., str]:
     """
     Decoratate a function that reads lines from a file. Put some wiki
     formatting around each line of the file and add a header, and
@@ -31,7 +34,7 @@ def format_as_wiki(func):
     </tt>
     """
 
-    def _wrapped(lines, **kwds):
+    def _wrapped(file_like: Iterator[str], **kwds: Any) -> str:
         """Decorate a list of strings.
 
         :lines: List of strings
@@ -41,25 +44,28 @@ def format_as_wiki(func):
         heading = kwds.pop("heading", None)
         heading_level = kwds.pop("level", 1)
 
-        text = func(lines, **kwds)
+        if not isinstance(newline, str):
+            raise ValueError("newline keyword must be of type str")
+        if not isinstance(heading, str) and heading is not None:
+            raise ValueError("heading keyword must be of type str or None")
+        if not isinstance(heading_level, int):
+            raise ValueError("level keyword must be of type int")
+
+        text = func(file_like, **kwds)
         lines = text.split(os.linesep)
 
-        wiki_lines = []
-        for line in lines:
-            wiki_lines.append(line + "<br/>")
-        wiki_lines.insert(0, "<tt>")
-        wiki_lines.append("</tt>")
+        wiki_lines = ["<tt>"] + [line + "<br/>" for line in lines] + ["</tt>"]
 
-        if heading:
+        if heading is not None:
             pre = "=" * heading_level
-            wiki_lines.insert(0, "%s %s %s" % (pre, heading.title(), pre))
+            wiki_lines.insert(0, f"{pre} {heading.title()} {pre}")
 
         return newline.join(wiki_lines)
 
     return _wrapped
 
 
-def format_as_yaml(func):
+def format_as_yaml(func: Callable[..., str]) -> Callable[..., str]:
     """
     Decoratate a function that reads lines from a file. Put some YAML
     formatting around each line of the file and add a header, and
@@ -85,7 +91,7 @@ def format_as_yaml(func):
     - line 2
     """
 
-    def _wrapped(lines, **kwds):
+    def _wrapped(file_like: Iterator[str], **kwds: Any) -> str:
         """Decorate a list of strings.
 
         Parameters
@@ -101,10 +107,15 @@ def format_as_yaml(func):
         heading = kwds.pop("heading", None)
         newline = kwds.pop("newline", os.linesep)
 
-        text = func(lines, **kwds)
+        if not isinstance(newline, str):
+            raise ValueError("newline keyword must be of type str")
+        if not isinstance(heading, str) and heading is not None:
+            raise ValueError("heading keyword must be of type str or None")
+
+        text = func(file_like, **kwds)
         lines = text.split(os.linesep)
 
-        if heading:
+        if heading is not None:
             yaml_lines = ["%s:" % heading]
             indent = 2
         else:
@@ -114,7 +125,7 @@ def format_as_yaml(func):
         items = [line for line in lines if line]
         if items:
             for line in items:
-                yaml_lines.append("%s- %s" % (" " * indent, line))
+                yaml_lines.append("{}- {}".format(" " * indent, line))
         else:
             yaml_lines.append("%s[]" % (" " * indent))
 
@@ -123,7 +134,7 @@ def format_as_yaml(func):
     return _wrapped
 
 
-def format_as_plain_text(func):
+def format_as_plain_text(func: Callable[..., str]) -> Callable[..., str]:
     """
 
     Examples
@@ -142,11 +153,16 @@ def format_as_plain_text(func):
     line 2
     """
 
-    def _wrapped(lines, **kwds):
+    def _wrapped(file_like: Iterator[str], **kwds: Any) -> str:
         heading = kwds.pop("heading", None)
         newline = kwds.pop("newline", os.linesep)
 
-        text = func(lines, **kwds)
+        if not isinstance(newline, str):
+            raise ValueError("newline keyword must be of type str")
+        if not isinstance(heading, str) and heading is not None:
+            raise ValueError("heading keyword must be of type str or None")
+
+        text = func(file_like, **kwds)
         lines = text.split(os.linesep)
 
         if heading:
@@ -162,13 +178,13 @@ def format_as_plain_text(func):
     return _wrapped
 
 
-def plain_text(func):
+def plain_text(func: Callable[..., NamesRegistry]) -> Callable[..., NamesRegistry]:
     """
     Decoratate a function that reads from a file-like object. The decorated
     function will instead read from a file with a given name.
     """
 
-    def _wrapped(name, **kwds):
+    def _wrapped(name: str, **kwds: Any) -> NamesRegistry:
         """Open a file by name.
 
         Parameters
@@ -176,8 +192,8 @@ def plain_text(func):
         name : str
             Name of the file as a string.
         """
-        if isinstance(name, string_types):
-            with open(name, "r") as file_like:
+        if isinstance(name, str):
+            with open(name) as file_like:
                 rtn = func(file_like, **kwds)
         else:
             rtn = func(name, **kwds)
@@ -186,13 +202,13 @@ def plain_text(func):
     return _wrapped
 
 
-def url(func):
+def url(func: Callable[..., NamesRegistry]) -> Callable[..., NamesRegistry]:
     """
     Decoratate a function that reads from a file-like object. The decorated
     function will instead read from a file with a URL.
     """
 
-    def _wrapped(name, **kwds):
+    def _wrapped(name: str, **kwds: Any) -> NamesRegistry:
         """Open a URL by name.
 
         Parameters
@@ -200,22 +216,22 @@ def url(func):
         name : str
             Name of the URL as a string.
         """
-        import urllib
+        from urllib.request import urlopen
 
-        file_like = urllib.urlopen(name)
+        file_like = urlopen(name)
         rtn = func(file_like, **kwds)
         return rtn
 
     return _wrapped
 
 
-def google_doc(func):
+def google_doc(func: Callable[..., NamesRegistry]) -> Callable[..., NamesRegistry]:
     """
     Decoratate a function that reads from a file-like object. The decorated
     function will instead read from a remote Google Doc file.
     """
 
-    def _wrapped(name, **kwds):
+    def _wrapped(name: str, **kwds: Any) -> NamesRegistry:
         """Open a Google Doc file by name.
 
         Parameters
@@ -233,7 +249,7 @@ def google_doc(func):
         except subprocess.CalledProcessError:
             raise
         else:
-            with open(tfile, "r") as file_like:
+            with open(tfile) as file_like:
                 rtn = func(file_like, **kwds)
         finally:
             os.remove(tfile)

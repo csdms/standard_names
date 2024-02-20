@@ -1,78 +1,66 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "standard_names"
+requires-python = ">=3.10"
 description = "Python utilities for working with CSDMS Standard Names"
-version = "0.2.8.dev0"
+keywords = [
+    "csdms",
+    "python",
+    "standard names",
+    "utilities",
+]
 authors = [
-  {name = "Eric Hutton"},
-  {email = "eric.hutton@colorado.edu"},
+    { name = "Eric Hutton" },
+    { email = "eric.hutton@colorado.edu" },
 ]
 maintainers = [
-  {name = "Eric Hutton"},
-  {email = "eric.hutton@colorado.edu"},
-  {name = "Mark Piper"},
-  {email = "mark.piper@colorado.edu"},
-  {name = "The CSDMS team"},
-  {email = "csdms@colorado.edu"},
+    { name = "Eric Hutton" },
+    { email = "eric.hutton@colorado.edu" },
+    { name = "Mark Piper" },
+    { email = "mark.piper@colorado.edu" },
+    { name = "The CSDMS team" },
+    { email = "csdms@colorado.edu" },
 ]
-readme = "README.md"
-keywords = [
-  "python",
-  "utilities",
-  "csdms",
-  "standard names",
-]
-license = {text = "MIT License"}
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Intended Audience :: Science/Research",
-  "Intended Audience :: Education",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3",
-  "Topic :: Scientific/Engineering :: Physics",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
 ]
-requires-python = ">=3.9"
+dynamic = [
+    "readme",
+    "version",
+]
 dependencies = [
-  "pyyaml",
-  "six",
-  "packaging",
-  "jinja2",
-  "py-scripting",
-  "binaryornot",
+    "packaging",
+    "pyyaml",
 ]
 
+[project.license]
+text = "MIT"
+
 [project.urls]
-Homepage = "https://csdms.colorado.edu"
 Documentation = "https://standard-names.readthedocs.io/"
-Repository = "https://github.com/csdms/standard_names"
+Homepage = "https://csdms.colorado.edu"
 Issues = "https://github.com/csdms/standard_names/issues"
+Repository = "https://github.com/csdms/standard_names"
 
 [project.optional-dependencies]
 dev = [
-  "black",
-  "isort",
-  "flake8",
-  "zest.releaser",
+    "nox",
 ]
-build = [
-  "build",
-  "twine",
-]
-test = [
-  "pytest",
-  "pytest-cov",
-  "coverage",
+testing = [
+    "coverage",
+    "pytest",
+    "pytest-cov",
 ]
 docs = [
-  "sphinx",
+    "sphinx",
 ]
 
 [project.scripts]
@@ -82,34 +70,66 @@ snscrape = "standard_names.cmd.snscrape:run"
 snsql = "standard_names.cmd.snsql:run"
 snvalidate = "standard_names.cmd.snvalidate:run"
 
-[tool.setuptools.packages.find]
-where = ["."]
-namespaces = true
-include = ["standard_names*"]
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-testpaths = ["standard_names"]
-norecursedirs = [".*", "*.egg*", "build", "dist"]
-addopts = """
-  --tb native
-  --strict-markers
-  --durations 16
-  --doctest-modules
-  -vvv
-"""
-doctest_optionflags = [
-  "NORMALIZE_WHITESPACE",
-  "IGNORE_EXCEPTION_DETAIL",
-  "ALLOW_UNICODE"
+[tool.setuptools.dynamic.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[tool.setuptools.dynamic.version]
+attr = "standard_names._version.__version__"
+
+[tool.setuptools.package-data]
+standard_names = [
+    "data/*.txt",
+]
+
+[tool.setuptools.packages.find]
+where = [
+    "src",
 ]
 
 [tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-combine_as_imports = true
-line_length = 88
+profile = "black"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "src/standard_names",
+    "tests",
+]
+norecursedirs = [
+    ".*",
+    "*.egg*",
+    "build",
+    "dist",
+]
+addopts = [
+    "--tb=native",
+    "--strict-markers",
+    "--durations=16",
+    "--doctest-modules",
+    "-vvv",
+]
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "IGNORE_EXCEPTION_DETAIL",
+    "ALLOW_UNICODE",
+]
 
 [tool.zest-releaser]
 tag-format = "v{version}"
+python-file-with-version = "src/standard_names/_version.py"

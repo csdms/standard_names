@@ -3,18 +3,26 @@
 Example usage:
     sndump -n -o -q -op --format=wiki > standard_names.wiki
 """
-from __future__ import print_function
 
 import argparse
 import os
+from collections.abc import Iterable
+from collections.abc import Sequence
+from typing import Any
 
-from ..registry import NamesRegistry
-from ..utilities import FORMATTERS
+from standard_names.registry import NamesRegistry
+from standard_names.utilities.io import FORMATTERS
 
 _FORMATS = FORMATTERS.keys()
 
 
-def sndump(file=None, format="plain", sorted=True, keys=None, newline=None):
+def sndump(
+    file: str | None = None,
+    format: str = "plain",
+    sorted: bool = True,
+    keys: str | Iterable[str] | None = None,
+    newline: str | None = None,
+) -> str:
     """Dump a registry to different formats.
 
     Parameters
@@ -32,27 +40,29 @@ def sndump(file=None, format="plain", sorted=True, keys=None, newline=None):
 
     Examples
     --------
-    >>> from __future__ import print_function
     >>> import os
-    >>> from six.moves import StringIO
-    >>> import standard_names as csn
+    >>> from io import StringIO
+    >>> from standard_names.cmd.sndump import sndump
 
     >>> lines = os.linesep.join(['air__temperature', 'water__temperature'])
     >>> names = StringIO(lines)
 
-    >>> print(csn.cmd.sndump.sndump(names, newline='\\n'))
+    >>> print(sndump(names, newline='\\n'))
     ...     # doctest: +REPORT_NDIFF
     air__temperature
     water__temperature
     """
     newline = newline or os.linesep
+    if isinstance(keys, str):
+        keys = (keys,)
     keys = keys or ("names",)
-    if file:
-        args = (file,)
-    else:
-        args = ()
 
-    names = NamesRegistry(*args)
+    if file is None:
+        names = NamesRegistry.from_latest()
+    elif isinstance(file, str) and os.path.isfile(file):
+        names = NamesRegistry.from_path(file)
+    else:
+        names = NamesRegistry(file)
 
     lines = []
     formatter = FORMATTERS[format]
@@ -70,15 +80,21 @@ def sndump(file=None, format="plain", sorted=True, keys=None, newline=None):
 class CustomAction(argparse.Action):
     """Keep track of the order of options are given on the command line."""
 
-    def __call__(self, parser, namespace, values, option_string=None):
+    def __call__(
+        self,
+        parser: argparse.ArgumentParser,
+        namespace: argparse.Namespace,
+        values: str | Sequence[Any] | None,
+        option_string: str | None = None,
+    ) -> None:
         if "ordered_args" not in namespace:
-            setattr(namespace, "ordered_args", [])
+            namespace.ordered_args = []
         previous = namespace.ordered_args
         previous.append(self.dest)
-        setattr(namespace, "ordered_args", previous)
+        namespace.ordered_args = previous
 
 
-def main(args=None):
+def main(argv: tuple[str] | None = None) -> str:
     """Dump a list of known standard names.
 
     Parameters
@@ -89,19 +105,22 @@ def main(args=None):
     Examples
     --------
     >>> import os
-    >>> import standard_names as csn
-    >>> (fname, _) = csn.registry._get_latest_names_file()
-    >>> registry = csn.NamesRegistry()
+    >>> from standard_names.registry import NamesRegistry
+    >>> from standard_names.registry import _get_latest_names_file
+    >>> from standard_names.cmd.sndump import main
 
-    >>> names = csn.cmd.sndump.main(['-n', fname]).split(os.linesep)
+    >>> (fname, _) = _get_latest_names_file()
+    >>> registry = NamesRegistry.from_path(fname)
+
+    >>> names = main(['-n', fname]).split(os.linesep)
     >>> len(names) == len(registry)
     True
 
-    >>> objects = csn.cmd.sndump.main(['-o', fname]).split(os.linesep)
+    >>> objects = main(['-o', fname]).split(os.linesep)
     >>> len(objects) == len(registry.objects)
     True
 
-    >>> names = csn.cmd.sndump.main(['-n', '-o', fname]).split(os.linesep)
+    >>> names = main(['-n', '-o', fname]).split(os.linesep)
     >>> len(names) == len(registry) + len(registry.objects)
     True
     """
@@ -142,10 +161,10 @@ def main(args=None):
         "--format", choices=_FORMATS, default="plain", help="Output format"
     )
 
-    if args is None:
+    if argv is None:
         args = parser.parse_args()
     else:
-        args = parser.parse_args(args)
+        args = parser.parse_args(argv)
 
     try:
         keys = args.ordered_args
@@ -157,5 +176,5 @@ def main(args=None):
     )
 
 
-def run():
+def run() -> None:
     print(main())

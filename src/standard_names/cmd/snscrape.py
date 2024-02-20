@@ -1,23 +1,34 @@
 #! /usr/bin/env python
 """
 Example usage:
-    snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
-             http://csdms.colorado.edu/wiki/CSN_Object_Templates \
-             http://csdms.colorado.edu/wiki/CSN_Operation_Templates \
-            > data/scraped.yaml
+
+```bash
+snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
+    http://csdms.colorado.edu/wiki/CSN_Object_Templates \
+    http://csdms.colorado.edu/wiki/CSN_Operation_Templates \
+    > data/scraped.yaml
+```
 """
-from __future__ import print_function
 
 import os
+from collections.abc import Iterable
 
-from ..utilities import FORMATTERS, SCRAPERS, scrape
+from standard_names.utilities.io import FORMATTERS
+from standard_names.utilities.io import SCRAPERS
+from standard_names.utilities.io import scrape
 
 _AS_TXT = FORMATTERS["txt"]
 
 _DEFAULT_SEARCH = r"\b[\w~-]+__[\w~-]+"
 
 
-def snscrape(files, with_headers=False, regex=None, format="url", newline=None):
+def snscrape(
+    files: Iterable[str],
+    with_headers: bool = False,
+    regex: str = _DEFAULT_SEARCH,
+    format: str = "url",
+    newline: str = os.linesep,
+) -> str:
     """Scrape names from a URL.
 
     Parameters
@@ -40,9 +51,8 @@ def snscrape(files, with_headers=False, regex=None, format="url", newline=None):
 
     Examples
     --------
-    >>> from __future__ import print_function
-    >>> from six.moves import StringIO
-    >>> import standard_names as csn
+    >>> from io import StringIO
+    >>> from standard_names.cmd.snscrape import snscrape
 
     >>> file1 = StringIO(\"\"\"
     ... A file is one name, which is air__temperature.
@@ -51,16 +61,13 @@ def snscrape(files, with_headers=False, regex=None, format="url", newline=None):
     ... A file is two names: air__temperature, and water__temperature.
     ... \"\"\")
 
-    >>> lines = csn.cmd.snscrape.snscrape([file1, file2], format='plain_text')
+    >>> lines = snscrape([file1, file2], format='plain_text')
     >>> sorted(lines.split(os.linesep))
     ['air__temperature', 'air__temperature', 'water__temperature']
     """
-    newline = newline or os.linesep
-    regex = regex or _DEFAULT_SEARCH
-
-    docs = {}
-    for file_name in files:
-        docs[file_name] = scrape(file_name, regex=regex, format=format)
+    docs = {
+        file_name: scrape(file_name, regex=regex, format=format) for file_name in files
+    }
 
     documents = []
     for name, name_list in docs.items():
@@ -73,7 +80,7 @@ def snscrape(files, with_headers=False, regex=None, format="url", newline=None):
     return newline.join(documents)
 
 
-def main(args=None):
+def main(argv: tuple[str] | None = None) -> str:
     """Scrape standard names from a file or URL.
 
     Examples
@@ -117,10 +124,10 @@ def main(args=None):
         "--no-headers", action="store_true", help="Do not print headers between scrapes"
     )
 
-    if args is None:
+    if argv is None:
         args = parser.parse_args()
     else:
-        args = parser.parse_args(args)
+        args = parser.parse_args(argv)
 
     return snscrape(
         args.file,
@@ -130,5 +137,5 @@ def main(args=None):
     )
 
 
-def run():
+def run() -> None:
     print(main())

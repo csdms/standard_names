@@ -1,24 +1,25 @@
 #! /usr/bin/env python
 """Some IO functions for standard_names package."""
-from __future__ import print_function
 
 import os
 import re
 import sys
+from collections.abc import Callable
+from collections.abc import Iterable
+from typing import Any
+from typing import TextIO
 
-from ..error import BadNameError
-from ..registry import NamesRegistry
-from .decorators import (
-    format_as_plain_text,
-    format_as_wiki,
-    format_as_yaml,
-    google_doc,
-    plain_text,
-    url,
-)
+from standard_names.error import BadNameError
+from standard_names.registry import NamesRegistry
+from standard_names.utilities.decorators import format_as_plain_text
+from standard_names.utilities.decorators import format_as_wiki
+from standard_names.utilities.decorators import format_as_yaml
+from standard_names.utilities.decorators import google_doc
+from standard_names.utilities.decorators import plain_text
+from standard_names.utilities.decorators import url
 
 
-def _list_to_string(lines, **kwds):
+def _list_to_string(lines: Iterable[str], **kwds: dict[str, Any]) -> str:
     """Join strings with the line separator.
 
     Concatonate a list of strings into one big string using the line separator
@@ -50,6 +51,8 @@ def _list_to_string(lines, **kwds):
     foo
     """
     newline = kwds.pop("newline", os.linesep)
+    if not isinstance(newline, str):
+        raise ValueError("newline keyword must be of type str")
     if kwds.pop("sorted", False):
         sorted_lines = list(lines)
         sorted_lines.sort()
@@ -58,7 +61,7 @@ def _list_to_string(lines, **kwds):
         return newline.join(lines)
 
 
-def _scrape_stream(stream, regex=r"\b\w+__\w+"):
+def _scrape_stream(stream: TextIO, regex: str = r"\b\w+__\w+") -> NamesRegistry:
     """Scrape standard names from stream matching a regular expression.
 
     Parameters
@@ -76,19 +79,20 @@ def _scrape_stream(stream, regex=r"\b\w+__\w+"):
 
     Examples
     --------
-    >>> import standard_names as csn
-    >>> from six.moves import StringIO
-    >>> stream = StringIO(\"\"\"
+    >>> from standard_names.utilities.io import _scrape_stream
+    >>> from io import StringIO
+
+    >>> stream = StringIO('''
     ... Some text with a standard name (air__temperature) in it.
     ... More words with more names: water__temperature. If a word matches
     ... the pattern but is not a valid name, ignore it (Air__Temperature
     ... is an example).
-    ... \"\"\")
-    >>> names = csn.utilities.io._scrape_stream(stream)
+    ... ''')
+    >>> names = _scrape_stream(stream)
     >>> sorted(names.names)
     ['air__temperature', 'water__temperature']
     """
-    names = NamesRegistry(None)
+    names = NamesRegistry()
 
     text = stream.read()
     words = re.findall(regex, text)
@@ -105,7 +109,7 @@ def _scrape_stream(stream, regex=r"\b\w+__\w+"):
     return names
 
 
-FORMATTERS = {
+FORMATTERS: dict[str, Callable[..., str]] = {
     "plain": _list_to_string,
     "wiki": format_as_wiki(_list_to_string),
     "yaml": format_as_yaml(_list_to_string),
@@ -113,7 +117,7 @@ FORMATTERS = {
 }
 
 
-SCRAPERS = dict()
+SCRAPERS: dict[str, Callable[..., NamesRegistry]] = {}
 for decorator in [google_doc, url, plain_text]:
     SCRAPERS[decorator.__name__] = decorator(_scrape_stream)
 
@@ -121,7 +125,7 @@ for decorator in [google_doc, url, plain_text]:
 _VALID_INTENTS = ["input", "output"]
 
 
-def _find_unique_names(models):
+def _find_unique_names(models: Iterable[dict[str, Any]]) -> NamesRegistry:
     """Find unique names in a iterable of StandardNames.
 
     Parameters
@@ -134,25 +138,24 @@ def _find_unique_names(models):
     NamesRegistry
         A collection of unique names.
     """
-    names = NamesRegistry(None)
+    names = NamesRegistry()
     for model in models:
         if isinstance(model["exchange items"], dict):
             new_names = []
             for intent in model["exchange items"]:
                 if intent not in _VALID_INTENTS:
-                    raise ValueError("{intent}: Bad intent".format(intent=intent))
+                    raise ValueError(f"{intent}: Bad intent")
                 new_names.extend(model["exchange items"][intent])
         else:
             new_names = model["exchange items"]
 
         for new_name in new_names:
             names.add(new_name)
-            # names.add(StandardName(new_name))
 
     return names
 
 
-def from_model_file(stream):
+def from_model_file(stream: TextIO) -> NamesRegistry:
     """Read names from a model file.
 
     Get standard names from a YAML file listing standard names for particular
@@ -175,7 +178,7 @@ def from_model_file(stream):
     return names
 
 
-def from_list_file(stream):
+def from_list_file(stream: TextIO) -> NamesRegistry:
     """Read names from a text file.
 
     Parameters
@@ -190,18 +193,19 @@ def from_list_file(stream):
 
     Examples
     --------
-    >>> import standard_names as csn
-    >>> from six.moves import StringIO
-    >>> stream = StringIO(\"\"\"
+    >>> from standard_names.utilities.io import from_list_file
+    >>> from io import StringIO
+
+    >>> stream = StringIO('''
     ... air__temperature
     ... # A comment
     ... water__temperature # Another comment
-    ... \"\"\")
-    >>> names = csn.utilities.from_list_file(stream)
+    ... ''')
+    >>> names = from_list_file(stream)
     >>> sorted(names.names)
     ['air__temperature', 'water__temperature']
     """
-    names = NamesRegistry(None)
+    names = NamesRegistry()
     for line in stream:
         if "#" in line:
             line = line[: line.find("#")]
@@ -211,7 +215,7 @@ def from_list_file(stream):
     return names
 
 
-def scrape(source, **kwds):
+def scrape(source: str, **kwargs: Any) -> NamesRegistry:
     """Scrape standard names for a named source.
 
     Parameters
@@ -228,6 +232,8 @@ def scrape(source, **kwds):
     NamesRegistry
         A collection of names read from the source.
     """
-    source_format = kwds.pop("format", "url")
+    source_format = kwargs.pop("format", "url")
+    if not isinstance(source_format, str):
+        raise ValueError("source_format keyword must be of type str")
 
-    return SCRAPERS[source_format](source, **kwds)
+    return SCRAPERS[source_format](source, **kwargs)

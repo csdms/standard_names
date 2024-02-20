@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 """Unit tests for standard_names.NamesRegistry."""
-import pytest
-from six import string_types
-from six.moves import StringIO
+from io import StringIO
 
-from standard_names import BadNameError, BadRegistryError, NamesRegistry, StandardName
+import pytest
+
+from standard_names.error import BadNameError
+from standard_names.error import BadRegistryError
+from standard_names.registry import NamesRegistry
 from standard_names.registry import load_names_from_txt
+from standard_names.standardname import StandardName
 
 
 def test_load_names_bad_onerror():
@@ -33,52 +36,55 @@ def test_load_names_bad_name_raise():
 
 def test_create_full():
     """Test creating default registry."""
-    nreg = NamesRegistry()
+    nreg = NamesRegistry.from_latest()
     assert len(nreg) > 0
 
 
 def test_create_empty():
     """Test creating default registry."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     assert len(nreg) == 0
-
-
-def test_create_with_too_many_args():
-    """Test creating a registry with too many arguments."""
-    with pytest.raises(ValueError):
-        NamesRegistry("file1", "file2")
 
 
 def test_create_with_file_like():
     """Test creating a registry from a file_like object."""
+    from itertools import chain
+
     file_like = StringIO("air__temperature")
     names = NamesRegistry(file_like)
     assert names.names == ("air__temperature",)
 
     file_like = StringIO("air__temperature")
     another_file_like = StringIO("water__temperature")
-    names = NamesRegistry([file_like, another_file_like])
+    # names = NamesRegistry([file_like, another_file_like])
+    names = NamesRegistry(chain(file_like, another_file_like))
     assert isinstance(names.names, tuple)
     assert sorted(names.names) == ["air__temperature", "water__temperature"]
 
 
-def test_create_with_from_path():
+def test_create_with_from_path(tmpdir):
     """Test creating registry with from_path."""
     file_like = StringIO("air__temperature")
-    names = NamesRegistry.from_path(file_like)
+    names = NamesRegistry(file_like)
     assert names.names == ("air__temperature",)
+
+    with tmpdir.as_cwd():
+        with open("names.txt", "w") as fp:
+            fp.write("air__temperature")
+        names = NamesRegistry.from_path("names.txt")
+        assert names.names == ("air__temperature",)
 
 
 def test_bad_name():
     """Try to add an invalid name."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     with pytest.raises(BadNameError):
         nreg.add("air_temperature")
 
 
 def test_add_string():
     """Add a string to the collection."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     nreg.add("air__temperature")
 
     assert StandardName("air__temperature") in nreg
@@ -91,17 +97,17 @@ def test_add_string():
 
 def test_collection_contains_names():
     """Make sure a NamesRegistry only contains StandardName objects."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     nreg.add("air__temperature")
     nreg.add("water__temperature")
 
     for name in nreg:
-        assert isinstance(name, string_types)
+        assert isinstance(name, str)
 
 
 def test_add_name():
     """Add a name to the collection."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     nreg.add(StandardName("air__temperature"))
 
     assert StandardName("air__temperature") in nreg
@@ -110,7 +116,7 @@ def test_add_name():
 
 def test_unique_names():
     """List of unique names."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     nreg.add("air__temperature")
     nreg.add("water__temperature")
 
@@ -122,7 +128,7 @@ def test_unique_names():
 
 def test_unique_objects():
     """List of unique objects."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     nreg.add("air__temperature")
     nreg.add("water__temperature")
 
@@ -135,7 +141,7 @@ def test_unique_objects():
 
 def test_unique_quantities():
     """List of unique quantities."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     nreg.add("air__temperature")
     nreg.add("water__temperature")
 
@@ -146,7 +152,7 @@ def test_unique_quantities():
 
 def test_unique_operators():
     """List of unique operators."""
-    nreg = NamesRegistry(None)
+    nreg = NamesRegistry()
     nreg.add("air__temperature")
     nreg.add("water__temperature")
     nreg.add("air__log_of_temperature")

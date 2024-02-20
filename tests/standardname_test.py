@@ -2,7 +2,8 @@
 """Unit tests for standard_names.StandardName"""
 import pytest
 
-from standard_names import BadNameError, StandardName
+from standard_names.error import BadNameError
+from standard_names.standardname import StandardName
 
 
 def test_create():
