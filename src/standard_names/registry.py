@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import os
 import warnings
+from collections import defaultdict
 from collections.abc import Generator
 from collections.abc import Iterable
+from collections.abc import MutableSet
 from glob import glob
 
 from packaging.version import InvalidVersion
@@ -143,7 +145,7 @@ def _get_latest_names_file(
         return None, None
 
 
-class NamesRegistry:
+class NamesRegistry(MutableSet):
 
     """A registry of CSDMS Standard Names.
 
@@ -223,11 +225,11 @@ class NamesRegistry:
         self._version = version or "0.0.0"
 
         self._names: set[str] = set()
-        self._objects: set[str] = set()
-        self._quantities: set[str] = set()
-        self._operators: set[str] = set()
+        self._objects: dict[str, set[str]] = defaultdict(set)
+        self._quantities: dict[str, set[str]] = defaultdict(set)
+        self._operators: dict[str, set[str]] = defaultdict(set)
 
-        self._load(names, onerror="raise")
+        self._load(names, onerror="warn")
 
     def _load(self, file_like: Iterable[str], onerror: str = "raise") -> None:
         for name in load_names_from_txt(file_like, onerror=onerror):
@@ -264,7 +266,7 @@ class NamesRegistry:
         tuple of str
             All of the objects in the registry.
         """
-        return tuple(self._objects)
+        return frozenset(self._objects)
 
     @property
     def quantities(self) -> tuple[str, ...]:
@@ -275,7 +277,7 @@ class NamesRegistry:
         tuple of str
             All of the quantities in the registry.
         """
-        return tuple(self._quantities)
+        return frozenset(self._quantities)
 
     @property
     def operators(self) -> tuple[str, ...]:
@@ -286,7 +288,7 @@ class NamesRegistry:
         tuple of str
             All of the operators in the registry.
         """
-        return tuple(self._operators)
+        return frozenset(self._operators)
 
     @classmethod
     def from_path(
@@ -333,14 +335,41 @@ class NamesRegistry:
             name = StandardName(name)
 
         self._names.add(name.name)
-        self._objects.add(name.object)
-        self._quantities.add(name.quantity)
+        self._objects[name.object].add(name.name)
+        self._quantities[name.quantity].add(name.name)
         for op in name.operators:
-            self._operators.add(op)
+            self._operators[op].add(name.name)
+
+    def discard(self, name: str | StandardName):
+        if isinstance(name, str):
+            try:
+                name = StandardName(name)
+            except BadNameError:
+                return
+        try:
+            self._names.remove(name.name)
+        except KeyError:
+            return
+
+        self._objects[name.object].discard(name.name)
+        if not self._objects[name.object]:
+            del self._objects[name.object]
+
+        self._quantities[name.quantity].discard(name.name)
+        if not self._quantities[name.quantity]:
+            del self._quantities[name.quantity]
+
+        for op in name.operators:
+            self._operators[op].discard(name.name)
+            if not self._operators[op]:
+                del self._operators[op]
 
     def __contains__(self, name: str) -> bool:
         if isinstance(name, StandardName):
-            name = name.name
+            try:
+                name = name.name
+            except BadNameError:
+                return False
         return name in self._names
 
     def __len__(self) -> int:
