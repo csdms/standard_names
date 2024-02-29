@@ -225,9 +225,9 @@ class NamesRegistry(MutableSet[str]):
         self._version = version or "0.0.0"
 
         self._names: set[str] = set()
-        self._objects: dict[str, set[str]] = defaultdict(set)
-        self._quantities: dict[str, set[str]] = defaultdict(set)
-        self._operators: dict[str, set[str]] = defaultdict(set)
+        self._objects: dict[str, int] = defaultdict(int)
+        self._quantities: dict[str, int] = defaultdict(int)
+        self._operators: dict[str, int] = defaultdict(int)
 
         self._load(names, onerror="raise")
 
@@ -334,46 +334,42 @@ class NamesRegistry(MutableSet[str]):
         if isinstance(name, str):
             name = StandardName(name)
 
-        self._names.add(name.name)
-        self._objects[name.object].add(name.name)
-        self._quantities[name.quantity].add(name.name)
-        for op in name.operators:
-            self._operators[op].add(name.name)
+        if name.name not in self._names:
+            self._names.add(name.name)
+            self._objects[name.object] += 1
+            self._quantities[name.quantity] += 1
+            for op in name.operators:
+                self._operators[op] += 1
 
     def discard(self, name: str | StandardName) -> None:
         if isinstance(name, str):
             try:
                 name = StandardName(name)
             except BadNameError:
-                return
-        try:
-            self._names.remove(name.name)
-        except KeyError:
-            return
+                raise KeyError(name) from None
 
-        self._objects[name.object].discard(name.name)
-        if not self._objects[name.object]:
+        self._names.remove(name.name)
+
+        self._objects[name.object] -= 1
+        if self._objects[name.object] <= 0:
             del self._objects[name.object]
 
-        self._quantities[name.quantity].discard(name.name)
-        if not self._quantities[name.quantity]:
+        self._quantities[name.quantity] -= 1
+        if self._quantities[name.quantity] <= 0:
             del self._quantities[name.quantity]
 
         for op in name.operators:
-            self._operators[op].discard(name.name)
-            if not self._operators[op]:
+            self._operators[op] -= 1
+            if self._operators[op] <= 0:
                 del self._operators[op]
 
     def __contains__(self, name: object) -> bool:
         if isinstance(name, StandardName):
-            try:
-                name = name.name
-            except BadNameError:
-                return False
-        if isinstance(name, str):
+            return name.name in self._names
+        elif isinstance(name, str):
             return name in self._names
         else:
-            return NotImplemented
+            return False
 
     def __len__(self) -> int:
         return len(self._names)
