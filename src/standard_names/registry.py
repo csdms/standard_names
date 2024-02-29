@@ -105,9 +105,9 @@ def _get_latest_names_file(
 
     >>> fname, version = _get_latest_names_file()
     >>> os.path.basename(fname)
-    'names-0.8.5.txt'
+    'names-2.0.0.txt'
     >>> version
-    '0.8.5'
+    '2.0.0'
 
     >>> _get_latest_names_file(prefix='garbage')
     (None, None)
@@ -187,13 +187,13 @@ class NamesRegistry(MutableSet[str]):
     get lists of each in the registry.
 
     >>> registry.names
-    ('air__temperature',)
+    frozenset({'air__temperature'})
     >>> registry.objects
-    ('air',)
+    frozenset({'air'})
     >>> registry.quantities
-    ('temperature',)
+    frozenset({'temperature'})
     >>> registry.operators
-    ()
+    frozenset()
 
     You can search the registry for names using the ``names_with``,
     ``match``, and ``search`` methods.
@@ -229,7 +229,7 @@ class NamesRegistry(MutableSet[str]):
         self._quantities: dict[str, set[str]] = defaultdict(set)
         self._operators: dict[str, set[str]] = defaultdict(set)
 
-        self._load(names, onerror="warn")
+        self._load(names, onerror="raise")
 
     def _load(self, file_like: Iterable[str], onerror: str = "raise") -> None:
         for name in load_names_from_txt(file_like, onerror=onerror):
