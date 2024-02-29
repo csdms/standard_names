@@ -145,7 +145,7 @@ def _get_latest_names_file(
         return None, None
 
 
-class NamesRegistry(MutableSet):
+class NamesRegistry(MutableSet[str]):
 
     """A registry of CSDMS Standard Names.
 
@@ -247,7 +247,7 @@ class NamesRegistry(MutableSet):
         return self._version
 
     @property
-    def names(self) -> tuple[str, ...]:
+    def names(self) -> frozenset[str]:
         """All names in the registry.
 
         Returns
@@ -255,10 +255,10 @@ class NamesRegistry(MutableSet):
         tuple of str
             All of the names in the registry.
         """
-        return tuple(self._names)
+        return frozenset(self._names)
 
     @property
-    def objects(self) -> tuple[str, ...]:
+    def objects(self) -> frozenset[str]:
         """All objects in the registry.
 
         Returns
@@ -269,7 +269,7 @@ class NamesRegistry(MutableSet):
         return frozenset(self._objects)
 
     @property
-    def quantities(self) -> tuple[str, ...]:
+    def quantities(self) -> frozenset[str]:
         """All quantities in the registry.
 
         Returns
@@ -280,7 +280,7 @@ class NamesRegistry(MutableSet):
         return frozenset(self._quantities)
 
     @property
-    def operators(self) -> tuple[str, ...]:
+    def operators(self) -> frozenset[str]:
         """All operators in the registry.
 
         Returns
@@ -340,7 +340,7 @@ class NamesRegistry(MutableSet):
         for op in name.operators:
             self._operators[op].add(name.name)
 
-    def discard(self, name: str | StandardName):
+    def discard(self, name: str | StandardName) -> None:
         if isinstance(name, str):
             try:
                 name = StandardName(name)
@@ -364,13 +364,16 @@ class NamesRegistry(MutableSet):
             if not self._operators[op]:
                 del self._operators[op]
 
-    def __contains__(self, name: str) -> bool:
+    def __contains__(self, name: object) -> bool:
         if isinstance(name, StandardName):
             try:
                 name = name.name
             except BadNameError:
                 return False
-        return name in self._names
+        if isinstance(name, str):
+            return name in self._names
+        else:
+            return NotImplemented
 
     def __len__(self) -> int:
         return len(self._names)
