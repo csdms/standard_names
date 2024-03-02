@@ -1,7 +1,9 @@
 from collections.abc import Iterable
 
 
-def as_wiki_list(items: Iterable[str], heading: str | None = None, level:int=1) -> str:
+def as_wiki_list(
+    items: Iterable[str], heading: str | None = None, level: int = 1
+) -> str:
     """
     Examples
     --------
@@ -26,7 +28,9 @@ def as_wiki_list(items: Iterable[str], heading: str | None = None, level:int=1) 
     return newline.join(formatted_lines)
 
 
-def as_yaml_list(items: Iterable[str], heading: str | None = None, level:int=1) -> str:
+def as_yaml_list(
+    items: Iterable[str], heading: str | None = None, level: int = 1
+) -> str:
     """
 
     Examples
@@ -59,7 +63,9 @@ def as_yaml_list(items: Iterable[str], heading: str | None = None, level:int=1) 
     return newline.join(formatted_lines)
 
 
-def as_myst_list(items: Iterable[str], heading: str | None = None, level:int=1) -> str:
+def as_myst_list(
+    items: Iterable[str], heading: str | None = None, level: int = 1
+) -> str:
     """
 
     Examples
@@ -73,12 +79,16 @@ def as_myst_list(items: Iterable[str], heading: str | None = None, level:int=1) 
     """
     newline = "\n"
 
-    formatted_lines = ([f"# {heading}"] if heading else []) + [f"* {stripped}" for item in items if (stripped := item.strip())]
+    formatted_lines = ([f"# {heading}"] if heading else []) + [
+        f"* {stripped}" for item in items if (stripped := item.strip())
+    ]
 
     return newline.join(formatted_lines)
 
 
-def as_text_list(items: Iterable[str], heading: str | None = None, level:int=1) -> str:
+def as_text_list(
+    items: Iterable[str], heading: str | None = None, level: int = 1
+) -> str:
     """
 
     Examples
@@ -103,6 +113,5 @@ FORMATTERS = {
     "wiki": as_wiki_list,
     "yaml": as_yaml_list,
     "text": as_text_list,
-    "myst": as_myst_list
+    "myst": as_myst_list,
 }
-
