@@ -3,39 +3,14 @@
 
 import argparse
 import os
-import sys
+from collections.abc import Iterator
 
 from standard_names.error import BadRegistryError
 from standard_names.registry import NamesRegistry
 
 
 def main(argv: tuple[str] | None = None) -> int:
-    """Validate a list of names.
-
-    Examples
-    --------
-    >>> import os
-    >>> from standard_names.registry import _get_latest_names_file
-    >>> from standard_names.cmd.snvalidate import main
-
-    >>> (fname, _) = _get_latest_names_file()
-    >>> main([fname])
-    0
-
-    >>> import tempfile
-    >>> (fd, fname) = tempfile.mkstemp()
-    >>> os.close(fd)
-
-    >>> with open(fname, 'w') as fp:
-    ...     print('air__temperature', file=fp)
-    ...     print('Water__temperature', file=fp)
-    ...     print('water_temperature', file=fp)
-
-    >>> main([fp.name])
-    2
-
-    >>> os.remove(fname)
-    """
+    """Validate a list of names."""
     parser = argparse.ArgumentParser("Validate a list of standard names")
 
     parser.add_argument(
@@ -47,14 +22,48 @@ def main(argv: tuple[str] | None = None) -> int:
 
     args = parser.parse_args(argv)
 
-    error_count = 0
+    invalid_names = set()
     for file in args.file:
-        try:
-            NamesRegistry(file)
-        except BadRegistryError as err:
-            print(os.linesep.join(err.names), file=sys.stderr)
-            error_count += len(err.names)
-    return error_count
+        invalid_names |= validate_names(file)
+
+    print(os.linesep.join(invalid_names))
+
+    return len(invalid_names)
+
+
+def validate_names(names: Iterator[str]) -> set[str]:
+    """Find invalid names.
+
+    Examples
+    --------
+    >>> import os
+    >>> import tempfile
+    >>> from standard_names.registry import _get_latest_names_file
+    >>> from standard_names.cmd.snvalidate import validate_names
+
+    >>> (fname, _) = _get_latest_names_file()
+    >>> with open(fname) as fp:
+    ...     invalid_names = validate_names(fp)
+    >>> len(invalid_names)
+    0
+
+    >>> names = [
+    ...     "air__temperature",
+    ...     "Water__temperature",
+    ...     "water_temperature",
+    ... ]
+    >>> invalid_names = validate_names(names)
+    >>> sorted(invalid_names)
+    ['Water__temperature', 'water_temperature']
+    """
+    try:
+        NamesRegistry(names)
+    except BadRegistryError as err:
+        invalid_names = set(err.names)
+    else:
+        invalid_names = set()
+
+    return invalid_names
 
 
 if __name__ == "__main__":

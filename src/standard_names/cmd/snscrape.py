@@ -9,53 +9,59 @@ snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
     > data/scraped.yaml
 ```
 """
-
+import argparse
 from collections.abc import Iterable
 
 from standard_names.registry import NamesRegistry
 
 
 def main(argv: tuple[str] | None = None) -> int:
-    """Scrape standard names from a file or URL.
-
-    Examples
-    --------
-    >>> import os
-    >>> import tempfile
-    >>> import standard_names as csn
-
-    >>> contents = \"\"\"
-    ... A file with text and names (air__temperature) mixed in. Some names
-    ... have double underscores (like, Water__Temperature) by are not
-    ... valid names. Others, like water__temperature, are good.
-    ... \"\"\"
-
-    >>> (fd, fname) = tempfile.mkstemp()
-    >>> os.close(fd)
-
-    >>> with open(fname, 'w') as fp:
-    ...     print(contents, file=fp)
-
-    >>> names = csn.cmd.snscrape.main(
-    ...     [fp.name, '--reader=plain_text', '--no-headers'])
-    >>> names.split(os.linesep)
-    ['air__temperature', 'water__temperature']
-
-    >>> os.remove(fname)
-    """
-    import argparse
-
     parser = argparse.ArgumentParser("Scrape standard names from a file or URL")
     parser.add_argument("file", nargs="*", metavar="FILE", help="URL or file to scrape")
 
     args = parser.parse_args(argv)
 
-    registry = NamesRegistry([])
-    for file in args.file:
-        registry |= NamesRegistry(search_file_for_names(file))
+    registry = scrape_names(args.file)
     print(registry.dumps(format_="text", fields=("names",)))
 
     return 0
+
+
+def scrape_names(files: Iterable[str]) -> NamesRegistry:
+    """Scrape standard names from a file or URL.
+
+    Parameters
+    ----------
+    files : iterable of str
+        Files to search for names.
+
+    Returns
+    -------
+    NamesRegistry
+        A registry of the names found in the files.
+
+    Examples
+    --------
+    >>> import tempfile
+    >>> from standard_names.cmd.snscrape import scrape_names
+
+    >>> contents = '''
+    ... A file with text and names (air__temperature) mixed in. Some names
+    ... have double underscores (like, Water__Temperature) by are not
+    ... valid names. Others, like water__temperature, are good.
+    ... '''
+
+    >>> with tempfile.NamedTemporaryFile("w") as fp:
+    ...     print(contents, file=fp)
+    ...     _ = fp.seek(0)
+    ...     registry = scrape_names([fp.name])
+    >>> sorted(registry.names)
+    ['air__temperature', 'water__temperature']
+    """
+    registry = NamesRegistry([])
+    for file in files:
+        registry |= NamesRegistry(search_file_for_names(file))
+    return registry
 
 
 def find_all_names(lines: Iterable[str], engine: str = "peg") -> set[str]:

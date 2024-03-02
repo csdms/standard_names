@@ -17,28 +17,6 @@ def main(argv: tuple[str] | None = None) -> int:
     ----------
     args : iterable of str, optional
         Arguments to pass to *parse_args*. If not provided, use ``sys.argv``.
-
-    Examples
-    --------
-    >>> import os
-    >>> from standard_names.registry import NamesRegistry
-    >>> from standard_names.registry import _get_latest_names_file
-    >>> from standard_names.cmd.sndump import main
-
-    >>> (fname, _) = _get_latest_names_file()
-    >>> registry = NamesRegistry.from_path(fname)
-
-    >>> names = main(['-n', fname]).split(os.linesep)
-    >>> len(names) == len(registry)
-    True
-
-    >>> objects = main(['-o', fname]).split(os.linesep)
-    >>> len(objects) == len(registry.objects)
-    True
-
-    >>> names = main(['-n', '-o', fname]).split(os.linesep)
-    >>> len(names) == len(registry) + len(registry.objects)
-    True
     """
     VALID_FIELDS = {
         "op": "operators",
