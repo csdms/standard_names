@@ -101,7 +101,7 @@ def as_sql_commands(names: NamesRegistry, newline: str = os.linesep) -> str:
     return commands
 
 
-def main() -> str:
+def main() -> int:
     """
     Build a database of CSDMS standard names from a list.
     """
@@ -111,13 +111,18 @@ def main() -> str:
         description="Build an sqlite database from a list of names"
     )
     parser.add_argument(
-        "file", nargs="+", type=argparse.FileType("r"), help="List of names"
+        "file", nargs="*", type=argparse.FileType("r"), help="List of names"
     )
     args = parser.parse_args()
 
-    names = NamesRegistry(args.file)
-    return as_sql_commands(names)
+    registry = NamesRegistry()
+    for file in args.file:
+        registry |= NamesRegistry(file)
+
+    print(as_sql_commands(registry))
+
+    return 0
 
 
-def run() -> None:
-    print(main())
+if __name__ == "__main__":
+    SystemExit(main())

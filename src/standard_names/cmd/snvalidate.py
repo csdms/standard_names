@@ -41,15 +41,11 @@ def main(argv: tuple[str] | None = None) -> int:
     parser.add_argument(
         "file",
         type=argparse.FileType("r"),
-        nargs="+",
-        default=None,
+        nargs="*",
         help="Read names from a file",
     )
 
-    if argv is None:
-        args = parser.parse_args()
-    else:
-        args = parser.parse_args(argv)
+    args = parser.parse_args(argv)
 
     error_count = 0
     for file in args.file:
@@ -61,5 +57,5 @@ def main(argv: tuple[str] | None = None) -> int:
     return error_count
 
 
-def run() -> None:
-    sys.exit(main())
+if __name__ == "__main__":
+    SystemExit(main())

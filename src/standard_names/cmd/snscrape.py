@@ -10,77 +10,12 @@ snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
 ```
 """
 
-import os
 from collections.abc import Iterable
 
-from standard_names.utilities.io import FORMATTERS
-from standard_names.utilities.io import SCRAPERS
-from standard_names.utilities.io import scrape
-
-_AS_TXT = FORMATTERS["txt"]
-
-_DEFAULT_SEARCH = r"\b[\w~-]+__[\w~-]+"
+from standard_names.registry import NamesRegistry
 
 
-def snscrape(
-    files: Iterable[str],
-    with_headers: bool = False,
-    regex: str = _DEFAULT_SEARCH,
-    format: str = "url",
-    newline: str = os.linesep,
-) -> str:
-    """Scrape names from a URL.
-
-    Parameters
-    ----------
-    files : iterable of str
-        List of files or URL to scrape.
-    with_headers : bool, optional
-        Include headers in the output that indicate the name of the source.
-    regex : str, optional
-        A regular expression that defines what a Standard Name is.
-    format : {'url', 'plain_text'}, optional
-        The format of the target that's being scraped.
-    newline : str, optional
-        Newline character to use for output.
-
-    Returns
-    -------
-    str
-        The scraped names.
-
-    Examples
-    --------
-    >>> from io import StringIO
-    >>> from standard_names.cmd.snscrape import snscrape
-
-    >>> file1 = StringIO(\"\"\"
-    ... A file is one name, which is air__temperature.
-    ... \"\"\")
-    >>> file2 = StringIO(\"\"\"
-    ... A file is two names: air__temperature, and water__temperature.
-    ... \"\"\")
-
-    >>> lines = snscrape([file1, file2], format='plain_text')
-    >>> sorted(lines.split(os.linesep))
-    ['air__temperature', 'air__temperature', 'water__temperature']
-    """
-    docs = {
-        file_name: scrape(file_name, regex=regex, format=format) for file_name in files
-    }
-
-    documents = []
-    for name, name_list in docs.items():
-        if with_headers:
-            heading = "Scraped from %s" % name
-        else:
-            heading = None
-        documents.append(_AS_TXT(name_list, sorted=True, heading=heading))
-
-    return newline.join(documents)
-
-
-def main(argv: tuple[str] | None = None) -> str:
+def main(argv: tuple[str] | None = None) -> int:
     """Scrape standard names from a file or URL.
 
     Examples
@@ -111,31 +46,48 @@ def main(argv: tuple[str] | None = None) -> str:
     import argparse
 
     parser = argparse.ArgumentParser("Scrape standard names from a file or URL")
-    parser.add_argument("file", nargs="+", metavar="FILE", help="URL or file to scrape")
-    parser.add_argument(
-        "--reader", choices=SCRAPERS.keys(), default="url", help="Name of reader"
-    )
-    parser.add_argument(
-        "--regex",
-        default=_DEFAULT_SEARCH,
-        help="Regular expression describing " "a standard name (%s)" % _DEFAULT_SEARCH,
-    )
-    parser.add_argument(
-        "--no-headers", action="store_true", help="Do not print headers between scrapes"
-    )
+    parser.add_argument("file", nargs="*", metavar="FILE", help="URL or file to scrape")
 
-    if argv is None:
-        args = parser.parse_args()
+    args = parser.parse_args(argv)
+
+    registry = NamesRegistry([])
+    for file in args.file:
+        registry |= NamesRegistry(search_file_for_names(file))
+    print(registry.dumps(format_="text", fields=("names",)))
+
+    return 0
+
+
+def find_all_names(lines: Iterable[str], engine: str = "peg") -> set[str]:
+    if engine == "regex":
+        from standard_names.regex import findall
+    elif engine == "peg":
+        from standard_names.peg import findall
     else:
-        args = parser.parse_args(argv)
+        raise ValueError(
+            "engine not understood: {engine!r} is not one of 'regex', 'peg'"
+        )
 
-    return snscrape(
-        args.file,
-        with_headers=not args.no_headers,
-        regex=args.regex,
-        format=args.reader,
-    )
+    names = set()
+    for line in lines:
+        names |= set(findall(line.strip()))
+
+    return names
 
 
-def run() -> None:
-    print(main())
+def search_file_for_names(path: str) -> set[str]:
+    from urllib.request import urlopen
+
+    names = set()
+    if path.startswith(("http://", "https://")):
+        with urlopen(path) as response:
+            names = find_all_names(line.decode("utf-8") for line in response)
+    else:
+        with open(path) as fp:
+            names = find_all_names(fp)
+
+    return names
+
+
+if __name__ == "__main__":
+    SystemExit(main())
