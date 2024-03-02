@@ -51,6 +51,9 @@ Issues = "https://github.com/csdms/standard_names/issues"
 Repository = "https://github.com/csdms/standard_names"
 
 [project.optional-dependencies]
+peg = [
+    "pyparsing",
+]
 dev = [
     "nox",
 ]
@@ -64,11 +67,11 @@ docs = [
 ]
 
 [project.scripts]
-snbuild = "standard_names.cmd.snbuild:run"
-sndump = "standard_names.cmd.sndump:run"
-snscrape = "standard_names.cmd.snscrape:run"
-snsql = "standard_names.cmd.snsql:run"
-snvalidate = "standard_names.cmd.snvalidate:run"
+snbuild = "standard_names.cmd.snbuild:main"
+sndump = "standard_names.cmd.sndump:main"
+snscrape = "standard_names.cmd.snscrape:main"
+snsql = "standard_names.cmd.snsql:main"
+snvalidate = "standard_names.cmd.snvalidate:main"
 
 [build-system]
 requires = [
