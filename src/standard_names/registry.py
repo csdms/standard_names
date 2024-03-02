@@ -7,10 +7,12 @@ from collections.abc import Generator
 from collections.abc import Iterable
 from collections.abc import MutableSet
 from glob import glob
+from urllib.request import urlopen
 
 from packaging.version import InvalidVersion
 from packaging.version import Version
 
+from standard_names._format import FORMATTERS
 from standard_names.error import BadNameError
 from standard_names.error import BadRegistryError
 from standard_names.standardname import StandardName
@@ -317,6 +319,18 @@ class NamesRegistry(MutableSet[str]):
         return cls(names, version=version)
 
     @classmethod
+    def from_url(cls, urls: Iterable[str]) -> NamesRegistry:
+        if isinstance(urls, str):
+            urls = [urls]
+
+        names = []
+        for url in urls:
+            with urlopen(url) as response:
+                names += [name.decode("utf-8").strip() for name in response]
+
+        return cls(names)
+
+    @classmethod
     def from_latest(cls) -> NamesRegistry:
         names_file, version = _get_latest_names_file()
         if names_file is None:
@@ -351,15 +365,18 @@ class NamesRegistry(MutableSet[str]):
         self._names.remove(name.name)
 
         self._objects[name.object] -= 1
+        assert self._objects[name.object] >= 0
         if self._objects[name.object] <= 0:
             del self._objects[name.object]
 
         self._quantities[name.quantity] -= 1
+        assert self._quantities[name.quantity] >= 0
         if self._quantities[name.quantity] <= 0:
             del self._quantities[name.quantity]
 
         for op in name.operators:
             self._operators[op] -= 1
+            assert self._operators[op] >= 0
             if self._operators[op] <= 0:
                 del self._operators[op]
 
@@ -431,11 +448,45 @@ class NamesRegistry(MutableSet[str]):
 
         return {name for name in self._names if all(part in name for part in parts)}
 
+    def dumps(
+        self,
+        format_: str = "text",
+        fields: Iterable[str] | None = None,
+        newline: str = os.linesep,
+        sort: bool = False,
+    ) -> str:
+        all_fields = ("names", "objects", "quantities", "operators")
+        fields = all_fields if fields is None else fields
 
-REGISTRY = NamesRegistry.from_latest()
+        if set(fields) - set(all_fields):
+            raise ValueError(
+                f"unknown fields: {', '.join(repr(f) for f in fields)} is not one of"
+                f" {', '.join(repr(f) for f in all_fields)}"
+            ) from None
 
-NAMES = REGISTRY.names
-OBJECTS = REGISTRY.objects
-QUANTITIES = REGISTRY.quantities
-OPERATORS = REGISTRY.operators
-VERSION = REGISTRY.version
+        try:
+            formatter = FORMATTERS[format_]
+        except KeyError:
+            raise ValueError(
+                f"unknown format: {format_!r} is not one of"
+                f" {', '.join(repr(f) for f in FORMATTERS)}"
+            ) from None
+
+        lines = [
+            formatter(
+                sorted(getattr(self, field)) if sort else getattr(self, field),
+                heading=field,
+            )
+            for field in fields
+        ]
+
+        return (2 * newline).join(lines)
+
+
+# REGISTRY = NamesRegistry.from_latest()
+
+# NAMES = REGISTRY.names
+# OBJECTS = REGISTRY.objects
+# QUANTITIES = REGISTRY.quantities
+# OPERATORS = REGISTRY.operators
+# VERSION = REGISTRY.version
