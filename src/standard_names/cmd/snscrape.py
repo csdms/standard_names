@@ -11,6 +11,7 @@ snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
 """
 import argparse
 from collections.abc import Iterable
+from urllib.request import urlopen
 
 from standard_names.registry import NamesRegistry
 
@@ -39,24 +40,6 @@ def scrape_names(files: Iterable[str]) -> NamesRegistry:
     -------
     NamesRegistry
         A registry of the names found in the files.
-
-    Examples
-    --------
-    >>> import tempfile
-    >>> from standard_names.cmd.snscrape import scrape_names
-
-    >>> contents = '''
-    ... A file with text and names (air__temperature) mixed in. Some names
-    ... have double underscores (like, Water__Temperature) by are not
-    ... valid names. Others, like water__temperature, are good.
-    ... '''
-
-    >>> with tempfile.NamedTemporaryFile("w") as fp:
-    ...     print(contents, file=fp)
-    ...     _ = fp.seek(0)
-    ...     registry = scrape_names([fp.name])
-    >>> sorted(registry.names)
-    ['air__temperature', 'water__temperature']
     """
     registry = NamesRegistry([])
     for file in files:
@@ -64,7 +47,24 @@ def scrape_names(files: Iterable[str]) -> NamesRegistry:
     return registry
 
 
-def find_all_names(lines: Iterable[str], engine: str = "peg") -> set[str]:
+def find_all_names(lines: Iterable[str], engine: str = "regex") -> set[str]:
+    """Find standard names.
+
+    Examples
+    --------
+    >>> from standard_names.cmd.snscrape import find_all_names
+
+    >>> contents = '''
+    ... A file with text and names (air__temperature) mixed in. Some names
+    ... have double underscores (like, Water__Temperature) by are not
+    ... valid names. Others, like water__temperature, or "wind__speed" are good.
+    ... '''
+    >>> sorted(find_all_names(contents.splitlines(), engine="regex"))
+    ['air__temperature', 'water__temperature', 'wind__speed']
+
+    >>> sorted(find_all_names(contents.splitlines(), engine="peg"))
+    ['air__temperature', 'water__temperature', 'wind__speed']
+    """
     if engine == "regex":
         from standard_names.regex import findall
     elif engine == "peg":
@@ -82,8 +82,6 @@ def find_all_names(lines: Iterable[str], engine: str = "peg") -> set[str]:
 
 
 def search_file_for_names(path: str) -> set[str]:
-    from urllib.request import urlopen
-
     names = set()
     if path.startswith(("http://", "https://")):
         with urlopen(path) as response:
