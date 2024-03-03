@@ -5,8 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/standard_names)](https://pypi.org/project/standard_names)
 
 
-standard_names
-==============
+# standard_names
 
 Python utilities for working with CSDMS Standard Names.
 
@@ -14,9 +13,47 @@ CSDMS Standard Names is an element of the [CSDMS Workbench](https://csdms.colora
 an integrated system of software tools, technologies, and standards
 for building and coupling models.
 
+## As Regular Expression
 
-Links
------
+```
+^                           # Start of the object name
+[a-z]+                      # Starts with one or more lowercase letters
+(?:                         # Start of a non-capturing group for subsequent parts
+    [-~_]?                  # Optional separator: hyphen, tilde, or underscore
+    [a-zA-Z0-9]+            # One or more alphanumeric characters
+)*                          # Zero or more repetitions of the group
+__                          # Double underscore separator
+[a-z]+                      # Start of the quantity
+(?:                         # Start of a non-capturing group for subsequent parts
+    [-~_]?                  # Optional separator: hyphen, tilde, or underscore
+    [a-zA-Z0-9]+            # One or more alphanumeric characters
+)*                          # Zero or more repetitions of the group
+$                           # End of the name
+```
+
+## As Parsing Expression Grammar
+
+```peg
+Start
+    = LowercaseWord UnderscoreSeparator LowercaseWord
+
+LowercaseWord
+    = [a-z] AdditionalCharacters*
+
+AdditionalCharacters
+    = Separator? Alphanumeric+
+
+Separator
+    = "-" / "~" / "_"
+
+Alphanumeric
+    = [a-zA-Z0-9]
+
+UnderscoreSeparator
+    = "__"
+```
+
+# Links
 
 *  [Source code](http://github.com/csdms/standard_names): The
    *standard_names* source code repository.
