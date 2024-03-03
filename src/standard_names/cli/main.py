@@ -63,7 +63,12 @@ def main(argv: tuple[str] | None = None) -> int:
         "file", type=argparse.FileType("r"), nargs="*", help="Read names from a file"
     )
     dump_parser.add_argument(
-        "--field", "-f", action="append", help="Fields to print", choices=VALID_FIELDS
+        "--field",
+        "-f",
+        action="append",
+        default=[],
+        help="Fields to print",
+        choices=VALID_FIELDS,
     )
     dump_parser.add_argument(
         "--sort", action=argparse.BooleanOptionalAction, help="Sort/don't sort names"
@@ -120,7 +125,7 @@ def build(args: argparse.Namespace) -> int:
 
 
 def dump(args: argparse.Namespace) -> int:
-    fields = [VALID_FIELDS[field] for field in args.field] or None
+    fields = [VALID_FIELDS[field] for field in args.field]
 
     registry = NamesRegistry([])
     for file in args.file:
