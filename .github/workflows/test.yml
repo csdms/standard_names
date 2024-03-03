@@ -22,17 +22,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          miniforge-variant: Miniforge3
-          miniforge-version: latest
-          auto-update-conda: true
 
       - name: Install package and testing dependencies
-        run: |
-          pip install .[dev,test]
+        run: pip install nox
 
       - name: Test
-        run: nox -s test
+        run: |
+          nox -s test
+          nox -s test-cli
