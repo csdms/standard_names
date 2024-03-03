@@ -52,27 +52,26 @@ def test_create_with_file_like():
 
     file_like = StringIO("air__temperature")
     names = NamesRegistry(file_like)
-    assert names.names == ("air__temperature",)
+    assert names.names == {"air__temperature"}
 
     file_like = StringIO("air__temperature")
     another_file_like = StringIO("water__temperature")
-    # names = NamesRegistry([file_like, another_file_like])
     names = NamesRegistry(chain(file_like, another_file_like))
-    assert isinstance(names.names, tuple)
-    assert sorted(names.names) == ["air__temperature", "water__temperature"]
+    assert isinstance(names.names, frozenset)
+    assert names.names == {"air__temperature", "water__temperature"}
 
 
 def test_create_with_from_path(tmpdir):
     """Test creating registry with from_path."""
     file_like = StringIO("air__temperature")
     names = NamesRegistry(file_like)
-    assert names.names == ("air__temperature",)
+    assert names.names == {"air__temperature"}
 
     with tmpdir.as_cwd():
         with open("names.txt", "w") as fp:
             fp.write("air__temperature")
         names = NamesRegistry.from_path("names.txt")
-        assert names.names == ("air__temperature",)
+        assert names.names == {"air__temperature"}
 
 
 def test_bad_name():
@@ -147,7 +146,7 @@ def test_unique_quantities():
 
     quantities = nreg.quantities
 
-    assert quantities == ("temperature",)
+    assert quantities == {"temperature"}
 
 
 def test_unique_operators():

@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import os
 import warnings
+from collections import defaultdict
 from collections.abc import Generator
 from collections.abc import Iterable
+from collections.abc import MutableSet
 from glob import glob
+from urllib.request import urlopen
 
 from packaging.version import InvalidVersion
 from packaging.version import Version
 
+from standard_names._format import FORMATTERS
 from standard_names.error import BadNameError
 from standard_names.error import BadRegistryError
 from standard_names.standardname import StandardName
@@ -103,9 +107,9 @@ def _get_latest_names_file(
 
     >>> fname, version = _get_latest_names_file()
     >>> os.path.basename(fname)
-    'names-0.8.5.txt'
+    'names-2.0.0.txt'
     >>> version
-    '0.8.5'
+    '2.0.0'
 
     >>> _get_latest_names_file(prefix='garbage')
     (None, None)
@@ -143,7 +147,7 @@ def _get_latest_names_file(
         return None, None
 
 
-class NamesRegistry:
+class NamesRegistry(MutableSet[str]):
 
     """A registry of CSDMS Standard Names.
 
@@ -185,13 +189,13 @@ class NamesRegistry:
     get lists of each in the registry.
 
     >>> registry.names
-    ('air__temperature',)
+    frozenset({'air__temperature'})
     >>> registry.objects
-    ('air',)
+    frozenset({'air'})
     >>> registry.quantities
-    ('temperature',)
+    frozenset({'temperature'})
     >>> registry.operators
-    ()
+    frozenset()
 
     You can search the registry for names using the ``names_with``,
     ``match``, and ``search`` methods.
@@ -223,9 +227,9 @@ class NamesRegistry:
         self._version = version or "0.0.0"
 
         self._names: set[str] = set()
-        self._objects: set[str] = set()
-        self._quantities: set[str] = set()
-        self._operators: set[str] = set()
+        self._objects: dict[str, int] = defaultdict(int)
+        self._quantities: dict[str, int] = defaultdict(int)
+        self._operators: dict[str, int] = defaultdict(int)
 
         self._load(names, onerror="raise")
 
@@ -245,7 +249,7 @@ class NamesRegistry:
         return self._version
 
     @property
-    def names(self) -> tuple[str, ...]:
+    def names(self) -> frozenset[str]:
         """All names in the registry.
 
         Returns
@@ -253,10 +257,10 @@ class NamesRegistry:
         tuple of str
             All of the names in the registry.
         """
-        return tuple(self._names)
+        return frozenset(self._names)
 
     @property
-    def objects(self) -> tuple[str, ...]:
+    def objects(self) -> frozenset[str]:
         """All objects in the registry.
 
         Returns
@@ -264,10 +268,10 @@ class NamesRegistry:
         tuple of str
             All of the objects in the registry.
         """
-        return tuple(self._objects)
+        return frozenset(self._objects)
 
     @property
-    def quantities(self) -> tuple[str, ...]:
+    def quantities(self) -> frozenset[str]:
         """All quantities in the registry.
 
         Returns
@@ -275,10 +279,10 @@ class NamesRegistry:
         tuple of str
             All of the quantities in the registry.
         """
-        return tuple(self._quantities)
+        return frozenset(self._quantities)
 
     @property
-    def operators(self) -> tuple[str, ...]:
+    def operators(self) -> frozenset[str]:
         """All operators in the registry.
 
         Returns
@@ -286,7 +290,7 @@ class NamesRegistry:
         tuple of str
             All of the operators in the registry.
         """
-        return tuple(self._operators)
+        return frozenset(self._operators)
 
     @classmethod
     def from_path(
@@ -315,6 +319,18 @@ class NamesRegistry:
         return cls(names, version=version)
 
     @classmethod
+    def from_url(cls, urls: Iterable[str]) -> NamesRegistry:
+        if isinstance(urls, str):
+            urls = [urls]
+
+        names = []
+        for url in urls:
+            with urlopen(url) as response:
+                names += [name.decode("utf-8").strip() for name in response]
+
+        return cls(names)
+
+    @classmethod
     def from_latest(cls) -> NamesRegistry:
         names_file, version = _get_latest_names_file()
         if names_file is None:
@@ -332,16 +348,45 @@ class NamesRegistry:
         if isinstance(name, str):
             name = StandardName(name)
 
-        self._names.add(name.name)
-        self._objects.add(name.object)
-        self._quantities.add(name.quantity)
-        for op in name.operators:
-            self._operators.add(op)
+        if name.name not in self._names:
+            self._names.add(name.name)
+            self._objects[name.object] += 1
+            self._quantities[name.quantity] += 1
+            for op in name.operators:
+                self._operators[op] += 1
 
-    def __contains__(self, name: str) -> bool:
+    def discard(self, name: str | StandardName) -> None:
+        if isinstance(name, str):
+            try:
+                name = StandardName(name)
+            except BadNameError:
+                raise KeyError(name) from None
+
+        self._names.remove(name.name)
+
+        self._objects[name.object] -= 1
+        assert self._objects[name.object] >= 0
+        if self._objects[name.object] <= 0:
+            del self._objects[name.object]
+
+        self._quantities[name.quantity] -= 1
+        assert self._quantities[name.quantity] >= 0
+        if self._quantities[name.quantity] <= 0:
+            del self._quantities[name.quantity]
+
+        for op in name.operators:
+            self._operators[op] -= 1
+            assert self._operators[op] >= 0
+            if self._operators[op] <= 0:
+                del self._operators[op]
+
+    def __contains__(self, name: object) -> bool:
         if isinstance(name, StandardName):
-            name = name.name
-        return name in self._names
+            return name.name in self._names
+        elif isinstance(name, str):
+            return name in self._names
+        else:
+            return False
 
     def __len__(self) -> int:
         return len(self._names)
@@ -403,11 +448,45 @@ class NamesRegistry:
 
         return {name for name in self._names if all(part in name for part in parts)}
 
+    def dumps(
+        self,
+        format_: str = "text",
+        fields: Iterable[str] | None = None,
+        newline: str = os.linesep,
+        sort: bool = False,
+    ) -> str:
+        all_fields = ("names", "objects", "quantities", "operators")
+        fields = all_fields if fields is None else fields
 
-REGISTRY = NamesRegistry.from_latest()
+        if set(fields) - set(all_fields):
+            raise ValueError(
+                f"unknown fields: {', '.join(repr(f) for f in fields)} is not one of"
+                f" {', '.join(repr(f) for f in all_fields)}"
+            ) from None
 
-NAMES = REGISTRY.names
-OBJECTS = REGISTRY.objects
-QUANTITIES = REGISTRY.quantities
-OPERATORS = REGISTRY.operators
-VERSION = REGISTRY.version
+        try:
+            formatter = FORMATTERS[format_]
+        except KeyError:
+            raise ValueError(
+                f"unknown format: {format_!r} is not one of"
+                f" {', '.join(repr(f) for f in FORMATTERS)}"
+            ) from None
+
+        lines = [
+            formatter(
+                sorted(getattr(self, field)) if sort else getattr(self, field),
+                heading=field,
+            )
+            for field in fields
+        ]
+
+        return (2 * newline).join(lines)
+
+
+# REGISTRY = NamesRegistry.from_latest()
+
+# NAMES = REGISTRY.names
+# OBJECTS = REGISTRY.objects
+# QUANTITIES = REGISTRY.quantities
+# OPERATORS = REGISTRY.operators
+# VERSION = REGISTRY.version

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+from __future__ import annotations
 
 import os
 
@@ -46,7 +46,7 @@ def as_sql_commands(names: NamesRegistry, newline: str = os.linesep) -> str:
     Examples
     --------
     >>> from standard_names.registry import NamesRegistry
-    >>> from standard_names.cmd.snsql import as_sql_commands
+    >>> from standard_names.cli._sql import as_sql_commands
 
     >>> names = NamesRegistry()
     >>> names.add("air__temperature")
@@ -99,25 +99,3 @@ def as_sql_commands(names: NamesRegistry, newline: str = os.linesep) -> str:
         commands = newline.join(db.iterdump())
 
     return commands
-
-
-def main() -> str:
-    """
-    Build a database of CSDMS standard names from a list.
-    """
-    import argparse
-
-    parser = argparse.ArgumentParser(
-        description="Build an sqlite database from a list of names"
-    )
-    parser.add_argument(
-        "file", nargs="+", type=argparse.FileType("r"), help="List of names"
-    )
-    args = parser.parse_args()
-
-    names = NamesRegistry(args.file)
-    return as_sql_commands(names)
-
-
-def run() -> None:
-    print(main())

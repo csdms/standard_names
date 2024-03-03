@@ -1,15 +1,10 @@
 """A CSDMS standard name."""
 from __future__ import annotations
 
-import re
 from typing import Any
 
 from standard_names.error import BadNameError
-
-_PREFIX_REGEX = "^[a-z]([a-zA-Z0-9~-]|_(?!_))*"
-_SUFFIX_REGEX = "[a-z0-9]([a-z0-9~-]|_(?!_))*[a-z0-9]$"
-STANDARD_NAME_REGEX = re.compile(_PREFIX_REGEX + "(__)" + _SUFFIX_REGEX)
-#    '^[a-z][a-z0-9_]*[a-z0-9](__)[a-z0-9][a-z0-9_]*[a-z0-9]$'
+from standard_names.regex import STANDARD_NAME_REGEX
 
 
 def is_valid_name(name: str) -> bool:
@@ -59,7 +54,7 @@ class StandardName:
     "StandardName('water__min_of_density')"
     """
 
-    re = _PREFIX_REGEX + "(__)" + _SUFFIX_REGEX
+    re = STANDARD_NAME_REGEX
 
     def __init__(self, name: str):
         """Create a standard name object from a string.
