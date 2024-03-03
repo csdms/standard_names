@@ -11,7 +11,7 @@ ROOT = pathlib.Path(__file__).parent
 PYTHON_VERSION = "3.12"
 
 
-@nox.session(python=PYTHON_VERSION, venv_backend="conda")
+@nox.session
 def test(session: nox.Session) -> None:
     """Run the tests."""
     session.install(".[peg,testing]")
@@ -24,6 +24,18 @@ def test(session: nox.Session) -> None:
 
     if "CI" not in os.environ:
         session.run("coverage", "report", "--ignore-errors", "--show-missing")
+
+
+@nox.session(name="test-cli")
+def test_cli(session: nox.Session) -> None:
+    """Test the cli."""
+    session.install(".[peg]")
+
+    session.run("standard-names", "--help")
+    session.run("standard-names", "--version")
+    for cmd in ("build", "dump", "scrape", "sql", "validate"):
+        session.run("standard-names", cmd, "--help")
+        session.run("standard-names", cmd)
 
 
 @nox.session
