@@ -9,23 +9,12 @@ snscrape http://csdms.colorado.edu/wiki/CSN_Quantity_Templates \
     > data/scraped.yaml
 ```
 """
-import argparse
+from __future__ import annotations
+
 from collections.abc import Iterable
 from urllib.request import urlopen
 
 from standard_names.registry import NamesRegistry
-
-
-def main(argv: tuple[str] | None = None) -> int:
-    parser = argparse.ArgumentParser("Scrape standard names from a file or URL")
-    parser.add_argument("file", nargs="*", metavar="FILE", help="URL or file to scrape")
-
-    args = parser.parse_args(argv)
-
-    registry = scrape_names(args.file)
-    print(registry.dumps(format_="text", fields=("names",)))
-
-    return 0
 
 
 def scrape_names(files: Iterable[str]) -> NamesRegistry:
@@ -52,7 +41,7 @@ def find_all_names(lines: Iterable[str], engine: str = "regex") -> set[str]:
 
     Examples
     --------
-    >>> from standard_names.cmd.snscrape import find_all_names
+    >>> from standard_names.cli._scrape import find_all_names
 
     >>> contents = '''
     ... A file with text and names (air__temperature) mixed in. Some names
@@ -91,7 +80,3 @@ def search_file_for_names(path: str) -> set[str]:
             names = find_all_names(fp)
 
     return names
-
-
-if __name__ == "__main__":
-    SystemExit(main())

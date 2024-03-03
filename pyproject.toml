@@ -66,11 +66,7 @@ docs = [
 ]
 
 [project.scripts]
-snbuild = "standard_names.cmd.snbuild:main"
-sndump = "standard_names.cmd.sndump:main"
-snscrape = "standard_names.cmd.snscrape:main"
-snsql = "standard_names.cmd.snsql:main"
-snvalidate = "standard_names.cmd.snvalidate:main"
+"standard-names" = "standard_names.cmd.main:main"
 
 [build-system]
 requires = [

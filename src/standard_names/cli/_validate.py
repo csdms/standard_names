@@ -1,34 +1,11 @@
 #! /usr/bin/env python
 """Validate a list of names."""
+from __future__ import annotations
 
-import argparse
-import os
 from collections.abc import Iterator
 
 from standard_names.error import BadRegistryError
 from standard_names.registry import NamesRegistry
-
-
-def main(argv: tuple[str] | None = None) -> int:
-    """Validate a list of names."""
-    parser = argparse.ArgumentParser("Validate a list of standard names")
-
-    parser.add_argument(
-        "file",
-        type=argparse.FileType("r"),
-        nargs="*",
-        help="Read names from a file",
-    )
-
-    args = parser.parse_args(argv)
-
-    invalid_names = set()
-    for file in args.file:
-        invalid_names |= validate_names(file)
-
-    print(os.linesep.join(invalid_names))
-
-    return len(invalid_names)
 
 
 def validate_names(names: Iterator[str]) -> set[str]:
@@ -39,7 +16,7 @@ def validate_names(names: Iterator[str]) -> set[str]:
     >>> import os
     >>> import tempfile
     >>> from standard_names.registry import _get_latest_names_file
-    >>> from standard_names.cmd.snvalidate import validate_names
+    >>> from standard_names.cli._validate import validate_names
 
     >>> (fname, _) = _get_latest_names_file()
     >>> with open(fname) as fp:
@@ -64,7 +41,3 @@ def validate_names(names: Iterator[str]) -> set[str]:
         invalid_names = set()
 
     return invalid_names
-
-
-if __name__ == "__main__":
-    SystemExit(main())
