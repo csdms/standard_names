@@ -148,7 +148,6 @@ def _get_latest_names_file(
 
 
 class NamesRegistry(MutableSet[str]):
-
     """A registry of CSDMS Standard Names.
 
     Parameters

@@ -1,4 +1,5 @@
 """The CSDMS Standard Names"""
+
 from standard_names._version import __version__
 from standard_names.registry import NamesRegistry
 from standard_names.standardname import StandardName
