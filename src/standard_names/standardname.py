@@ -1,4 +1,5 @@
 """A CSDMS standard name."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -24,7 +25,6 @@ def is_valid_name(name: str) -> bool:
 
 
 class StandardName:
-
     """A CSDMS standard name.
 
     Examples

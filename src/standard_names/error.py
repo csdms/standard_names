@@ -2,14 +2,12 @@ from collections.abc import Iterable
 
 
 class Error(Exception):
-
     """Base class for exceptions from this module."""
 
     pass
 
 
 class BadNameError(Error):
-
     """Error to indicate a poorly-formed standard name."""
 
     def __init__(self, name: str):
@@ -25,7 +23,6 @@ class BadNameError(Error):
 
 
 class BadRegistryError(Error):
-
     """Error to indicate a bad NamesRegistry."""
 
     def __init__(self, names: Iterable[str]):
